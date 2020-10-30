@@ -1,0 +1,5 @@
+%%
+num : 	' digit '|
+	num ' digit '
+	;
+%%

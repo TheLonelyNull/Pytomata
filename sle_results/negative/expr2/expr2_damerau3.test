@@ -1,0 +1,257 @@
+(
+( ( )
+( )
+( ) )
+( ) id
+( ) id )
+( * )
+( * id
+( * id )
+( + )
+( + id
+( + id )
+( - )
+( - id )
+( / )
+( / id
+( / id )
+( id
+( id (
+( id ( )
+( id ) (
+( id ) *
+( id ) +
+( id ) -
+( id ) /
+( id ) id
+( id ) num
+( id *
+( id * )
+( id +
+( id + )
+( id -
+( id - )
+( id /
+( id / )
+( id id
+( id id )
+( id num
+( id num )
+( num id )
+)
+) ( id )
+) * id
+) + id
+) - id
+) - num
+) / id
+) id
+) id )
+) id * id
+) id + id
+) id - id
+) id / id
+) num
+*
+* ( id )
+* * id
+* + id
+* - id
+* - num
+* / id
+* id
+* id )
+* id * id
+* id + id
+* id - id
+* id / id
+* id id
+* num
++
++ ( id )
++ * id
++ + id
++ - id
++ - num
++ / id
++ id
++ id )
++ id * id
++ id + id
++ id - id
++ id / id
++ id id
++ num
+-
+- (
+- ( id )
+- ( num
+- )
+- ) num
+- *
+- * id
+- * num
+- +
+- + id
+- + num
+- -
+- - id
+- - num
+- /
+- / id
+- / num
+- id
+- id )
+- id * id
+- id + id
+- id - id
+- id / id
+- id id
+- id num
+- num (
+- num *
+- num +
+- num -
+- num /
+- num id
+- num num
+/
+/ ( id )
+/ * id
+/ + id
+/ - id
+/ - num
+/ / id
+/ id
+/ id )
+/ id * id
+/ id + id
+/ id - id
+/ id / id
+/ id id
+/ num
+id (
+id ( )
+id ( * id
+id ( + id
+id ( - id
+id ( / id
+id ( id
+id ( id )
+id )
+id ) * id
+id ) + id
+id ) - id
+id ) / id
+id ) id
+id *
+id * (
+id * )
+id * ) id
+id * *
+id * * id
+id * +
+id * + id
+id * -
+id * - id
+id * /
+id * / id
+id * id (
+id * id *
+id * id +
+id * id -
+id * id /
+id * id id
+id * id num
+id * num id
+id +
+id + (
+id + )
+id + ) id
+id + *
+id + * id
+id + +
+id + + id
+id + -
+id + - id
+id + /
+id + / id
+id + id (
+id + id *
+id + id +
+id + id -
+id + id /
+id + id id
+id + id num
+id + num id
+id -
+id - (
+id - )
+id - ) id
+id - *
+id - * id
+id - +
+id - + id
+id - -
+id - - id
+id - /
+id - / id
+id - id (
+id - id *
+id - id +
+id - id -
+id - id /
+id - id id
+id - id num
+id - num id
+id /
+id / (
+id / )
+id / ) id
+id / *
+id / * id
+id / +
+id / + id
+id / -
+id / - id
+id / /
+id / / id
+id / id (
+id / id *
+id / id +
+id / id -
+id / id /
+id / id id
+id / id num
+id / num id
+id id
+id id )
+id id *
+id id * id
+id id +
+id id + id
+id id -
+id id - id
+id id /
+id id / id
+id id id
+id num
+id num * id
+id num + id
+id num - id
+id num / id
+id num id
+num (
+num ( id )
+num )
+num *
+num +
+num -
+num /
+num id
+num id )
+num id * id
+num id + id
+num id - id
+num id / id
+num num
