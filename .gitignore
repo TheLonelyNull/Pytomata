@@ -1,0 +1,15 @@
+out/*
+*.c
+*.h
+.idea/
+__pycache__/
+hyacc/GPL_license
+hyacc/calc.y
+hyacc/hyacc
+hyacc/hyacc.1
+hyacc/hyaccmanpage
+hyacc/hyaccmanpage.html
+hyacc/hyaccpar
+hyacc/makefile
+hyacc/readme.pdf
+hyacc/readme.txt

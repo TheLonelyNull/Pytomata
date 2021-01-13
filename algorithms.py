@@ -148,7 +148,7 @@ def flooding_improved(S, E, T, graph):
             # for valid reductions on all edges
             for edge in cur_node.edges:
                 # avoid shifting on an self-loop
-                if edge.label in graph.terminal and (edge.next_node != cur_node or edge not in seen_edges):
+                if edge.label in graph.terminal:
                     if edge not in seen_edges:
                         new_edge_seen = True
                         push(cur_stack, cur_trace, fresh_queue, edge)
@@ -268,7 +268,7 @@ def path_completion_improved(S, T, goal_label, graph):
             # for valid reductions on all edges
             stuck_flag = True
             for edge in cur_node.edges:
-                if edge.label in graph.terminal and edge.next_node != cur_node:
+                if edge.label in graph.terminal:
                     # if this is a loop we only take it if the stack does not increase in size
                     if edge.next_node.label in cur_stack_history and cur_stack_history[edge.next_node.label] >= len(
                             cur_stack) + 1:
