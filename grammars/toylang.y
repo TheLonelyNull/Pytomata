@@ -29,7 +29,7 @@ elseoption:
 stmt: 	 'if' expr 'then' stmt elseoption|
 	 'while' expr 'do' stmt|
 	 'id' '=' expr|
-	 'sleep'
+	 'sleep'|
 	 blck
 	 ;
 

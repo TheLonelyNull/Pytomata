@@ -11,7 +11,7 @@ def full_traversal(graph: Graph):
     test_cases = set()
     config = Config.get_instance()
     # bfs till graph covered
-    print("Starting graph flooding")
+    print("Starting graph flooding: " + str(len(E)) + " edges to cover.")
     queue = []
     if not config.get_clasic_flag():
         queue = flooding_improved([graph.nodes[0]], E, [], graph)
@@ -22,12 +22,16 @@ def full_traversal(graph: Graph):
     count = 0
     for path in queue:
         complete = None
+        print("----------------------")
+        print(extract_test_case(path['trace'], graph))
         if not config.get_clasic_flag():
             complete = path_completion_improved(path['stack'], path['trace'], 'acc', graph)
         else:
             complete = path_completion(path['stack'], path['trace'], 'acc', graph)
         test_cases.update(extract_test_case(complete['trace'], graph))
         count += 1
+        print(count)
+        print("----------------------")
     print("Path completion complete")
     return test_cases
 
@@ -105,6 +109,8 @@ def flooding_improved(S, E, T, graph):
         if len(fresh_queue) > 0:
             path = fresh_queue.pop(0)
         else:
+            print(len(brute_force_queue))
+            print(len(E - seen_edges))
             path = brute_force_queue.pop(0)
             path_from_brute = True
         cur_stack = path['stack']
@@ -229,16 +235,22 @@ def path_completion_improved(S, T, goal_label, graph):
         'trace': T.copy(),
         'stack_history': stack_depth_dict
     })
+
     while len(high_priority_queue) + len(low_priority_queue) > 0:
         path = None
         if len(high_priority_queue) > 0:
             path = high_priority_queue.pop(0)
         else:
             path = low_priority_queue.pop(0)
+
         cur_stack = path['stack']
         cur_trace = path['trace']
         cur_node = cur_stack[-1]
         cur_stack_history = path['stack_history']
+
+        if "program id = { while ( id ) do sleep" in extract_test_case(cur_trace, graph)[0]:
+            print(extract_test_case(cur_trace, graph)[0])
+            print(trace_to_str(cur_trace, graph))
 
         # check if the destination has been reached
         if str(cur_node.label) == goal_label:
@@ -270,8 +282,10 @@ def path_completion_improved(S, T, goal_label, graph):
             for edge in cur_node.edges:
                 if edge.label in graph.terminal:
                     # if this is a loop we only take it if the stack does not increase in size
-                    if edge.next_node.label in cur_stack_history and cur_stack_history[edge.next_node.label] >= len(
-                            cur_stack) + 1:
+                    if edge.next_node.label not in cur_stack_history or (
+                            edge.next_node.label in cur_stack_history and cur_stack_history[
+                        edge.next_node.label] >= len(
+                        cur_stack) + 1):
                         push(cur_stack, cur_trace, high_priority_queue, edge, cur_stack_history=cur_stack_history)
                     else:
                         push(cur_stack, cur_trace, low_priority_queue, edge, cur_stack_history=cur_stack_history)
@@ -281,8 +295,9 @@ def path_completion_improved(S, T, goal_label, graph):
                     for rule_index in range(len(reduce_edges)):
                         if edge == reduce_edges[rule_index]:
                             # if this is a loop we only take it if the stack does not increase in size
-                            if edge.next_node.label in cur_stack_history and cur_stack_history[
-                                edge.next_node.label] >= len(cur_stack) - edge.red_pop_count:
+                            if edge.next_node.label not in cur_stack_history or (
+                                    edge.next_node.label in cur_stack_history and cur_stack_history[
+                                edge.next_node.label] >= len(cur_stack) - edge.red_pop_count):
                                 # pop nodes of stack
                                 pop(cur_stack, cur_trace, high_priority_queue, edge,
                                     cur_node.reduce_rule[rule_index][1],
