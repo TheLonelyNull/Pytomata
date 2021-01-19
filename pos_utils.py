@@ -4,7 +4,7 @@ from graph_components import Node
 def get_reduce_edge(rule_label: str, reduce_amount: int, node: Node, S):
     reduce_edge = None
     for edge in node.edges:
-        if edge.label == rule_label and edge.next_node == S[-reduce_amount - 1] and edge.is_return:
+        if edge.label == rule_label and edge.next_node == S[-reduce_amount - 1] and edge.is_pop:
             reduce_edge = edge
             break
     return reduce_edge

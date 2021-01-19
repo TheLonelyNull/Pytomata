@@ -11,16 +11,16 @@ def gen_graphic(nodes):
     for node in nodes:
         edges = set()
         for edge in node.edges:
-            if edge.is_return:
+            if edge.is_pop:
                 from_label = str(node.label)
                 to_label = str(edge.next_node.label)
                 if ("  " + from_label + " -> " + to_label + " [ label=\"" + str(
-                        edge.label) + "/" + str(edge.red_pop_count) + "" + "\" style=\"dashed\" ];\n") not in edges:
+                        edge.label) + "/" + str(edge.pop_count) + "" + "\" style=\"dashed\" ];\n") not in edges:
                     f.write("  " + from_label + " -> " + to_label + " [ label=\"" + str(
-                        edge.label) + "/" + str(edge.red_pop_count) + "" + "\" style=\"dashed\" ];\n")
+                        edge.label) + "/" + str(edge.pop_count) + "" + "\" style=\"dashed\" ];\n")
                     edges.add("  " + from_label + " -> " + to_label + " [ label=\"" + str(
-                        edge.label) + "/" + str(edge.red_pop_count) + ""+ "\" style=\"dashed\" ];\n")
-            elif not edge.is_return:
+                        edge.label) + "/" + str(edge.pop_count) + "" + "\" style=\"dashed\" ];\n")
+            elif not edge.is_pop:
                 from_label = str(node.label)
                 to_label = str(edge.next_node.label)
                 if ("  " + from_label + " -> " + to_label + " [ label=\"" + str(

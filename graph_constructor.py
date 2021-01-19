@@ -3,6 +3,7 @@ from graph_components import Edge, Node, Graph
 import graphics_generator
 from config import Config
 
+
 def get_graph_lines():
     graph_file = open("y.gviz", 'r')
     graph_lines = graph_file.readlines()
@@ -51,8 +52,7 @@ def get_reduce_rule(states, node, type):
     return rules
 
 
-def construct_graph(graphics_type=None, automaton_type = None, should_produce_graph = None):
-
+def construct_graph(graphics_type=None, automaton_type=None, should_produce_graph=None):
     if automaton_type is None:
         config = Config.get_instance()
         automaton_type = config.get_automaton_type()
@@ -74,6 +74,8 @@ def construct_graph(graphics_type=None, automaton_type = None, should_produce_gr
         graphics_generator.gen_graphic(nodes)
     graph = Graph(nodes[0], nodes)
     calculate_error_states(graph)
+    for e in graph.edges:
+        e.next_node.pre_edges.append(e)
     return graph
 
 
@@ -140,13 +142,13 @@ def add_return_edges(nodes):
             # add edges to graph
             for n in cur_level:
                 edge = Edge(reduce_rule[0], n, True)
-                edge.red_pop_count = nr_of_states_to_pop
+                edge.pop_count = nr_of_states_to_pop
                 edge.source = node
                 # avoid duplicate reduction edges. Happens when more than one reduce rule ends at same point
                 # during reduce reduce conflict
                 already_added = False
                 for e in node.edges:
-                    if e.label == edge.label and e.next_node == edge.next_node and e.is_return:
+                    if e.label == edge.label and e.next_node == edge.next_node and e.is_pop:
                         already_added = True
                         break
                 if not already_added:

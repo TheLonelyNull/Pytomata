@@ -11,12 +11,12 @@ def get_follow_set(state: int, graph):
         cur_node = stack.pop(0)
         reachable_nodes.append(cur_node)
         for edge in cur_node.edges:
-            if edge.is_return:
+            if edge.is_pop:
                 # go to node after shift on non-terminal after popping for reduction
                 next_node = edge.next_node
                 label = edge.label
                 for edge2 in next_node.edges:
-                    if not edge2.is_return and edge2.label == label:
+                    if not edge2.is_pop and edge2.label == label:
                         next_node = edge2.next_node
                         if next_node != cur_node and next_node not in reachable_nodes:
                             stack.append(next_node)
@@ -25,7 +25,7 @@ def get_follow_set(state: int, graph):
     follow_set = set()
     for node in reachable_nodes:
         for edge in node.edges:
-            if edge.label in graph.terminal and not edge.is_return and edge.label != "$end":
+            if edge.label in graph.terminal and not edge.is_pop and edge.label != "$end":
                 follow_set.add(edge.label)
     return follow_set
 
@@ -46,12 +46,12 @@ def is_almost_accepting(state: int, graph):
             # check for $end edge since it is a shift edge and acc state won't ever be reached with only reduction
             if edge.label == "$end":
                 return True
-            if edge.is_return:
+            if edge.is_pop:
                 # go to node after shift on non-terminal after popping for reduction
                 next_node = edge.next_node
                 label = edge.label
                 for edge2 in next_node.edges:
-                    if not edge2.is_return and edge2.label == label and next_node not in reachable_nodes:
+                    if not edge2.is_pop and edge2.label == label and next_node not in reachable_nodes:
                         next_node = edge2.next_node
                         if next_node != cur_node:
                             stack.append(next_node)

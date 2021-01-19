@@ -2,6 +2,7 @@ class Node:
     def __init__(self, label, edges, is_accept, reduce_rule):
         self.label = label
         self.edges = edges
+        self.pre_edges = list()
         self.is_accept = is_accept
         self.reduce_rule = reduce_rule
         self.predecessors = list()
@@ -12,15 +13,15 @@ class Node:
 
 
 class Edge:
-    def __init__(self, label, next_node, is_return):
+    def __init__(self, label, next_node, is_pop):
         self.label = label
         self.source = None
         self.next_node = next_node
-        self.is_return = is_return
+        self.is_pop = is_pop
         self.delete = False
         self.add = None
         self.swap = None
-        self.red_pop_count = 0
+        self.pop_count = 0
 
     def __eq__(self, other):
         if other is None:
@@ -31,7 +32,7 @@ class Edge:
             return False
         if self.next_node.label != other.next_node.label:
             return False
-        if self.is_return != other.is_return:
+        if self.is_pop != other.is_pop:
             return False
         return True
 
@@ -44,15 +45,19 @@ class Edge:
             return True
         if self.next_node.label != other.next_node.label:
             return True
-        if self.is_return != other.is_return:
+        if self.is_pop != other.is_pop:
             return True
         return False
 
     def __hash__(self):
-        return hash(self.label) + hash(self.source.label) + hash(self.next_node.label) + hash(self.is_return)
+        return hash(self.label) + hash(self.source.label) + hash(self.next_node.label) + hash(self.is_pop)
 
     def __str__(self):
-        return '{' + str(self.source.label) + str(self.label) + '-> ' + str(self.next_node.label) + '}'
+        pop_str = ""
+        if self.is_pop:
+            pop_str = "/" + str(self.pop_count)
+        return '{ ' + str(self.source.label) + " " + str(self.label) + pop_str + ' -> ' + str(
+            self.next_node.label) + '}'
 
 
 class Graph:

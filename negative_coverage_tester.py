@@ -87,7 +87,7 @@ def parse(graph, tokens):
             if next_token in error_actions:
                 return False, next_token, cur_node.label
             for edge in cur_node.edges:
-                if edge.label in graph.terminal and not edge.is_return and edge.label == next_token:
+                if edge.label in graph.terminal and not edge.is_pop and edge.label == next_token:
                     cur_token_stream = token_stream.copy()
                     cur_token_stream.pop(0)
                     new_path = {
@@ -114,7 +114,7 @@ def parse(graph, tokens):
             new_trace = cur_trace.copy() + [edge]
             shift_edge: Edge
             for e in edge.next_node.edges:
-                if e.label == new_trace[-1].label and not e.is_return:
+                if e.label == new_trace[-1].label and not e.is_pop:
                     shift_edge = e
                     break
             new_path = {
@@ -130,7 +130,7 @@ def parse(graph, tokens):
 def get_reduce_edge(rule_label: str, reduce_amount: int, node: Node, S):
     reduce_edge = None
     for edge in node.edges:
-        if edge.label == rule_label and edge.next_node == S[-reduce_amount - 1] and edge.is_return:
+        if edge.label == rule_label and edge.next_node == S[-reduce_amount - 1] and edge.is_pop:
             reduce_edge = edge
             break
     return reduce_edge

@@ -4,6 +4,7 @@ from general_utils import extract_test_case
 from config import Config
 from debug_utils import trace_to_str
 import sys
+import time
 
 
 def full_traversal(graph: Graph):
@@ -68,10 +69,10 @@ def flooding(S, E, T, graph):
                 reduce_edges.append(get_reduce_edge(rule[0], rule[1], cur_node, cur_stack))
 
         # check if the previous move was reduce so we should shift a non-terminal
-        if len(cur_trace) > 0 and cur_trace[-1].is_return:
+        if len(cur_trace) > 0 and cur_trace[-1].is_pop:
             shift_edge: Edge
             for edge in cur_node.edges:
-                if edge.label == cur_trace[-1].label and not edge.is_return:
+                if edge.label == cur_trace[-1].label and not edge.is_pop:
                     shift_edge = edge
                     break
             seen_edges.add(shift_edge)
@@ -109,6 +110,7 @@ def flooding_improved(S, E, T, graph):
         if len(fresh_queue) > 0:
             path = fresh_queue.pop(0)
         else:
+            unblock(S, E, T, graph, seen_edges, fresh_queue, stale_queue)
             print(len(brute_force_queue))
             print(len(E - seen_edges))
             path = brute_force_queue.pop(0)
@@ -136,10 +138,10 @@ def flooding_improved(S, E, T, graph):
                 reduce_edges.append(get_reduce_edge(rule[0], rule[1], cur_node, cur_stack))
 
         # check if the previous move was reduce so we should shift a non-terminal
-        if len(cur_trace) > 0 and cur_trace[-1].is_return:
+        if len(cur_trace) > 0 and cur_trace[-1].is_pop:
             shift_edge: Edge
             for edge in cur_node.edges:
-                if edge.label == cur_trace[-1].label and not edge.is_return:
+                if edge.label == cur_trace[-1].label and not edge.is_pop:
                     shift_edge = edge
                     break
             if shift_edge not in seen_edges:
@@ -203,10 +205,10 @@ def path_completion(S, T, goal_label, graph):
                 reduce_edges.append(get_reduce_edge(rule[0], rule[1], cur_node, cur_stack))
 
         # check if the previous move was pop so we should shift a non-terminal
-        if len(cur_trace) > 0 and cur_trace[-1].is_return:
+        if len(cur_trace) > 0 and cur_trace[-1].is_pop:
             shift_edge: Edge
             for edge in cur_node.edges:
-                if edge.label == cur_trace[-1].label and not edge.is_return:
+                if edge.label == cur_trace[-1].label and not edge.is_pop:
                     shift_edge = edge
                     break
             push(cur_stack, cur_trace, queue, shift_edge)
@@ -267,10 +269,10 @@ def path_completion_improved(S, T, goal_label, graph):
                 reduce_edges.append(get_reduce_edge(rule[0], rule[1], cur_node, cur_stack))
 
         # check if the previous move was pop so we should shift a non-terminal
-        if len(cur_trace) > 0 and cur_trace[-1].is_return:
+        if len(cur_trace) > 0 and cur_trace[-1].is_pop:
             shift_edge: Edge
             for edge in cur_node.edges:
-                if edge.label == cur_trace[-1].label and not edge.is_return:
+                if edge.label == cur_trace[-1].label and not edge.is_pop:
                     shift_edge = edge
                     break
             # always push even if this is a loop
@@ -297,7 +299,7 @@ def path_completion_improved(S, T, goal_label, graph):
                             # if this is a loop we only take it if the stack does not increase in size
                             if edge.next_node.label not in cur_stack_history or (
                                     edge.next_node.label in cur_stack_history and cur_stack_history[
-                                edge.next_node.label] >= len(cur_stack) - edge.red_pop_count):
+                                edge.next_node.label] >= len(cur_stack) - edge.pop_count):
                                 # pop nodes of stack
                                 pop(cur_stack, cur_trace, high_priority_queue, edge,
                                     cur_node.reduce_rule[rule_index][1],
@@ -314,10 +316,100 @@ def precalc_node_stack_depth(trace):
     depth_map[0] = 1
     cur_depth = 1
     for edge in trace:
-        if edge.is_return:
-            cur_depth -= edge.red_pop_count
+        if edge.is_pop:
+            cur_depth -= edge.pop_count
             depth_map[edge.next_node.label] = cur_depth
         else:
             cur_depth += 1
             depth_map[edge.next_node.label] = cur_depth
     return depth_map
+
+
+def unblock(S, E, T, graph, seen_edges, fresh_queue, stale_queue):
+    """Figure out how to get stubborn edge unstuck and then splice it into the current traversals"""
+    print("---------------")
+    for node in graph.nodes:
+        print("Node " + str(node.label))
+        for e in node.edges:
+            print(e)
+    print("---------------")
+    print("I'm stuck")
+    candidate_edges = []
+    visited_states = set()
+    for e in seen_edges:
+        if not e.is_pop:
+            visited_states.add(e.next_node)
+    for e in E - seen_edges:
+        if e.is_pop and e.next_node in visited_states:
+            candidate_edges.append(e)
+    count = 0
+    for e in candidate_edges:
+        print("Trying to cover " + str(e))
+        lookback_for_pop(e, graph)
+        count += 1
+        print("found 1 solution for " + str(e) + ". " + str(count) + "/" + str(len(candidate_edges)))
+    exit(0)
+
+
+def lookback_for_pop(candidate, graph):
+    print("Lookback " + str(candidate))
+    target_stack_depth = candidate.pop_count
+    src = candidate.next_node
+    target = candidate.source
+    possible_solutions = []
+    max_len = len(graph.edges)
+    print(src.label)
+    queue = list()
+    queue.append({
+        'stack': [src],
+        'trace': []
+    })
+    while len(queue) > 0:
+        path = queue.pop(0)
+        cur_stack = path['stack']
+        cur_trace = path['trace']
+        cur_node = cur_stack[-1]
+        if src.label == 32 and target.label == 16:
+            print(trace_to_str(cur_trace, graph))
+            print("Stack Depth: " + str(len(cur_stack)))
+        # check for bad test case
+        if len(cur_trace) > max_len:
+            continue
+
+        if cur_node == target and len(cur_stack) - 1 == target_stack_depth:
+            print("Answer found")
+            possible_solutions.append(path.copy())
+            max_len = len(cur_trace)
+            continue
+        # check if there is a reduce rule that may exist for this state
+        reduce_edges = []
+        if cur_node.reduce_rule is not None:
+            for rule in cur_node.reduce_rule:
+                pop_amount = rule[1]
+                # don't take excessively large pops
+                if len(cur_stack) >= pop_amount + 1:
+                    reduce_edges.append(get_reduce_edge(rule[0], rule[1], cur_node, cur_stack))
+
+        # check if the previous move was reduce so we should shift a non-terminal
+        if len(cur_trace) > 0 and cur_trace[-1].is_pop:
+            shift_edge: Edge
+            for edge in cur_node.edges:
+                if edge.label == cur_trace[-1].label and not edge.is_pop:
+                    shift_edge = edge
+                    break
+            push(cur_stack, cur_trace, queue, shift_edge)
+        else:
+            # if the previous step wasn't a reduce then we should shift on terminals and check
+            # for valid reductions on all edges
+            for edge in cur_node.edges:
+                if edge.label in graph.terminal:
+                    push(cur_stack, cur_trace, queue, edge)
+                # check that reduction edge is correct edge
+                elif edge.label in graph.nonterminal and edge in reduce_edges:
+                    for rule_index in range(len(reduce_edges)):
+                        if edge == reduce_edges[rule_index]:
+                            # pop nodes of stack
+                            pop(cur_stack, cur_trace, queue, edge, pop_amount)
+    # find the possible solution that covers as many new edges as possible
+    print("Solved for " + str(candidate))
+    return possible_solutions[0]

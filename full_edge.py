@@ -12,7 +12,7 @@ def full_edge(graph: Graph):
 
         while not cur.is_accept:
             print(trace_to_str(trace, graph))
-            if len(trace) > 0 and trace[-1].label in graph.nonterminal and trace[-1].is_return:
+            if len(trace) > 0 and trace[-1].label in graph.nonterminal and trace[-1].is_pop:
                 non_terminal_edge = get_non_terminal_edge(cur, trace[-1].label)
                 shift(non_terminal_edge, S, trace)
             elif can_reduce(S, E, trace, graph, cur):
@@ -34,7 +34,7 @@ def trace_to_str(T, graph):
     trace = "0"
     for edge in T:
         colour = "\033[1;32;40m"
-        if edge.is_return:
+        if edge.is_pop:
             colour = "\033[94m"
         elif edge.label in graph.nonterminal:
             colour = "\033[1;33;40m"
@@ -175,10 +175,10 @@ def bfs(S, T, goal_label, graph):
             reduce_edge = get_reduce_edge(cur_node.reduce_rule[0][0], cur_node.reduce_rule[0][1], cur_node, cur_stack)
 
         # check if the previous move was reduce so we should shift a non-terminal
-        if len(cur_trace) > 0 and cur_trace[-1].is_return:
+        if len(cur_trace) > 0 and cur_trace[-1].is_pop:
             shift_edge: Edge
             for edge in cur_node.edges:
-                if edge.label == cur_trace[-1].label and not edge.is_return:
+                if edge.label == cur_trace[-1].label and not edge.is_pop:
                     shift_edge = edge
                     break
 

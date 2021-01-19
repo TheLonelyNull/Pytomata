@@ -56,12 +56,12 @@ def get_follow_set(state: int, graph):
         cur_node = stack.pop(0)
         reachable_nodes.append(cur_node)
         for edge in cur_node.edges:
-            if edge.is_return:
+            if edge.is_pop:
                 # go to node after shift on non-terminal after popping for reduction
                 next_node = edge.next_node
                 label = edge.label
                 for edge2 in next_node.edges:
-                    if not edge2.is_return and edge2.label == label:
+                    if not edge2.is_pop and edge2.label == label:
                         next_node = edge2.next_node
                         if next_node != cur_node and next_node not in reachable_nodes:
                             stack.append(next_node)
@@ -70,7 +70,7 @@ def get_follow_set(state: int, graph):
     follow_set = set()
     for node in reachable_nodes:
         for edge in node.edges:
-            if edge.label in graph.terminal and not edge.is_return and edge.label != "$end":
+            if edge.label in graph.terminal and not edge.is_pop and edge.label != "$end":
                 follow_set.add(edge.label)
     return follow_set
 
@@ -91,12 +91,12 @@ def get_can_complete_without_terminal(state: int, graph):
             # check for $end edge since it is a shift edge and acc state won't ever be reached with only reduction
             if edge.label == "$end":
                 return True
-            if edge.is_return:
+            if edge.is_pop:
                 # go to node after shift on non-terminal after popping for reduction
                 next_node = edge.next_node
                 label = edge.label
                 for edge2 in next_node.edges:
-                    if not edge2.is_return and edge2.label == label and next_node not in reachable_nodes:
+                    if not edge2.is_pop and edge2.label == label and next_node not in reachable_nodes:
                         next_node = edge2.next_node
                         if next_node != cur_node:
                             stack.append(next_node)
@@ -109,7 +109,7 @@ def trace_to_str(T, graph):
     trace = "0"
     for edge in T:
         colour = "\033[1;32;40m"
-        if edge.is_return:
+        if edge.is_pop:
             colour = "\033[94m"
         elif edge.label in graph.nonterminal:
             colour = "\033[1;33;40m"
@@ -120,7 +120,7 @@ def trace_to_str(T, graph):
 def get_reduce_edge(rule_label: str, reduce_amount: int, node: Node, S):
     reduce_edge = None
     for edge in node.edges:
-        if edge.label == rule_label and edge.next_node == S[-reduce_amount - 1] and edge.is_return:
+        if edge.label == rule_label and edge.next_node == S[-reduce_amount - 1] and edge.is_pop:
             reduce_edge = edge
             break
     return reduce_edge
@@ -176,7 +176,7 @@ def bfs_cut_cover(S, E, T, graph):
             # check if previous wasn't reduction edge that doesn't need a shift
             if (len(cur_trace) == 0 and not get_can_complete_without_terminal(cur_node.label, graph)) or (
                     len(cur_trace) > 0 and
-                    not cur_trace[-1].is_return and not get_can_complete_without_terminal(cur_node.label, graph)):
+                    not cur_trace[-1].is_pop and not get_can_complete_without_terminal(cur_node.label, graph)):
                 test_cases.update(extract_test_case(cur_trace, graph))
 
         print_cond = False
@@ -195,10 +195,10 @@ def bfs_cut_cover(S, E, T, graph):
                 reduce_edges.append(get_reduce_edge(rule[0], rule[1], cur_node, cur_stack))
 
         # check if the previous move was reduce so we should shift a non-terminal
-        if len(cur_trace) > 0 and cur_trace[-1].is_return:
+        if len(cur_trace) > 0 and cur_trace[-1].is_pop:
             shift_edge: Edge
             for edge in cur_node.edges:
-                if edge.label == cur_trace[-1].label and not edge.is_return:
+                if edge.label == cur_trace[-1].label and not edge.is_pop:
                     shift_edge = edge
                     break
             seen_edges.add(shift_edge)
@@ -303,7 +303,7 @@ def bfs_switch_cover(S, E, T, graph: Graph):
 
         # check if the traversal has not been modified and previous edge is a shift on a terminal
         if not path['modified'] and len(cur_trace) > 0 and (
-                not cur_trace[-1].is_return and cur_trace[-1].label in graph.terminal):
+                not cur_trace[-1].is_pop and cur_trace[-1].label in graph.terminal):
             # check if there are any terminal symbols in this grammar that doesnt intersect with the followset
             # of the previous state. This means that the previous shift edge can be replaced
             prev_state = 0
@@ -344,10 +344,10 @@ def bfs_switch_cover(S, E, T, graph: Graph):
                 reduce_edges.append(get_reduce_edge(rule[0], rule[1], cur_node, cur_stack))
 
         # check if the previous move was reduce so we should shift a non-terminal
-        if len(cur_trace) > 0 and cur_trace[-1].is_return:
+        if len(cur_trace) > 0 and cur_trace[-1].is_pop:
             shift_edge: Edge
             for edge in cur_node.edges:
-                if edge.label == cur_trace[-1].label and not edge.is_return:
+                if edge.label == cur_trace[-1].label and not edge.is_pop:
                     shift_edge = edge
                     break
             seen_edges.add(shift_edge)
@@ -452,7 +452,7 @@ def bfs_delete_cover(S, E, T, graph):
 
         # check if the traversal has not been modified and previous edge is a shift on a terminal
         if not path['modified'] and len(cur_trace) > 1 and (
-                not cur_trace[-1].is_return and cur_trace[-1].label in graph.terminal) and cur_trace[
+                not cur_trace[-1].is_pop and cur_trace[-1].label in graph.terminal) and cur_trace[
             -1].label != '$end':
             # check that there is no intersection in the followset of the two states around the last edge
             prev_state = 0
@@ -496,10 +496,10 @@ def bfs_delete_cover(S, E, T, graph):
                 reduce_edges.append(get_reduce_edge(rule[0], rule[1], cur_node, cur_stack))
 
         # check if the previous move was reduce so we should shift a non-terminal
-        if len(cur_trace) > 0 and cur_trace[-1].is_return:
+        if len(cur_trace) > 0 and cur_trace[-1].is_pop:
             shift_edge: Edge
             for edge in cur_node.edges:
-                if edge.label == cur_trace[-1].label and not edge.is_return:
+                if edge.label == cur_trace[-1].label and not edge.is_pop:
                     shift_edge = edge
                     break
             seen_edges.add(shift_edge)
@@ -590,10 +590,10 @@ def bfs_cover(S, E, T, graph):
                 reduce_edges.append(get_reduce_edge(rule[0], rule[1], cur_node, cur_stack))
 
         # check if the previous move was reduce so we should shift a non-terminal
-        if len(cur_trace) > 0 and cur_trace[-1].is_return:
+        if len(cur_trace) > 0 and cur_trace[-1].is_pop:
             shift_edge: Edge
             for edge in cur_node.edges:
-                if edge.label == cur_trace[-1].label and not edge.is_return:
+                if edge.label == cur_trace[-1].label and not edge.is_pop:
                     shift_edge = edge
                     break
             seen_edges.add(shift_edge)
@@ -756,10 +756,10 @@ def bfs_add_cover(S, E, T, graph):
                 reduce_edges.append(get_reduce_edge(rule[0], rule[1], cur_node, cur_stack))
 
         # check if the previous move was reduce so we should shift a non-terminal
-        if len(cur_trace) > 0 and cur_trace[-1].is_return:
+        if len(cur_trace) > 0 and cur_trace[-1].is_pop:
             shift_edge: Edge
             for edge in cur_node.edges:
-                if edge.label == cur_trace[-1].label and not edge.is_return:
+                if edge.label == cur_trace[-1].label and not edge.is_pop:
                     shift_edge = edge
                     break
             seen_edges.add(shift_edge)
@@ -846,10 +846,10 @@ def bfs_path(S, T, goal_label, graph, modified=False):
                 reduce_edges.append(get_reduce_edge(rule[0], rule[1], cur_node, cur_stack))
 
         # check if the previous move was reduce so we should shift a non-terminal
-        if len(cur_trace) > 0 and cur_trace[-1].is_return:
+        if len(cur_trace) > 0 and cur_trace[-1].is_pop:
             shift_edge: Edge
             for edge in cur_node.edges:
-                if edge.label == cur_trace[-1].label and not edge.is_return:
+                if edge.label == cur_trace[-1].label and not edge.is_pop:
                     shift_edge = edge
                     break
 
