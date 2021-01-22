@@ -41,7 +41,7 @@ def get_reduce_rule(states, node, type):
         if type == 'LR0':
             states_to_pop = len(r[-1].split('(core)')[0].split()) - 1
         elif type == 'LR1' or type == 'LALR1':
-            matches = re.split(r"{(.*\ )*(.*)}", r[-1])
+            matches = re.split(r"{(.*)*(.*)}", r[-1])
             symbols = matches[0].split()
             states_to_pop = len(symbols) - 1
         else:
@@ -123,6 +123,7 @@ def add_return_edges(nodes):
     for node in nodes:
         if node.reduce_rule is not None:
             leaves.append(node)
+
     for node in leaves:
         # add all reduction edges in case of reduce/reduce conflict
         for reduce_rule in node.reduce_rule:

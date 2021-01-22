@@ -16,11 +16,13 @@ if __name__ == '__main__':
     }
 
     # generate graph file and automaton text file
+    print(command_automaton_map[
+              config.get_automaton_type()])
     command = "./hyacc/hyacc -v -g -O0 " + command_automaton_map[
         config.get_automaton_type()] + " " + config.get_grammar_filename()
     os.system(command)
 
     graph = construct_graph()
-    file_utils.remove_intermediary_files()
+    # file_utils.remove_intermediary_files()
 
     test_generator.gen_test(graph)

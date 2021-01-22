@@ -25,6 +25,7 @@ def full_traversal(graph: Graph):
         complete = None
         print("----------------------")
         print(extract_test_case(path['trace'], graph))
+        print(trace_to_str(path['trace'], graph))
         if not config.get_clasic_flag():
             complete = path_completion_improved(path['stack'], path['trace'], 'acc', graph)
         else:
@@ -111,10 +112,7 @@ def flooding_improved(S, E, T, graph):
             path = fresh_queue.pop(0)
         else:
             unblock(S, E, T, graph, seen_edges, fresh_queue, stale_queue)
-            print(len(brute_force_queue))
-            print(len(E - seen_edges))
-            path = brute_force_queue.pop(0)
-            path_from_brute = True
+            continue
         cur_stack = path['stack']
         cur_trace = path['trace']
         cur_node = cur_stack[-1]
@@ -250,8 +248,7 @@ def path_completion_improved(S, T, goal_label, graph):
         cur_node = cur_stack[-1]
         cur_stack_history = path['stack_history']
 
-        if "program id = { while ( id ) do sleep" in extract_test_case(cur_trace, graph)[0]:
-            print(extract_test_case(cur_trace, graph)[0])
+        if extract_test_case(cur_trace, graph)[0] in "program id = { sleep ; { } ; } ":
             print(trace_to_str(cur_trace, graph))
 
         # check if the destination has been reached
@@ -326,14 +323,11 @@ def precalc_node_stack_depth(trace):
 
 
 def unblock(S, E, T, graph, seen_edges, fresh_queue, stale_queue):
-    """Figure out how to get stubborn edge unstuck and then splice it into the current traversals"""
-    print("---------------")
+    """Solve for stuck pop edges and splice them in"""
     for node in graph.nodes:
         print("Node " + str(node.label))
         for e in node.edges:
             print(e)
-    print("---------------")
-    print("I'm stuck")
     candidate_edges = []
     visited_states = set()
     for e in seen_edges:
@@ -342,23 +336,19 @@ def unblock(S, E, T, graph, seen_edges, fresh_queue, stale_queue):
     for e in E - seen_edges:
         if e.is_pop and e.next_node in visited_states:
             candidate_edges.append(e)
-    count = 0
+
     for e in candidate_edges:
-        print("Trying to cover " + str(e))
-        lookback_for_pop(e, graph)
-        count += 1
-        print("found 1 solution for " + str(e) + ". " + str(count) + "/" + str(len(candidate_edges)))
-    exit(0)
+        solution = lookback_for_pop(e, graph, E - seen_edges)
+        splice(solution, fresh_queue, stale_queue, graph)
 
 
-def lookback_for_pop(candidate, graph):
-    print("Lookback " + str(candidate))
+
+def lookback_for_pop(candidate, graph, unseen_edges):
     target_stack_depth = candidate.pop_count
     src = candidate.next_node
     target = candidate.source
     possible_solutions = []
     max_len = len(graph.edges)
-    print(src.label)
     queue = list()
     queue.append({
         'stack': [src],
@@ -369,15 +359,12 @@ def lookback_for_pop(candidate, graph):
         cur_stack = path['stack']
         cur_trace = path['trace']
         cur_node = cur_stack[-1]
-        if src.label == 32 and target.label == 16:
-            print(trace_to_str(cur_trace, graph))
-            print("Stack Depth: " + str(len(cur_stack)))
+
         # check for bad test case
         if len(cur_trace) > max_len:
             continue
 
         if cur_node == target and len(cur_stack) - 1 == target_stack_depth:
-            print("Answer found")
             possible_solutions.append(path.copy())
             max_len = len(cur_trace)
             continue
@@ -411,5 +398,45 @@ def lookback_for_pop(candidate, graph):
                             # pop nodes of stack
                             pop(cur_stack, cur_trace, queue, edge, pop_amount)
     # find the possible solution that covers as many new edges as possible
-    print("Solved for " + str(candidate))
-    return possible_solutions[0]
+    best_path = possible_solutions[0]
+    new_count = 0
+    for e in best_path:
+        if e in unseen_edges:
+            new_count += 1
+    for path in possible_solutions[1:]:
+        count = 0
+        for e in path:
+            if e in unseen_edges:
+                count += 1
+        if count > new_count:
+            new_count = count
+            best_path = path
+    return best_path
+
+
+def splice(partial, fresh_queue, stale_queue, graph):
+    src_node = partial['trace'][0].source
+    done = False
+    for path in fresh_queue + stale_queue:
+        for i in range(len(path['trace'])):
+            e = path['trace'][i]
+            # find possible node to splice into
+            if e.next_node == src_node and not e.is_pop:
+                new_trace = path['trace'][:i + 1] + partial['trace']
+                # recompute new stace
+                new_stack = [new_trace[0].source]
+                for e in new_trace:
+                    if not e.is_pop:
+                        new_stack.append(e.next_node)
+                    else:
+                        for i in range(e.pop_count):
+                            new_stack.pop(len(new_stack) - 1)
+                fresh_queue.append({'stack': new_stack, 'trace': new_trace})
+                # remove path if solution just appended to path in stale queue
+                if i == len(path['trace']) - 1 and path in stale_queue:
+                    stale_queue.remove(path)
+                done = True
+                break
+        if done:
+            break
+    assert done

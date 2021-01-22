@@ -56,7 +56,7 @@ def parse_args():
     # checks that the automaton automaton_type is a valid option
     automaton_type = args.lr
     if automaton_type is None:
-        automaton_type = 'LALR1'
+        automaton_type = 'LR0'
     check_type(automaton_type)
     #  checks the input file
     filename = args.input_file

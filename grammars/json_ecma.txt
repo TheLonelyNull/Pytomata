@@ -1,0 +1,410 @@
+symbol(init_symbol).
+symbol(begin_of_file).
+symbol(end_of_file).
+symbol(value).
+symbol(object).
+symbol('members?').
+symbol(members).
+symbol('((\',\'),pair)*').
+symbol(pair).
+symbol(array).
+symbol('elements?').
+symbol(elements).
+symbol('((\',\'),value)*').
+symbol(number).
+symbol('(-)?').
+symbol('\'0\'|digit19,digit*').
+symbol('digit*').
+symbol('((\'.\'),+digit)?').
+symbol('+digit').
+symbol('((e|\'E\'),((+)|(-))?,+digit)?').
+symbol('e|\'E\'').
+symbol('((+)|(-))?').
+symbol(digit).
+symbol(digit19).
+symbol(string).
+symbol('char*').
+symbol(char).
+symbol(letter).
+symbol(unescapedspecial).
+symbol(escapedspecial).
+symbol(hextwobyte).
+symbol(hexdigit).
+symbol(hexletter).
+symbol(t).
+symbol(r).
+symbol(u).
+symbol(e).
+symbol(f).
+symbol(a).
+symbol(l).
+symbol(s).
+symbol(n).
+symbol('{').
+symbol('}').
+symbol(',').
+symbol(:).
+symbol('[').
+symbol(']').
+symbol(-).
+symbol('0').
+symbol('.').
+symbol('E').
+symbol(+).
+symbol('1').
+symbol('2').
+symbol('3').
+symbol('4').
+symbol('5').
+symbol('6').
+symbol('7').
+symbol('8').
+symbol('9').
+symbol('"').
+symbol('A').
+symbol('B').
+symbol('C').
+symbol('D').
+symbol('F').
+symbol('G').
+symbol('H').
+symbol('I').
+symbol('J').
+symbol('K').
+symbol('L').
+symbol('M').
+symbol('N').
+symbol('O').
+symbol('P').
+symbol('Q').
+symbol('R').
+symbol('S').
+symbol('T').
+symbol('U').
+symbol('V').
+symbol('W').
+symbol('X').
+symbol('Y').
+symbol('Z').
+symbol(b).
+symbol(c).
+symbol(d).
+symbol(g).
+symbol(h).
+symbol(i).
+symbol(j).
+symbol(k).
+symbol(m).
+symbol(o).
+symbol(p).
+symbol(q).
+symbol(v).
+symbol(w).
+symbol(x).
+symbol(y).
+symbol(z).
+symbol(/).
+symbol(@).
+symbol($).
+symbol(!).
+symbol('\'').
+symbol('(').
+symbol(')').
+symbol(#).
+symbol('_').
+symbol('\\b').
+symbol('\\n').
+symbol('\\r').
+symbol(\/).
+symbol(\\).
+symbol('\\t').
+symbol('\\"').
+symbol('\\f').
+symbol('\\u').
+
+:- dynamic nonterm/1.
+
+nonterm(init_symbol).
+nonterm(value).
+nonterm(object).
+nonterm('members?').
+nonterm(members).
+nonterm('((\',\'),pair)*').
+nonterm(pair).
+nonterm(array).
+nonterm('elements?').
+nonterm(elements).
+nonterm('((\',\'),value)*').
+nonterm(number).
+nonterm('(-)?').
+nonterm('\'0\'|digit19,digit*').
+nonterm('digit*').
+nonterm('((\'.\'),+digit)?').
+nonterm('+digit').
+nonterm('((e|\'E\'),((+)|(-))?,+digit)?').
+nonterm('e|\'E\'').
+nonterm('((+)|(-))?').
+nonterm(digit).
+nonterm(digit19).
+nonterm(string).
+nonterm('char*').
+nonterm(char).
+nonterm(letter).
+nonterm(unescapedspecial).
+nonterm(escapedspecial).
+nonterm(hextwobyte).
+nonterm(hexdigit).
+nonterm(hexletter).
+
+:- dynamic init/1.
+
+init(init_symbol).
+
+:- dynamic terminal/1.
+
+terminal(begin_of_file).
+terminal(end_of_file).
+terminal(t).
+terminal(r).
+terminal(u).
+terminal(e).
+terminal(f).
+terminal(a).
+terminal(l).
+terminal(s).
+terminal(n).
+terminal('{').
+terminal('}').
+terminal(',').
+terminal(:).
+terminal('[').
+terminal(']').
+terminal(-).
+terminal('0').
+terminal('.').
+terminal('E').
+terminal(+).
+terminal('1').
+terminal('2').
+terminal('3').
+terminal('4').
+terminal('5').
+terminal('6').
+terminal('7').
+terminal('8').
+terminal('9').
+terminal('"').
+terminal('A').
+terminal('B').
+terminal('C').
+terminal('D').
+terminal('F').
+terminal('G').
+terminal('H').
+terminal('I').
+terminal('J').
+terminal('K').
+terminal('L').
+terminal('M').
+terminal('N').
+terminal('O').
+terminal('P').
+terminal('Q').
+terminal('R').
+terminal('S').
+terminal('T').
+terminal('U').
+terminal('V').
+terminal('W').
+terminal('X').
+terminal('Y').
+terminal('Z').
+terminal(b).
+terminal(c).
+terminal(d).
+terminal(g).
+terminal(h).
+terminal(i).
+terminal(j).
+terminal(k).
+terminal(m).
+terminal(o).
+terminal(p).
+terminal(q).
+terminal(v).
+terminal(w).
+terminal(x).
+terminal(y).
+terminal(z).
+terminal(/).
+terminal(@).
+terminal($).
+terminal(!).
+terminal('\'').
+terminal('(').
+terminal(')').
+terminal(#).
+terminal('_').
+terminal('\\b').
+terminal('\\n').
+terminal('\\r').
+terminal(\/).
+terminal(\\).
+terminal('\\t').
+terminal('\\"').
+terminal('\\f').
+terminal('\\u').
+
+:- dynamic rule/3.
+
+rule(0:0, init_symbol, [begin_of_file, value, end_of_file]).
+rule(1:1, value, [object]).
+rule(1:2, value, [array]).
+rule(1:3, value, [number]).
+rule(1:4, value, [string]).
+rule(1:5, value, [t, r, u, e]).
+rule(1:6, value, [f, a, l, s, e]).
+rule(1:7, value, [n, u, l, l]).
+rule(2:8, 'members?', [members]).
+rule(2:9, 'members?', []).
+rule(2:10, object, ['{', 'members?', '}']).
+rule(3:11, '((\',\'),pair)*', [',', pair, '((\',\'),pair)*']).
+rule(3:12, '((\',\'),pair)*', []).
+rule(3:13, members, [pair, '((\',\'),pair)*']).
+rule(4:14, pair, [string, :, value]).
+rule(5:15, 'elements?', [elements]).
+rule(5:16, 'elements?', []).
+rule(5:17, array, ['[', 'elements?', ']']).
+rule(6:18, '((\',\'),value)*', [',', value, '((\',\'),value)*']).
+rule(6:19, '((\',\'),value)*', []).
+rule(6:20, elements, [value, '((\',\'),value)*']).
+rule(7:21, '(-)?', [-]).
+rule(7:22, '(-)?', []).
+rule(7:23, '\'0\'|digit19,digit*', ['0']).
+rule(7:24, 'digit*', [digit, 'digit*']).
+rule(7:25, 'digit*', []).
+rule(7:26, '\'0\'|digit19,digit*', [digit19, 'digit*']).
+rule(7:27, '+digit', [digit, '+digit']).
+rule(7:28, '+digit', [digit]).
+rule(7:29, '((\'.\'),+digit)?', ['.', '+digit']).
+rule(7:30, '((\'.\'),+digit)?', []).
+rule(7:31, 'e|\'E\'', [e]).
+rule(7:32, 'e|\'E\'', ['E']).
+rule(7:33, '((+)|(-))?', [+]).
+rule(7:34, '((+)|(-))?', [-]).
+rule(7:35, '((+)|(-))?', []).
+rule(7:36, '((e|\'E\'),((+)|(-))?,+digit)?', ['e|\'E\'', '((+)|(-))?', '+digit']).
+rule(7:37, '((e|\'E\'),((+)|(-))?,+digit)?', []).
+rule(7:38, number, ['(-)?', '\'0\'|digit19,digit*', '((\'.\'),+digit)?', '((e|\'E\'),((+)|(-))?,+digit)?']).
+rule(8:39, digit, ['0']).
+rule(8:40, digit, [digit19]).
+rule(9:41, digit19, ['1']).
+rule(9:42, digit19, ['2']).
+rule(9:43, digit19, ['3']).
+rule(9:44, digit19, ['4']).
+rule(9:45, digit19, ['5']).
+rule(9:46, digit19, ['6']).
+rule(9:47, digit19, ['7']).
+rule(9:48, digit19, ['8']).
+rule(9:49, digit19, ['9']).
+rule(10:50, 'char*', [char, 'char*']).
+rule(10:51, 'char*', []).
+rule(10:52, string, ['"', 'char*', '"']).
+rule(11:53, char, [digit]).
+rule(11:54, char, [letter]).
+rule(11:55, char, [unescapedspecial]).
+rule(11:56, char, [escapedspecial]).
+rule(12:57, letter, ['A']).
+rule(12:58, letter, ['B']).
+rule(12:59, letter, ['C']).
+rule(12:60, letter, ['D']).
+rule(12:61, letter, ['E']).
+rule(12:62, letter, ['F']).
+rule(12:63, letter, ['G']).
+rule(12:64, letter, ['H']).
+rule(12:65, letter, ['I']).
+rule(12:66, letter, ['J']).
+rule(12:67, letter, ['K']).
+rule(12:68, letter, ['L']).
+rule(12:69, letter, ['M']).
+rule(12:70, letter, ['N']).
+rule(12:71, letter, ['O']).
+rule(12:72, letter, ['P']).
+rule(12:73, letter, ['Q']).
+rule(12:74, letter, ['R']).
+rule(12:75, letter, ['S']).
+rule(12:76, letter, ['T']).
+rule(12:77, letter, ['U']).
+rule(12:78, letter, ['V']).
+rule(12:79, letter, ['W']).
+rule(12:80, letter, ['X']).
+rule(12:81, letter, ['Y']).
+rule(12:82, letter, ['Z']).
+rule(12:83, letter, [a]).
+rule(12:84, letter, [b]).
+rule(12:85, letter, [c]).
+rule(12:86, letter, [d]).
+rule(12:87, letter, [e]).
+rule(12:88, letter, [f]).
+rule(12:89, letter, [g]).
+rule(12:90, letter, [h]).
+rule(12:91, letter, [i]).
+rule(12:92, letter, [j]).
+rule(12:93, letter, [k]).
+rule(12:94, letter, [l]).
+rule(12:95, letter, [m]).
+rule(12:96, letter, [n]).
+rule(12:97, letter, [o]).
+rule(12:98, letter, [p]).
+rule(12:99, letter, [q]).
+rule(12:100, letter, [r]).
+rule(12:101, letter, [s]).
+rule(12:102, letter, [t]).
+rule(12:103, letter, [u]).
+rule(12:104, letter, [v]).
+rule(12:105, letter, [w]).
+rule(12:106, letter, [x]).
+rule(12:107, letter, [y]).
+rule(12:108, letter, [z]).
+rule(13:109, unescapedspecial, [/]).
+rule(13:110, unescapedspecial, [+]).
+rule(13:111, unescapedspecial, [:]).
+rule(13:112, unescapedspecial, [@]).
+rule(13:113, unescapedspecial, [$]).
+rule(13:114, unescapedspecial, [!]).
+rule(13:115, unescapedspecial, ['\'']).
+rule(13:116, unescapedspecial, ['(']).
+rule(13:117, unescapedspecial, [',']).
+rule(13:118, unescapedspecial, ['.']).
+rule(13:119, unescapedspecial, [')']).
+rule(13:120, unescapedspecial, [-]).
+rule(13:121, unescapedspecial, [#]).
+rule(13:122, unescapedspecial, ['_']).
+rule(13:123, unescapedspecial, ['{']).
+rule(13:124, unescapedspecial, ['}']).
+rule(13:125, unescapedspecial, ['[']).
+rule(13:126, unescapedspecial, [']']).
+rule(14:127, escapedspecial, ['\\b']).
+rule(14:128, escapedspecial, ['\\n']).
+rule(14:129, escapedspecial, ['\\r']).
+rule(14:130, escapedspecial, [\/]).
+rule(14:131, escapedspecial, [\\]).
+rule(14:132, escapedspecial, ['\\t']).
+rule(14:133, escapedspecial, ['\\"']).
+rule(14:134, escapedspecial, ['\\f']).
+rule(14:135, escapedspecial, ['\\u', hextwobyte]).
+rule(15:136, hextwobyte, [hexdigit, hexdigit, hexdigit, hexdigit]).
+rule(16:137, hexdigit, [hexletter]).
+rule(16:138, hexdigit, [digit]).
+rule(17:139, hexletter, ['A']).
+rule(17:140, hexletter, ['B']).
+rule(17:141, hexletter, ['C']).
+rule(17:142, hexletter, ['D']).
+rule(17:143, hexletter, ['E']).
+rule(17:144, hexletter, ['F']).
+rule(17:145, hexletter, [a]).
+rule(17:146, hexletter, [b]).
+rule(17:147, hexletter, [c]).
+rule(17:148, hexletter, [d]).
+rule(17:149, hexletter, [e]).
+rule(17:150, hexletter, [f]).
