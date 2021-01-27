@@ -1,0 +1,214 @@
+symbol(init_symbol).
+symbol(begin_of_file).
+symbol(end_of_file).
+symbol(value).
+symbol(object).
+symbol('members?').
+symbol(members).
+symbol('((\',\'),pair)*').
+symbol(pair).
+symbol(fname).
+symbol(lname).
+symbol(dob).
+symbol(age).
+symbol(email).
+symbol(addr).
+symbol(phones).
+symbol(addr_member).
+symbol(street_name).
+symbol(street_num).
+symbol(phone_member).
+symbol(phone_label).
+symbol(phone_num).
+symbol(integer).
+symbol('digit*').
+symbol(addr_obj).
+symbol('addr_members?').
+symbol(addr_members).
+symbol('((\',\'),addr_members)*').
+symbol(phone_array).
+symbol('phone_elements?').
+symbol(phone_elements).
+symbol('((\',\'),phone_obj)*').
+symbol(phone_obj).
+symbol('phone_members?').
+symbol(phone_members).
+symbol('((\',\'),phone_members)*').
+symbol(digit).
+symbol(digit19).
+symbol('{').
+symbol('}').
+symbol(',').
+symbol('"first-name"').
+symbol(:).
+symbol(string).
+symbol('"last-name"').
+symbol('"dob"').
+symbol(date_string).
+symbol('"age"').
+symbol('"email"').
+symbol(email_string).
+symbol('"address"').
+symbol('"phones"').
+symbol('"street-name"').
+symbol('"street-num"').
+symbol('"label"').
+symbol('"number"').
+symbol('0').
+symbol('[').
+symbol(']').
+symbol('1').
+symbol('2').
+symbol('3').
+symbol('4').
+symbol('5').
+symbol('6').
+symbol('7').
+symbol('8').
+symbol('9').
+
+:- dynamic nonterm/1.
+
+nonterm(init_symbol).
+nonterm(value).
+nonterm(object).
+nonterm('members?').
+nonterm(members).
+nonterm('((\',\'),pair)*').
+nonterm(pair).
+nonterm(fname).
+nonterm(lname).
+nonterm(dob).
+nonterm(age).
+nonterm(email).
+nonterm(addr).
+nonterm(phones).
+nonterm(addr_member).
+nonterm(street_name).
+nonterm(street_num).
+nonterm(phone_member).
+nonterm(phone_label).
+nonterm(phone_num).
+nonterm(integer).
+nonterm('digit*').
+nonterm(addr_obj).
+nonterm('addr_members?').
+nonterm(addr_members).
+nonterm('((\',\'),addr_members)*').
+nonterm(phone_array).
+nonterm('phone_elements?').
+nonterm(phone_elements).
+nonterm('((\',\'),phone_obj)*').
+nonterm(phone_obj).
+nonterm('phone_members?').
+nonterm(phone_members).
+nonterm('((\',\'),phone_members)*').
+nonterm(digit).
+nonterm(digit19).
+
+:- dynamic init/1.
+
+init(init_symbol).
+
+:- dynamic terminal/1.
+
+terminal(begin_of_file).
+terminal(end_of_file).
+terminal('{').
+terminal('}').
+terminal(',').
+terminal('"first-name"').
+terminal(:).
+terminal(string).
+terminal('"last-name"').
+terminal('"dob"').
+terminal(date_string).
+terminal('"age"').
+terminal('"email"').
+terminal(email_string).
+terminal('"address"').
+terminal('"phones"').
+terminal('"street-name"').
+terminal('"street-num"').
+terminal('"label"').
+terminal('"number"').
+terminal('0').
+terminal('[').
+terminal(']').
+terminal('1').
+terminal('2').
+terminal('3').
+terminal('4').
+terminal('5').
+terminal('6').
+terminal('7').
+terminal('8').
+terminal('9').
+
+:- dynamic rule/3.
+
+rule(0:0, init_symbol, [begin_of_file, value, end_of_file]).
+rule(1:1, value, [object]).
+rule(2:2, 'members?', [members]).
+rule(2:3, 'members?', []).
+rule(2:4, object, ['{', 'members?', '}']).
+rule(3:5, '((\',\'),pair)*', [',', pair, '((\',\'),pair)*']).
+rule(3:6, '((\',\'),pair)*', []).
+rule(3:7, members, [pair, '((\',\'),pair)*']).
+rule(4:8, pair, [fname]).
+rule(4:9, pair, [lname]).
+rule(4:10, pair, [dob]).
+rule(4:11, pair, [addr]).
+rule(4:12, pair, [age]).
+rule(4:13, pair, [email]).
+rule(4:14, pair, [phones]).
+rule(5:15, fname, ['"first-name"', :, string]).
+rule(6:16, lname, ['"last-name"', :, string]).
+rule(7:17, dob, ['"dob"', :, date_string]).
+rule(8:18, age, ['"age"', :, integer]).
+rule(9:19, email, ['"email"', :, email_string]).
+rule(10:20, addr, ['"address"', :, addr_obj]).
+rule(11:21, phones, ['"phones"', :, phone_array]).
+rule(12:22, addr_member, [street_name]).
+rule(12:23, addr_member, [street_num]).
+rule(13:24, street_name, ['"street-name"', :, string]).
+rule(14:25, street_num, ['"street-num"', :, string]).
+rule(15:26, phone_member, [phone_label]).
+rule(15:27, phone_member, [phone_num]).
+rule(16:28, phone_label, ['"label"', :, string]).
+rule(17:29, phone_num, ['"number"', :, string]).
+rule(18:30, integer, ['0']).
+rule(18:31, 'digit*', [digit, 'digit*']).
+rule(18:32, 'digit*', []).
+rule(18:33, integer, [digit19, 'digit*']).
+rule(19:34, 'addr_members?', [addr_members]).
+rule(19:35, 'addr_members?', []).
+rule(19:36, addr_obj, ['{', 'addr_members?', '}']).
+rule(20:37, '((\',\'),addr_members)*', [',', addr_members, '((\',\'),addr_members)*']).
+rule(20:38, '((\',\'),addr_members)*', []).
+rule(20:39, addr_members, [addr_member, '((\',\'),addr_members)*']).
+rule(21:40, 'phone_elements?', [phone_elements]).
+rule(21:41, 'phone_elements?', []).
+rule(21:42, phone_array, ['[', 'phone_elements?', ']']).
+rule(22:43, '((\',\'),phone_obj)*', [',', phone_obj, '((\',\'),phone_obj)*']).
+rule(22:44, '((\',\'),phone_obj)*', []).
+rule(22:45, phone_elements, [phone_obj, '((\',\'),phone_obj)*']).
+rule(23:46, 'phone_members?', [phone_members]).
+rule(23:47, 'phone_members?', []).
+rule(23:48, phone_obj, ['{', 'phone_members?', '}']).
+rule(24:49, '((\',\'),phone_members)*', [',', phone_members, '((\',\'),phone_members)*']).
+rule(24:50, '((\',\'),phone_members)*', []).
+rule(24:51, phone_members, [phone_member, '((\',\'),phone_members)*']).
+rule(25:52, digit, ['0']).
+rule(25:53, digit, [digit19]).
+rule(26:54, digit19, ['1']).
+rule(26:55, digit19, ['2']).
+rule(26:56, digit19, ['3']).
+rule(26:57, digit19, ['4']).
+rule(26:58, digit19, ['5']).
+rule(26:59, digit19, ['6']).
+rule(26:60, digit19, ['7']).
+rule(26:61, digit19, ['8']).
+rule(26:62, digit19, ['9']).
+
+true.

@@ -3,11 +3,164 @@ from pos_utils import get_reduce_edge, push, pop
 from general_utils import extract_test_case
 from config import Config
 from debug_utils import trace_to_str
-import sys
-import time
+
+
+def dynamic_traversal(graph: Graph):
+    # we only look at push edges during traversal to solve for pop edges. Pop edges should be solved before
+    # the corresponding non-terminal push edges is considered valid. We initialize valid edges with all terminal
+    # push edges and non-terminal push edges originating from epsilon reductions.
+    valid_edges = set()
+    rem_pop = set()
+    sub_table = dict()
+    waiting = set()
+    for e in graph.edges:
+        if e.is_pop:
+            rem_pop.add(e)
+    # start solving for pop edges
+    while len(rem_pop) + len(waiting) > 0:
+        rem_pop.update(waiting)
+        waiting = set()
+        for edge in rem_pop.copy():
+            solved, solution = solve_for_pop(edge, graph, sub_table)
+            if solved:
+                # find non term push edge in sub table add to table
+                for e in edge.next_node.edges:
+                    if not e.is_pop and e.label in graph.nonterminal:
+                        if e not in sub_table:
+                            sub_table[e] = list()
+                        for sol in solution:
+                            if sol['trace'][-1].label == e.label:
+                                sol['stack'] = [e.next_node]
+                                sol['trace'].append(e)
+                                sub_table[e].append(sol)
+            else:
+                waiting.add(edge)
+            rem_pop.remove(edge)
+
+    # splice solutions together
+    print("===============================")
+    for key in sub_table:
+        print(trace_to_str([key], graph) + ": ")
+        for p in sub_table[key]:
+            print(trace_to_str(p['trace'], graph))
+    print("===============================")
+    complete = splice_segments(sub_table, graph)
+    for path in complete:
+        print(extract_test_case(path['trace'], graph))
+
+
+def solve_for_pop(candidate, graph, sub_table):
+    # make a path out of only push edges which can then be subbed out in later pass
+    target_stack_depth = candidate.pop_count
+    src = candidate.next_node
+    target = candidate.source
+    possible_solutions = []
+    queue = list()
+    queue.append({
+        'stack': [src],
+        'trace': []
+    })
+    while len(queue) > 0:
+        path = queue.pop(0)
+        cur_stack = path['stack']
+        cur_trace = path['trace']
+        cur_node = cur_stack[-1]
+        # check for bad test case
+        if len(cur_trace) > target_stack_depth:
+            continue
+
+        if cur_node == target and len(cur_stack) - 1 == target_stack_depth:
+            cp = path.copy()
+            cp['stack'] = []
+            possible_solutions.append(cp)
+            cp['trace'].append(candidate)
+            continue
+        else:
+            # if the previous step wasn't a reduce then we should shift on terminals and check
+            # for valid reductions on all edges
+            for edge in cur_node.edges:
+                if not edge.is_pop:
+                    push(cur_stack, cur_trace, queue, edge)
+    if len(possible_solutions) == 0:
+        return False, None
+    return True, possible_solutions
+
+
+def splice_segments(sub_map, graph: Graph):
+    # find shortest for all sub
+    shortest_map = find_shortest_sub_map(sub_map)
+    for key in shortest_map:
+        print(trace_to_str([key], graph) + ": ")
+        print(trace_to_str(shortest_map[key]['trace'], graph))
+    print('------------')
+    # find starting branches
+    start_edges = find_start_edges(sub_map, graph)
+    for edge in start_edges:
+        print(trace_to_str([edge], graph))
+    print('++++++++++')
+    queue = []
+    subbed = set()
+    complete_paths = []
+    for edge in start_edges:
+        queue.extend(sub_map[edge])
+
+    # splice in using BFS
+    while len(queue) > 0:
+        cur_path = queue.pop(0)
+        cur_trace = cur_path['trace']
+        complete = True
+        #print(trace_to_str(cur_trace, graph) + " =====> ")
+        for i in range(len(cur_trace)):
+            edge = cur_trace[i]
+            # check for possible non term push edge to sub
+            if not edge.is_pop and edge.label in graph.nonterminal and not cur_trace[i - 1].is_pop:
+                # splice
+                if edge not in subbed:
+                    subbed.add(edge)
+                    for p in sub_map[edge]:
+                        new_trace = cur_trace[:i] + p['trace'] + cur_trace[i+1:]
+                        #print(trace_to_str(new_trace, graph))
+                        queue.append({'trace': new_trace})
+                else:
+                    new_trace = cur_trace[:i] + shortest_map[edge]['trace'] + cur_trace[i+1:]
+                    #print(trace_to_str(new_trace, graph))
+                    queue.append({'trace': new_trace})
+                complete = False
+        if complete:
+            #print("complete")
+            complete_paths.append(cur_path)
+    return complete_paths
+
+
+def find_shortest_sub_map(sub_map):
+    shortest_map = dict()
+    for key in sub_map:
+        min_p = sub_map[key][0]
+        min_l = len(min_p['trace'])
+        for p in sub_map[key]:
+            if len(p['trace']) < min_l:
+                min_p = p
+                min_l = len(min_p['trace'])
+        shortest_map[key] = min_p
+    return shortest_map
+
+
+def find_start_edges(sub_map, graph):
+    start = list()
+    for key in sub_map:
+        next_node = key.next_node
+        can_accept = False
+        for edge in next_node.edges:
+            if edge.next_node.label == 'acc':
+                can_accept = True
+                break
+        if can_accept:
+            start.append(key)
+    return start
 
 
 def full_traversal(graph: Graph):
+    dynamic_traversal(graph)
     E = graph.edges.copy()
     test_cases = set()
     config = Config.get_instance()
@@ -24,8 +177,6 @@ def full_traversal(graph: Graph):
     for path in queue:
         complete = None
         print("----------------------")
-        print(extract_test_case(path['trace'], graph))
-        print(trace_to_str(path['trace'], graph))
         if not config.get_clasic_flag():
             complete = path_completion_improved(path['stack'], path['trace'], 'acc', graph)
         else:
@@ -248,9 +399,6 @@ def path_completion_improved(S, T, goal_label, graph):
         cur_node = cur_stack[-1]
         cur_stack_history = path['stack_history']
 
-        if extract_test_case(cur_trace, graph)[0] in "program id = { sleep ; { } ; } ":
-            print(trace_to_str(cur_trace, graph))
-
         # check if the destination has been reached
         if str(cur_node.label) == goal_label:
             return path
@@ -324,10 +472,6 @@ def precalc_node_stack_depth(trace):
 
 def unblock(S, E, T, graph, seen_edges, fresh_queue, stale_queue):
     """Solve for stuck pop edges and splice them in"""
-    for node in graph.nodes:
-        print("Node " + str(node.label))
-        for e in node.edges:
-            print(e)
     candidate_edges = []
     visited_states = set()
     for e in seen_edges:
@@ -340,7 +484,6 @@ def unblock(S, E, T, graph, seen_edges, fresh_queue, stale_queue):
     for e in candidate_edges:
         solution = lookback_for_pop(e, graph, E - seen_edges)
         splice(solution, fresh_queue, stale_queue, graph)
-
 
 
 def lookback_for_pop(candidate, graph, unseen_edges):

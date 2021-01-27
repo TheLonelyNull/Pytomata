@@ -10,11 +10,14 @@ def get_reduce_edge(rule_label: str, reduce_amount: int, node: Node, S):
     return reduce_edge
 
 
-def push(stack, trace, queue, edge, cur_stack_history=None):
+def push(stack, trace, queue, edge, count=None, cur_stack_history=None):
     new_path = {
         'stack': stack.copy() + [edge.next_node],
         'trace': trace.copy() + [edge]
     }
+    # add count tracker for splicing algorithm
+    if count is not None:
+        new_path['count'] = count + 1
     if cur_stack_history is not None:
         # update the stack history
         cur_stack_history[edge.next_node.label] = len(new_path['stack'])

@@ -5,8 +5,8 @@ initsymbol: value
 
 value: object |
        array |
-       number |
-       string |
+       'number'|
+       'string' |
        'true' |
        'false' |
        'null'
