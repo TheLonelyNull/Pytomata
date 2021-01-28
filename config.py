@@ -26,6 +26,7 @@ class Config:
         self._test_suite_type = args[3]
         self._output_file_name = args[4]
         self._classic = args[5]
+        self._classic_improved = args[6]
 
     def should_produce_graph(self):
         return self._draw_graph
@@ -47,3 +48,6 @@ class Config:
 
     def get_clasic_flag(self):
         return self._classic
+
+    def get_classic_improved_flag(self):
+        return self._classic_improved

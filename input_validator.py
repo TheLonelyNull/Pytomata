@@ -51,6 +51,7 @@ def parse_args():
                         help='Coverage type. Can be positive, neg-sub, neg-cut, neg-del and neg-add.')
     parser.add_argument('-o', '--output-file', help='Name of output file. Stored in ./out/')
     parser.add_argument('-s', '--classic', action='store_true', help='Use algorithms for SLE2020')
+    parser.add_argument('--classicimproved', action='store_true', help='Use improved BFS algorithm from 2020')
     args = parser.parse_args()
 
     # checks that the automaton automaton_type is a valid option
@@ -70,6 +71,7 @@ def parse_args():
     check_coverage_criteria(coverage_type)
 
     classic = args.classic
+    classic_improved = args.classicimproved
     # get output filename
     out_filename = args.output_file
-    return [automaton_type, filename, graph, coverage_type, out_filename, classic]
+    return [automaton_type, filename, graph, coverage_type, out_filename, classic, classic_improved]
