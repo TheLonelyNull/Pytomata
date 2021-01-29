@@ -3,6 +3,7 @@ from pos_utils import get_reduce_edge, push, pop
 from general_utils import extract_test_case
 from config import Config
 from debug_utils import trace_to_str
+import sys, os, time
 
 
 def dynamic_traversal(graph: Graph):
@@ -17,7 +18,7 @@ def dynamic_traversal(graph: Graph):
         if e.is_pop:
             rem_pop.add(e)
     # start solving for pop edges
-    print("Started Solving for Pop Edges")
+    print("Started Solving for Pop Edges. Total " + str(len(rem_pop)))
     while len(rem_pop) + len(waiting) > 0:
         rem_pop.update(waiting)
         waiting = set()
@@ -39,7 +40,7 @@ def dynamic_traversal(graph: Graph):
             rem_pop.remove(edge)
     print("Finished Solving for Pop Edges. Started Splicing.")
     # splice solutions together
-    complete = splice_segments(sub_table, graph)
+    complete = cover_all_pop(sub_table, graph)
     print("Finished Splicing Solutions.")
     tests = set()
     for path in complete:
@@ -84,6 +85,132 @@ def solve_for_pop(candidate, graph, sub_table):
     return True, possible_solutions
 
 
+def cover_all_pop(sub_table, graph):
+    # find starting branches
+    start_edges = find_start_edges(sub_table, graph)
+    # precompute shortest derivations
+    print("Calculation shortest derivations")
+    shortest_deriv_map = dict()
+    for key in sub_table:
+        shortest_derivation(key, sub_table, shortest_deriv_map, graph)
+    print("Finished calculation shortest derivations")
+    # sub together shortest paths to cover all segments
+    complete = []
+    for key in sub_table:
+        for p in sub_table[key]:
+            path = complete_segment(p, sub_table, shortest_deriv_map, start_edges, graph)
+            complete.append(path)
+    return complete
+
+
+def complete_segment(path, sub_table, shortest_derivations, start_edges, graph):
+    # sub out path with shortest derivations
+    new_nt_edge = path['trace'][-1]
+    new_trace = []
+    cur_trace = path['trace']
+    print("Completing: " + trace_to_str(cur_trace, graph))
+    for i in range(len(cur_trace)):
+        edge = cur_trace[i]
+        if not edge.is_pop and edge.label in graph.nonterminal and not cur_trace[i - 1].is_pop:
+            new_trace.extend(shortest_derivations[edge]['trace'])
+        else:
+            new_trace.append(edge)
+    print("Plugged in shortest: " + trace_to_str(new_trace, graph))
+    # sub new path up into shortest other path that will take it and sub out other non
+    # terminals with shortest derivation
+    # stop when at covering a segment mapped to a start edge
+    while new_nt_edge not in start_edges:
+        # find rules to sub into
+        can_sub = []
+        for key in sub_table:
+            for p in sub_table[key]:
+                for e in p['trace']:
+                    if e == new_nt_edge:
+                        can_sub.append(p)
+                        break
+        # find shortest after subbing shortest deriv
+        min_len = 10000000000
+        min_trace = None
+        print("Can sub into: ")
+        for p in can_sub:
+            print(trace_to_str(p['trace'], graph))
+            nt_e = []
+            cur_trace: list
+            cur_trace = p['trace']
+            for i in range(len(cur_trace)):
+                edge = cur_trace[i]
+                if not edge.is_pop and edge.label in graph.nonterminal and not cur_trace[i - 1].is_pop:
+                    nt_e.append(edge)
+
+            print(len(nt_e))
+            for e in nt_e:
+                i = cur_trace.index(e)
+                if e == new_nt_edge:
+                    cur_trace = cur_trace[:i] + new_trace + cur_trace[i + 1:]
+                else:
+                    cur_trace = cur_trace[:i] + shortest_derivations[e]['trace'] + cur_trace[i + 1:]
+
+            if len(cur_trace) < min_len:
+                print("new shortest")
+                print(trace_to_str(cur_trace, graph))
+                min_len = len(cur_trace)
+                min_trace = cur_trace
+        new_trace = min_trace
+        new_nt_edge = new_trace[-1]
+        time.sleep(1)
+        print(trace_to_str(new_trace, graph))
+    return {'trace': new_trace}
+
+
+def shortest_derivation(nt_edge, sub_map, shortest_map, graph):
+    if nt_edge in shortest_map:
+        return shortest_map[nt_edge]
+
+    complex_paths = []
+
+    min_len = 100000000
+    min_path = None
+
+    for p in sub_map[nt_edge]:
+        placed = False
+        cur_trace = p['trace']
+        for i in range(len(cur_trace)):
+            edge = cur_trace[i]
+            if not edge.is_pop and edge.label in graph.nonterminal and not cur_trace[i - 1].is_pop:
+                complex_paths.append(p)
+                placed = True
+                break
+        if not placed:
+            if len(p['trace']) < min_len:
+                min_len = len(p['trace'])
+                min_path = p
+
+    # first check for solution with epsilon and terminals
+    # only after that check other cases
+
+    for path in complex_paths:
+        cur_trace = path['trace']
+        if len(cur_trace) >= min_len:
+            continue
+        needed_sub = False
+        for i in range(len(cur_trace)):
+            edge = cur_trace[i]
+            # check for possible non term push edge to sub
+            if not edge.is_pop and edge.label in graph.nonterminal and not cur_trace[i - 1].is_pop:
+                needed_sub = True
+                new_trace = cur_trace[:i] + shortest_derivation(edge, sub_map, shortest_map, graph)[
+                    'trace'] + cur_trace[i + 1:]
+                p_len = len(new_trace)
+                if p_len < min_len:
+                    min_len = p_len
+                    min_path = {'trace': new_trace}
+        if not needed_sub and len(cur_trace) < min_len:
+            min_len = len(cur_trace)
+            min_path = path
+    shortest_map[nt_edge] = min_path
+    return min_path
+
+
 def splice_segments(sub_map, graph: Graph):
     # find shortest for all sub
     shortest_map = find_shortest_sub_map(sub_map)
@@ -97,6 +224,7 @@ def splice_segments(sub_map, graph: Graph):
     seen = set()
     # splice in using BFS
     while len(queue) > 0:
+        sys.stdout.write("Subbed: " + str(len(subbed)) + "\r" * 30)
         cur_path = queue.pop(0)
         cur_trace = cur_path['trace']
         if trace_to_str(cur_trace, graph) in seen:
