@@ -94,72 +94,97 @@ def cover_all_pop(sub_table, graph):
     for key in sub_table:
         shortest_derivation(key, sub_table, shortest_deriv_map, graph)
     print("Finished calculation shortest derivations")
+    reverse = reverse_sub_table(sub_table, graph)
     # sub together shortest paths to cover all segments
     complete = []
     for key in sub_table:
         for p in sub_table[key]:
-            path = complete_segment(p, sub_table, shortest_deriv_map, start_edges, graph)
+            path = complete_segment(p, sub_table, shortest_deriv_map, reverse, start_edges, graph)
             complete.append(path)
     return complete
 
 
-def complete_segment(path, sub_table, shortest_derivations, start_edges, graph):
+def complete_segment(path, sub_table, shortest_derivations, reverse, start_edges, graph):
     # sub out path with shortest derivations
     new_nt_edge = path['trace'][-1]
     new_trace = []
     cur_trace = path['trace']
-    print("Completing: " + trace_to_str(cur_trace, graph))
     for i in range(len(cur_trace)):
         edge = cur_trace[i]
         if not edge.is_pop and edge.label in graph.nonterminal and not cur_trace[i - 1].is_pop:
             new_trace.extend(shortest_derivations[edge]['trace'])
         else:
             new_trace.append(edge)
-    print("Plugged in shortest: " + trace_to_str(new_trace, graph))
+    cur_layer = [new_trace]
+    possible_solutions = []
+    while len(possible_solutions) == 0:
+        next_layer = []
+        for t in cur_layer:
+            cur_edge = t[-1]
+            # spot possible answer
+            if cur_edge in start_edges:
+                possible_solutions.append(t)
+                continue
+            # check for next layer embedding
+            for trace in reverse[cur_edge]:
+                # skip recursive embedding
+                if cur_edge == trace[-1]:
+                    continue
+                # sub in for next trace
+                i = trace.index(cur_edge)
+                next_trace = trace[:i] + t + trace[i + 1:]
+                next_layer.append(next_trace)
+        cur_layer = next_layer
+    # sub out all unsubbed edges and find shortest
+    subbed_possible = []
+    for t in possible_solutions:
+        subbed = []
+        i = 0
+        for e in t:
+            if e in graph.terminal or e.is_pop:
+                subbed.append(e)
+            else:
+                if is_unsubbed_nt(i, t, graph):
+                    subbed.extend(shortest_derivations[e]['trace'])
+                else:
+                    subbed.append(e)
+            i += 1
+        subbed_possible.append(subbed)
+    min_len = len(subbed_possible[0])
+    min_sub = subbed_possible[0]
+    for t in subbed_possible:
+        if len(t) < min_len:
+            min_len = len(t)
+            min_sub = t
+
     # sub new path up into shortest other path that will take it and sub out other non
     # terminals with shortest derivation
     # stop when at covering a segment mapped to a start edge
-    while new_nt_edge not in start_edges:
-        # find rules to sub into
-        can_sub = []
-        for key in sub_table:
-            for p in sub_table[key]:
-                for e in p['trace']:
-                    if e == new_nt_edge:
-                        can_sub.append(p)
-                        break
-        # find shortest after subbing shortest deriv
-        min_len = 10000000000
-        min_trace = None
-        print("Can sub into: ")
-        for p in can_sub:
-            print(trace_to_str(p['trace'], graph))
-            nt_e = []
-            cur_trace: list
-            cur_trace = p['trace']
-            for i in range(len(cur_trace)):
-                edge = cur_trace[i]
-                if not edge.is_pop and edge.label in graph.nonterminal and not cur_trace[i - 1].is_pop:
-                    nt_e.append(edge)
+    if extract_test_case(min_sub, graph)[0] == "id * id id ":
+        print("id * id id")
+        print(extract_test_case(path['trace'], graph))
+        print(trace_to_str(min_sub, graph))
+    return {'trace': min_sub}
 
-            print(len(nt_e))
-            for e in nt_e:
-                i = cur_trace.index(e)
-                if e == new_nt_edge:
-                    cur_trace = cur_trace[:i] + new_trace + cur_trace[i + 1:]
-                else:
-                    cur_trace = cur_trace[:i] + shortest_derivations[e]['trace'] + cur_trace[i + 1:]
 
-            if len(cur_trace) < min_len:
-                print("new shortest")
-                print(trace_to_str(cur_trace, graph))
-                min_len = len(cur_trace)
-                min_trace = cur_trace
-        new_trace = min_trace
-        new_nt_edge = new_trace[-1]
-        time.sleep(1)
-        print(trace_to_str(new_trace, graph))
-    return {'trace': new_trace}
+def is_unsubbed_nt(i, cur_trace, graph):
+    edge = cur_trace[i]
+    if not edge.is_pop and edge.label in graph.nonterminal and not cur_trace[i - 1].is_pop:
+        return True
+    return False
+
+
+def reverse_sub_table(sub_table, graph):
+    reverse = dict()
+    for key in sub_table:
+        for p in sub_table[key]:
+            for i in range(len(p['trace'])):
+                if is_unsubbed_nt(i, p['trace'], graph):
+                    edge = p['trace'][i]
+                    if not edge in reverse:
+                        reverse[edge] = []
+                    reverse[edge].append(p['trace'])
+    return reverse
 
 
 def shortest_derivation(nt_edge, sub_map, shortest_map, graph):
