@@ -91,8 +91,7 @@ def cover_all_pop(sub_table, graph):
     # precompute shortest derivations
     print("Calculation shortest derivations")
     shortest_deriv_map = dict()
-    for key in sub_table:
-        shortest_derivation(key, sub_table, shortest_deriv_map, set(), graph)
+    shortest_derivations(sub_table, shortest_deriv_map, graph)
     print("Finished calculation shortest derivations")
     reverse = reverse_sub_table(sub_table, graph)
     # sub together shortest paths to cover all segments
@@ -131,9 +130,11 @@ def complete_segment(path, sub_table, shortest_derivations, reverse, start_edges
                 if cur_edge == trace[-1]:
                     continue
                 # sub in for next trace
-                i = trace.index(cur_edge)
-                next_trace = trace[:i] + t + trace[i + 1:]
-                next_layer.append(next_trace)
+                for i in range(len(trace)):
+                    edge = trace[i]
+                    if edge == cur_edge and is_unsubbed_nt(i, trace, graph):
+                        next_trace = trace[:i] + t + trace[i + 1:]
+                        next_layer.append(next_trace)
         cur_layer = next_layer
     # sub out all unsubbed edges and find shortest
     subbed_possible = []
@@ -160,10 +161,6 @@ def complete_segment(path, sub_table, shortest_derivations, reverse, start_edges
     # sub new path up into shortest other path that will take it and sub out other non
     # terminals with shortest derivation
     # stop when at covering a segment mapped to a start edge
-    if extract_test_case(min_sub, graph)[0] == "id * id id ":
-        print("id * id id")
-        print(extract_test_case(path['trace'], graph))
-        print(trace_to_str(min_sub, graph))
     return {'trace': min_sub}
 
 
@@ -187,57 +184,38 @@ def reverse_sub_table(sub_table, graph):
     return reverse
 
 
-def shortest_derivation(nt_edge, sub_map, shortest_map, already_seen: set, graph):
-    already_seen.add(nt_edge)
-    if nt_edge in shortest_map:
-        return shortest_map[nt_edge]
-
-    complex_paths = []
-
-    min_len = 100000000
-    min_path = None
-
-    for p in sub_map[nt_edge]:
-        placed = False
-        cur_trace = p['trace']
-        for i in range(len(cur_trace)):
-            edge = cur_trace[i]
-            if not edge.is_pop and edge.label in graph.nonterminal and not cur_trace[i - 1].is_pop:
-                complex_paths.append(p)
-                placed = True
-                break
-        if not placed:
-            if len(p['trace']) < min_len:
-                print("Found path: "+trace_to_str(p['trace'], graph))
-                min_len = len(p['trace'])
-                min_path = p
-
-    # first check for solution with epsilon and terminals
-    # only after that check other cases
-
-    for path in complex_paths:
-        cur_trace = path['trace']
-        if len(cur_trace) >= min_len:
-            continue
-        needed_sub = False
-        for i in range(len(cur_trace)):
-            edge = cur_trace[i]
-            # check for possible non term push edge to sub
-            if not edge.is_pop and edge.label in graph.nonterminal and not cur_trace[i - 1].is_pop and edge not in already_seen:
-                needed_sub = True
-                new_trace = cur_trace[:i] + shortest_derivation(edge, sub_map, shortest_map, already_seen, graph)[
-                    'trace'] + cur_trace[i + 1:]
-                p_len = len(new_trace)
-                if p_len < min_len:
-                    min_len = p_len
-                    min_path = {'trace': new_trace}
-        if not needed_sub and len(cur_trace) < min_len:
-            min_len = len(cur_trace)
-            min_path = path
-    shortest_map[nt_edge] = min_path
-    already_seen.remove(nt_edge)
-    return min_path
-
+def shortest_derivations(sub_map, shortest_map, graph):
+    while len(sub_map.keys()-shortest_map.keys()) > 0:
+        # loop over all non-terminal edges we don't have a shortest derivation for yet
+        for nt_edge in sub_map.keys()-shortest_map.keys():
+            min_len = 1000000
+            min_p = None
+            for path in sub_map[nt_edge]:
+                deriv = []
+                i = 0
+                can_solve = True
+                for e in path['trace']:
+                    if e in graph.terminal or e.is_pop:
+                        deriv.append(e)
+                    else:
+                        if is_unsubbed_nt(i, path['trace'], graph):
+                            edge = path['trace'][i]
+                            if edge in shortest_map:
+                                deriv.extend(shortest_map[edge]['trace'])
+                            else:
+                                can_solve = False
+                                break
+                        else:
+                            deriv.append(e)
+                    i += 1
+                if can_solve and len(deriv) < min_len:
+                    min_len = len(deriv)
+                    min_p = {'trace': deriv}
+            if min_p is not None:
+                shortest_map[nt_edge] = min_p
+    for key in shortest_map:
+        print(trace_to_str([key], graph) + "====>")
+        print(trace_to_str(shortest_map[key]['trace'], graph))
 
 def splice_segments(sub_map, graph: Graph):
     # find shortest for all sub
