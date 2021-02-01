@@ -92,7 +92,7 @@ def cover_all_pop(sub_table, graph):
     print("Calculation shortest derivations")
     shortest_deriv_map = dict()
     for key in sub_table:
-        shortest_derivation(key, sub_table, shortest_deriv_map, graph)
+        shortest_derivation(key, sub_table, shortest_deriv_map, set(), graph)
     print("Finished calculation shortest derivations")
     reverse = reverse_sub_table(sub_table, graph)
     # sub together shortest paths to cover all segments
@@ -187,7 +187,8 @@ def reverse_sub_table(sub_table, graph):
     return reverse
 
 
-def shortest_derivation(nt_edge, sub_map, shortest_map, graph):
+def shortest_derivation(nt_edge, sub_map, shortest_map, already_seen: set, graph):
+    already_seen.add(nt_edge)
     if nt_edge in shortest_map:
         return shortest_map[nt_edge]
 
@@ -207,6 +208,7 @@ def shortest_derivation(nt_edge, sub_map, shortest_map, graph):
                 break
         if not placed:
             if len(p['trace']) < min_len:
+                print("Found path: "+trace_to_str(p['trace'], graph))
                 min_len = len(p['trace'])
                 min_path = p
 
@@ -221,9 +223,9 @@ def shortest_derivation(nt_edge, sub_map, shortest_map, graph):
         for i in range(len(cur_trace)):
             edge = cur_trace[i]
             # check for possible non term push edge to sub
-            if not edge.is_pop and edge.label in graph.nonterminal and not cur_trace[i - 1].is_pop:
+            if not edge.is_pop and edge.label in graph.nonterminal and not cur_trace[i - 1].is_pop and edge not in already_seen:
                 needed_sub = True
-                new_trace = cur_trace[:i] + shortest_derivation(edge, sub_map, shortest_map, graph)[
+                new_trace = cur_trace[:i] + shortest_derivation(edge, sub_map, shortest_map, already_seen, graph)[
                     'trace'] + cur_trace[i + 1:]
                 p_len = len(new_trace)
                 if p_len < min_len:
@@ -233,6 +235,7 @@ def shortest_derivation(nt_edge, sub_map, shortest_map, graph):
             min_len = len(cur_trace)
             min_path = path
     shortest_map[nt_edge] = min_path
+    already_seen.remove(nt_edge)
     return min_path
 
 
