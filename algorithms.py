@@ -4,6 +4,7 @@ from general_utils import extract_test_case
 from config import Config
 from debug_utils import trace_to_str
 import sys, os, time
+from neg_utils import is_almost_accepting, get_follow_set
 
 
 def dynamic_traversal(graph: Graph):
@@ -19,23 +20,27 @@ def dynamic_traversal(graph: Graph):
             rem_pop.add(e)
     # start solving for pop edges
     print("Started Solving for Pop Edges. Total " + str(len(rem_pop)))
+    count = 0
     while len(rem_pop) + len(waiting) > 0:
         rem_pop.update(waiting)
         waiting = set()
         for edge in rem_pop.copy():
-            solved, solution = solve_for_pop(edge, graph, sub_table)
+            # print("Solving for " + str(edge))
+            solved, solution = solve_for_pop(edge, graph)
+            # print("Solved: " + str(count) + " . Solved for " + str(edge))
             if solved:
                 # find non term push edge in sub table add to table
                 for e in edge.next_node.edges:
                     if not e.is_pop and e.label in graph.nonterminal:
                         if e not in sub_table:
                             sub_table[e] = list()
-                        for sol in solution:
-                            if sol['trace'][-1].label == e.label:
-                                sol['stack'] = [e.next_node]
-                                sol['trace'].append(e)
-                                sub_table[e].append(sol)
+                        if solution['trace'][-1].label == e.label:
+                            solution['stack'] = [e.next_node]
+                            solution['trace'].append(e)
+                            sub_table[e].append(solution)
+                            count += 1
             else:
+                print("Waiting")
                 waiting.add(edge)
             rem_pop.remove(edge)
     print("Finished Solving for Pop Edges. Started Splicing.")
@@ -48,12 +53,52 @@ def dynamic_traversal(graph: Graph):
     return tests
 
 
-def solve_for_pop(candidate, graph, sub_table):
+def solve_for_pop(candidate: Edge, graph):
+    assert candidate.is_pop
     # make a path out of only push edges which can then be subbed out in later pass
     target_stack_depth = candidate.pop_count
     src = candidate.next_node
     target = candidate.source
-    possible_solutions = []
+    assert candidate.local_stack[0] == src
+    assert candidate.local_stack[-1] == target
+    trace = []
+    for i in range(len(candidate.local_stack) - 1):
+        node = candidate.local_stack[i]
+        next_node = candidate.local_stack[i + 1]
+        smallest_e = None
+        pop_tmp = dict()
+        for e in node.pre_edges:
+            if e.is_pop:
+                if e.label not in pop_tmp:
+                    pop_tmp[e.label] = e.pop_count
+                elif e.pop_count < pop_tmp[e.label]:
+                    pop_tmp[e.label] = e.pop_count
+
+        smallest_nt = None
+        min_pop = 1000000
+        for e in node.edges:
+            if e.next_node == next_node and not e.is_pop and e.label in graph.nonterminal and pop_tmp[
+                e.label] < min_pop:
+                smallest_nt = e
+                min_pop = pop_tmp[e.label]
+                if min_pop == 0:
+                    break
+            elif e.next_node == next_node and e.label in graph.terminal and not e.is_pop and smallest_e is None:
+                smallest_e = e
+
+        if smallest_e is None or min_pop == 0:
+            smallest_e = smallest_nt
+
+        assert smallest_e is not None
+        trace.append(smallest_e)
+    trace.append(candidate)
+    assert len(trace) == len(candidate.local_stack)
+    return True, {
+        'stack': [src],
+        'trace': trace
+    }
+
+    possible_solution = None
     queue = list()
     queue.append({
         'stack': [src],
@@ -71,7 +116,7 @@ def solve_for_pop(candidate, graph, sub_table):
         if cur_node == target and len(cur_stack) - 1 == target_stack_depth:
             cp = path.copy()
             cp['stack'] = []
-            possible_solutions.append(cp)
+            possible_solution = cp
             cp['trace'].append(candidate)
             continue
         else:
@@ -80,9 +125,9 @@ def solve_for_pop(candidate, graph, sub_table):
             for edge in cur_node.edges:
                 if not edge.is_pop:
                     push(cur_stack, cur_trace, queue, edge)
-    if len(possible_solutions) == 0:
+    if possible_solution is None:
         return False, None
-    return True, possible_solutions
+    return True, possible_solution
 
 
 def cover_all_pop(sub_table, graph):
@@ -185,9 +230,9 @@ def reverse_sub_table(sub_table, graph):
 
 
 def shortest_derivations(sub_map, shortest_map, graph):
-    while len(sub_map.keys()-shortest_map.keys()) > 0:
+    while len(sub_map.keys() - shortest_map.keys()) > 0:
         # loop over all non-terminal edges we don't have a shortest derivation for yet
-        for nt_edge in sub_map.keys()-shortest_map.keys():
+        for nt_edge in sub_map.keys() - shortest_map.keys():
             min_len = 1000000
             min_p = None
             for path in sub_map[nt_edge]:
@@ -213,9 +258,7 @@ def shortest_derivations(sub_map, shortest_map, graph):
                     min_p = {'trace': deriv}
             if min_p is not None:
                 shortest_map[nt_edge] = min_p
-    for key in shortest_map:
-        print(trace_to_str([key], graph) + "====>")
-        print(trace_to_str(shortest_map[key]['trace'], graph))
+
 
 def splice_segments(sub_map, graph: Graph):
     # find shortest for all sub

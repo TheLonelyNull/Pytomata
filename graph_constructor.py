@@ -131,20 +131,26 @@ def add_return_edges(nodes):
             # go back for the number of states to pop
             count = 0
             cur_level = list()
-            cur_level.append(node)
+            cur_level.append([node])
             prev_level = list()
             while count < nr_of_states_to_pop:
                 # find edges linking to current level nodes
-                for n in cur_level:
-                    prev_level.extend(find_predecessors(n, nodes))
+                for l in cur_level:
+                    n = l[0]
+                    for p in find_predecessors(n, nodes):
+                        new_l = [p] + l.copy()
+                        prev_level.append(new_l)
                 count += 1
                 cur_level = prev_level.copy()
                 prev_level.clear()
             # add edges to graph
-            for n in cur_level:
+            assert(len(cur_level) != 0)
+            for l in cur_level:
+                n = l[0]
                 edge = Edge(reduce_rule[0], n, True)
                 edge.pop_count = nr_of_states_to_pop
                 edge.source = node
+                edge.local_stack = l.copy()
                 # avoid duplicate reduction edges. Happens when more than one reduce rule ends at same point
                 # during reduce reduce conflict
                 already_added = False

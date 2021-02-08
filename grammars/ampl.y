@@ -14,8 +14,7 @@ typeornothing: type
 	     | 'nothing'
 	     ;
 
-type: booleanorint
-    | arrayoptional
+type: booleanorint arrayoptional
     ;
 
 booleanorint: 'boolean'
@@ -66,7 +65,7 @@ simpleoptional:
 	      ;
 
 exprarrsimple: expr
-	     | 'array', simple
+	     | 'array' simple
 	     ;
 assign: 'let' id simpleoptional  '=' exprarrsimple
       ;
@@ -81,7 +80,7 @@ doN: 'do' id '(' expr exprstar ')'
 inputN: 'input' id simpleoptional
       ;
 
-stringexpr: string
+stringexpr: 'string'
 	  | expr
 	  ;
 
@@ -175,8 +174,5 @@ id: 'a'
 
 num: '0'
    ;
-
-string: '""'
-      ;
 
 %%

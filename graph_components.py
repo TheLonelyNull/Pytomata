@@ -22,6 +22,8 @@ class Edge:
         self.add = None
         self.swap = None
         self.pop_count = 0
+        self.local_stack = None
+
 
     def __eq__(self, other):
         if other is None:

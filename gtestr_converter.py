@@ -52,7 +52,7 @@ def parse_rules(file, terms, nonterms):
             started = True
 
         if started:
-            arr = re.split("\((?=\d*:\d*)|\)\.\n|\)\.\Z", line)
+            arr = re.split("\((?=\d+:\d+)|\)\.\n|\)\.\Z", line)
             contents = re.split("(?=.*\[), ", arr[1])
             nonterm = contents[1].strip()
             assert nonterm in nonterms
@@ -78,7 +78,16 @@ def replace_escape_char_nt(nonterms):
         '+': 'plus',
         '?': 'optional',
         '|': 'or',
-        '*': 'star'
+        '*': 'star',
+        ':': 'colon',
+        ';': 'semicolon',
+        '=': 'equal',
+        '>': 'gt',
+        '<': 'lt',
+        '&': 'and',
+        '`': '',
+        '/': 'div',
+        '%': 'percent'
     }
     for nt in nonterms:
         if nt.isalpha():
