@@ -7,7 +7,7 @@ funcdefstar: |
              funcdef funcdefstar 
            ;
 
-programN: 'program' id ':' funcdefstar 'main' ':' body
+programN: 'program' 'a' ':' funcdefstar 'main' ':' body
         ;
 
 semicolonvarseqstar: |
@@ -18,7 +18,7 @@ typeornothing: type |
                'nothing' 
              ;
 
-funcdef: id ':' 'takes' varseq semicolonvarseqstar 'returns' typeornothing body
+funcdef: 'a' ':' 'takes' varseq semicolonvarseqstar 'returns' typeornothing body
        ;
 
 vardecloptional: |
@@ -29,10 +29,10 @@ body: vardecloptional statements 'end'
     ;
 
 idstar: |
-        ',' id idstar
+        ',' 'a' idstar
       ;
 
-varseq: id idstar ':' type
+varseq: 'a' idstar ':' type
       ;
 
 booleanorinteger: 'boolean' |
@@ -78,17 +78,17 @@ exprorarraysimple: expr |
                    'array' simple 
                  ;
 
-assign: 'let' id simpleoptional '=' exprorarraysimple
+assign: 'let' 'a' simpleoptional '=' exprorarraysimple
       ;
 
 exprstar: |
           ',' expr exprstar 
         ;
 
-doN: 'do' id '(' expr exprstar ')'
+doN: 'do' 'a' '(' expr exprstar ')'
    ;
 
-inputN: 'input'  id simpleoptional
+inputN: 'input'  'a' simpleoptional
       ;
 
 stringorexpr: 'string' |
@@ -172,17 +172,11 @@ simpleoptionalorexprexprstaroptional: |
                                 '(' expr exprstar ')'
                               ;
 
-factor: id simpleoptionalorexprexprstaroptional|
-        num |
+factor: 'a' simpleoptionalorexprexprstaroptional|
+        '0' |
         '(' expr ')'|
         'not' factor |
         'true' |
         'false' 
       ;
-
-id: 'a'
-  ;
-
-num: '0'
-   ;
 %%

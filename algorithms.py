@@ -4,6 +4,7 @@ from general_utils import extract_test_case
 from config import Config
 from debug_utils import trace_to_str
 import sys, os, time
+from tmp_cdrc import CDRC
 from neg_utils import is_almost_accepting, get_follow_set
 
 
@@ -98,37 +99,6 @@ def solve_for_pop(candidate: Edge, graph):
         'trace': trace
     }
 
-    possible_solution = None
-    queue = list()
-    queue.append({
-        'stack': [src],
-        'trace': []
-    })
-    while len(queue) > 0:
-        path = queue.pop(0)
-        cur_stack = path['stack']
-        cur_trace = path['trace']
-        cur_node = cur_stack[-1]
-        # check for bad test case
-        if len(cur_trace) > target_stack_depth:
-            continue
-
-        if cur_node == target and len(cur_stack) - 1 == target_stack_depth:
-            cp = path.copy()
-            cp['stack'] = []
-            possible_solution = cp
-            cp['trace'].append(candidate)
-            continue
-        else:
-            # if the previous step wasn't a reduce then we should shift on terminals and check
-            # for valid reductions on all edges
-            for edge in cur_node.edges:
-                if not edge.is_pop:
-                    push(cur_stack, cur_trace, queue, edge)
-    if possible_solution is None:
-        return False, None
-    return True, possible_solution
-
 
 def cover_all_pop(sub_table, graph):
     # find starting branches
@@ -143,8 +113,13 @@ def cover_all_pop(sub_table, graph):
     complete = []
     for key in sub_table:
         for p in sub_table[key]:
+            print('------------')
+            print(trace_to_str([key], graph))
+            print(trace_to_str(p['trace'], graph))
             path = complete_segment(p, sub_table, shortest_deriv_map, reverse, start_edges, graph)
             complete.append(path)
+            print(extract_test_case(path['trace'], graph))
+            print('------------')
     return complete
 
 
@@ -195,18 +170,49 @@ def complete_segment(path, sub_table, shortest_derivations, reverse, start_edges
                 else:
                     subbed.append(e)
             i += 1
+        print("Possible: " + extract_test_case(subbed, graph)[0])
         subbed_possible.append(subbed)
-    min_len = len(subbed_possible[0])
-    min_sub = subbed_possible[0]
-    for t in subbed_possible:
-        if len(t) < min_len:
-            min_len = len(t)
-            min_sub = t
+    min_len = 10000000
+    min_subs = []
+    for trace in subbed_possible:
+        symbols = 0
+        for e in trace:
+            if e.label in graph.terminal:
+                symbols += 1
+        if symbols < min_len:
+            min_subs = list()
+            min_subs.append(trace)
+            min_len = symbols
+        elif symbols == min_len:
+            min_subs.append(trace)
 
+    strs = []
+    str_map = dict()
+    for trace in min_subs:
+        string = extract_test_case(trace, graph)[0]
+        strs.append(string)
+        str_map[string] = trace
     # sub new path up into shortest other path that will take it and sub out other non
     # terminals with shortest derivation
     # stop when at covering a segment mapped to a start edge
-    return {'trace': min_sub}
+    shortest = str_map[strs[0]]
+
+    tmp_cdrc = CDRC.get_instance()
+    for trace in min_subs:
+        case = extract_test_case(trace, graph)[0]
+        if tmp_cdrc.is_in_cdrc(case):
+            shortest = trace
+            break
+
+    # interactive
+    # if len(strs) > 1:
+    #    for i, s in enumerate(strs):
+    #        print(str(i) + ": " + str(s))
+    #    i = -1
+    #    while i < 0 or i >= len(strs):
+    #        i = int(input("Pick an option"))
+    #    shortest = str_map[strs[i]]
+    return {'trace': shortest}
 
 
 def is_unsubbed_nt(i, cur_trace, graph):

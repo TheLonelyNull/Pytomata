@@ -1,5 +1,6 @@
 import argparse
 import os
+import re
 
 
 def parse_args():
@@ -26,6 +27,7 @@ def get_test_cases(filename):
         if len(line) > 0 and line[0] != '#':
             line = line.rstrip()
             line = line.lstrip()
+            line = re.sub(r"\s+", "", line)
             test_cases.add(line)
     return test_cases
 

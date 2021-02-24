@@ -21,11 +21,11 @@ booleanorint: 'boolean'
 	    | 'integer'
 	    ;
 
-arrayoptional: 
+arrayoptional:
 	     | 'array'
 	     ;
 varseqstar:
-	  | varseq ';' varseqstar
+	  | ';' varseq varseqstar
 	  ;
 
 varseq: id idstar ':' type
@@ -34,21 +34,21 @@ varseq: id idstar ':' type
 vardecl: varseq ';' varseqstar
        ;
 
-vardecloptional: 
+vardecloptional:
 	       | vardecl
 	       ;
 
 body: vardecloptional statements 'end'
     ;
 
-idstar: 
+idstar:
       |',' id idstar
       ;
 statements: 'chillax'
 	  | statement statementstar
 	  ;
 
-statementstar: 
+statementstar:
 	      | ';' statement statementstar
 	      ;
 statement: assign
@@ -98,7 +98,7 @@ exproptional:
 popN: 'pop' exproptional
     ;
 
-caseexprstatendstar: 
+caseexprstatendstar:
 		   | 'case' expr ':' statements 'end' caseexprstatendstar
 		   ;
 
@@ -131,7 +131,7 @@ minusopt:
 	| '-'
 	;
 
-addopttermstar: 
+addopttermstar:
 	      |addop term addopttermstar
 	      ;
 
@@ -162,7 +162,6 @@ simpleorexproptional:
 		    ;
 
 factor: id simpleorexproptional
-      | num
       | '(' expr ')'
       | 'not' factor
       | 'true'
@@ -171,8 +170,4 @@ factor: id simpleorexproptional
 
 id: 'a'
   ;
-
-num: '0'
-   ;
-
 %%
