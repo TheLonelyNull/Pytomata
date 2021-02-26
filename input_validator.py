@@ -52,6 +52,7 @@ def parse_args():
     parser.add_argument('-o', '--output-file', help='Name of output file. Stored in ./out/')
     parser.add_argument('-s', '--classic', action='store_true', help='Use algorithms for SLE2020')
     parser.add_argument('--classicimproved', action='store_true', help='Use improved BFS algorithm from 2020')
+    parser.add_argument('--seed', type=int, help='Seed for random choices')
     args = parser.parse_args()
 
     # checks that the automaton automaton_type is a valid option
@@ -72,6 +73,8 @@ def parse_args():
 
     classic = args.classic
     classic_improved = args.classicimproved
+
+    seed = args.seed
     # get output filename
     out_filename = args.output_file
-    return [automaton_type, filename, graph, coverage_type, out_filename, classic, classic_improved]
+    return [automaton_type, filename, graph, coverage_type, out_filename, classic, classic_improved, seed]

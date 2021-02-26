@@ -6,6 +6,8 @@ from debug_utils import trace_to_str
 import sys, os, time
 from tmp_cdrc import CDRC
 from neg_utils import is_almost_accepting, get_follow_set
+import zlib
+import random
 
 
 def dynamic_traversal(graph: Graph):
@@ -113,13 +115,13 @@ def cover_all_pop(sub_table, graph):
     complete = []
     for key in sub_table:
         for p in sub_table[key]:
-            print('------------')
-            print(trace_to_str([key], graph))
-            print(trace_to_str(p['trace'], graph))
+            # print('------------')
+            # print(trace_to_str([key], graph))
+            # print(trace_to_str(p['trace'], graph))
             path = complete_segment(p, sub_table, shortest_deriv_map, reverse, start_edges, graph)
             complete.append(path)
-            print(extract_test_case(path['trace'], graph))
-            print('------------')
+            # print(extract_test_case(path['trace'], graph))
+            # print('------------')
     return complete
 
 
@@ -170,7 +172,7 @@ def complete_segment(path, sub_table, shortest_derivations, reverse, start_edges
                 else:
                     subbed.append(e)
             i += 1
-        print("Possible: " + extract_test_case(subbed, graph)[0])
+        # print("Possible: " + extract_test_case(subbed, graph)[0])
         subbed_possible.append(subbed)
     min_len = 10000000
     min_subs = []
@@ -195,14 +197,20 @@ def complete_segment(path, sub_table, shortest_derivations, reverse, start_edges
     # sub new path up into shortest other path that will take it and sub out other non
     # terminals with shortest derivation
     # stop when at covering a segment mapped to a start edge
-    shortest = str_map[strs[0]]
+    # shortest = str_map[strs[0]]
+    strs.sort()
+    seed = Config.get_instance().get_seed()
+    seed += zlib.adler32(str(path['trace'][-1]).encode('utf_8'))
+    random.seed(seed)
+    i = random.randint(0, len(strs) - 1)
+    shortest = str_map[strs[i]]
 
-    tmp_cdrc = CDRC.get_instance()
-    for trace in min_subs:
-        case = extract_test_case(trace, graph)[0]
-        if tmp_cdrc.is_in_cdrc(case):
-            shortest = trace
-            break
+    # tmp_cdrc = CDRC.get_instance()
+    # for trace in min_subs:
+    #    case = extract_test_case(trace, graph)[0]
+    #    if tmp_cdrc.is_in_cdrc(case):
+    #        shortest = trace
+    #        break
 
     # interactive
     # if len(strs) > 1:
@@ -236,11 +244,15 @@ def reverse_sub_table(sub_table, graph):
 
 
 def shortest_derivations(sub_map, shortest_map, graph):
+    tmp_map = {}
+
     while len(sub_map.keys() - shortest_map.keys()) > 0:
+        next_solve = list(sub_map.keys() - shortest_map.keys())
+        next_solve.sort(key=str)
         # loop over all non-terminal edges we don't have a shortest derivation for yet
-        for nt_edge in sub_map.keys() - shortest_map.keys():
+        for nt_edge in next_solve:
             min_len = 1000000
-            min_p = None
+            min_paths = []
             for path in sub_map[nt_edge]:
                 deriv = []
                 i = 0
@@ -261,9 +273,31 @@ def shortest_derivations(sub_map, shortest_map, graph):
                     i += 1
                 if can_solve and len(deriv) < min_len:
                     min_len = len(deriv)
-                    min_p = {'trace': deriv}
-            if min_p is not None:
-                shortest_map[nt_edge] = min_p
+                    min_paths = [deriv]
+                elif can_solve and len(deriv) == min_len:
+                    min_paths.append(deriv)
+            if len(min_paths) != 0:
+                if len(min_paths) == 1:
+                    string = extract_test_case(min_paths[0], graph)[0]
+                    tmp_map[nt_edge] = [string]
+                    shortest_map[nt_edge] = {'trace': min_paths[0]}
+                else:
+                    strs = []
+                    str_map = dict()
+                    for trace in min_paths:
+                        string = extract_test_case(trace, graph)[0]
+                        strs.append(string)
+                        str_map[string] = trace
+                    strs.sort()
+                    tmp_map[nt_edge] = strs
+                    seed = Config.get_instance().get_seed()
+                    seed += zlib.adler32(str(nt_edge).encode('utf_8'))
+                    random.seed(seed)
+                    i = random.randint(0, len(strs) - 1)
+                    shortest_map[nt_edge] = {'trace': str_map[strs[i]]}
+    for key in shortest_map:
+        print(trace_to_str([key], graph) + ": " + trace_to_str(shortest_map[key]['trace'], graph) + ": " + str(
+            tmp_map[key]))
 
 
 def splice_segments(sub_map, graph: Graph):

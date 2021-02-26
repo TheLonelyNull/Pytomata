@@ -27,6 +27,7 @@ class Config:
         self._output_file_name = args[4]
         self._classic = args[5]
         self._classic_improved = args[6]
+        self._seed = args[7]
 
     def should_produce_graph(self):
         return self._draw_graph
@@ -51,3 +52,8 @@ class Config:
 
     def get_classic_improved_flag(self):
         return self._classic_improved
+
+    def get_seed(self):
+        if self._seed is None:
+            return 1
+        return self._seed
