@@ -52,7 +52,7 @@ def dynamic_traversal(graph: Graph):
     print("Finished Splicing Solutions.")
     tests = set()
     for path in complete:
-        tests.add(extract_test_case(path['trace'], graph)[0])
+        tests.update(extract_test_case(path['trace'], graph))
     return tests
 
 
