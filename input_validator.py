@@ -43,7 +43,7 @@ def check_coverage_criteria(coverage_type):
 def parse_args():
     # initialise the argument parser
     parser = argparse.ArgumentParser()
-    parser.add_argument('-l', '--lr', help='LR automaton type. Defaults to LR0')
+    parser.add_argument('-l', '--lr', help='LR automaton type. Defaults to LR0', default='LR0')
     parser.add_argument('-f', '--input-file', help='Path to input grammar file, relative to this folder.')
     parser.add_argument('-g', '--graph', action='store_true',
                         help='Flag for whether graph should be produced in ./out/')
@@ -52,29 +52,8 @@ def parse_args():
     parser.add_argument('-o', '--output-file', help='Name of output file. Stored in ./out/')
     parser.add_argument('-s', '--classic', action='store_true', help='Use algorithms for SLE2020')
     parser.add_argument('--classicimproved', action='store_true', help='Use improved BFS algorithm from 2020')
-    parser.add_argument('--seed', type=int, help='Seed for random choices')
-    args = parser.parse_args()
+    parser.add_argument('--seed', type=int, help='Seed for random choices', default=1)
+    parser.add_argument('--stack', help='Should produce negative test suites using stack mutations', action='store_true')
+    args = vars(parser.parse_args())
 
-    # checks that the automaton automaton_type is a valid option
-    automaton_type = args.lr
-    if automaton_type is None:
-        automaton_type = 'LR0'
-    check_type(automaton_type)
-    #  checks the input file
-    filename = args.input_file
-    check_file(filename)
-
-    # check the graph output types
-    graph = args.graph
-
-    # check coverage criteria
-    coverage_type = args.coverage
-    check_coverage_criteria(coverage_type)
-
-    classic = args.classic
-    classic_improved = args.classicimproved
-
-    seed = args.seed
-    # get output filename
-    out_filename = args.output_file
-    return [automaton_type, filename, graph, coverage_type, out_filename, classic, classic_improved, seed]
+    return args

@@ -20,40 +20,36 @@ class Config:
 
     def _get_args(self):
         args = input_validator.parse_args()
-        self._LR_type = args[0]
-        self._grammar_file = args[1]
-        self._draw_graph = args[2]
-        self._test_suite_type = args[3]
-        self._output_file_name = args[4]
-        self._classic = args[5]
-        self._classic_improved = args[6]
-        self._seed = args[7]
+        self._args = args
 
     def should_produce_graph(self):
-        return self._draw_graph
+        return self._args['graph']
 
     def get_automaton_type(self):
-        return self._LR_type
+        return self._args['lr']
 
     def get_grammar_filename(self):
-        return self._grammar_file
+        return self._args['input_file']
 
     def get_test_suite_type(self):
-        return self._test_suite_type
+        return self._args['coverage']
 
     def should_output_to_file(self):
-        return self._output_file_name is not None
+        return self._args['output_file'] is not None
 
     def get_output_filename(self):
-        return self._output_file_name
+        return self._args['output_file']
 
     def get_clasic_flag(self):
-        return self._classic
+        return self._args['classic']
 
     def get_classic_improved_flag(self):
-        return self._classic_improved
+        return self._args['classicimproved']
 
     def get_seed(self):
-        if self._seed is None:
-            return 1
-        return self._seed
+        return self._args['seed']
+
+    def get(self, str):
+        if str not in self._args:
+            return None
+        return self._args[str]

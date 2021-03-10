@@ -3,9 +3,7 @@ from pos_utils import get_reduce_edge, push, pop
 from general_utils import extract_test_case
 from config import Config
 from debug_utils import trace_to_str
-import sys, os, time
-from tmp_cdrc import CDRC
-from neg_utils import is_almost_accepting, get_follow_set
+import sys
 import zlib
 import random
 
@@ -191,7 +189,7 @@ def complete_segment(path, sub_table, shortest_derivations, reverse, start_edges
     strs = []
     str_map = dict()
     for trace in min_subs:
-        string = extract_test_case(trace, graph)[0]
+        string = extract_test_case(trace, graph, test_suite_type='positive', stack=False)[0]
         strs.append(string)
         str_map[string] = trace
     # sub new path up into shortest other path that will take it and sub out other non
@@ -278,14 +276,14 @@ def shortest_derivations(sub_map, shortest_map, graph):
                     min_paths.append(deriv)
             if len(min_paths) != 0:
                 if len(min_paths) == 1:
-                    string = extract_test_case(min_paths[0], graph)[0]
+                    string = extract_test_case(min_paths[0], graph, test_suite_type='positive', stack=False)[0]
                     tmp_map[nt_edge] = [string]
                     shortest_map[nt_edge] = {'trace': min_paths[0]}
                 else:
                     strs = []
                     str_map = dict()
                     for trace in min_paths:
-                        string = extract_test_case(trace, graph)[0]
+                        string = extract_test_case(trace, graph, test_suite_type='positive', stack=False)[0]
                         strs.append(string)
                         str_map[string] = trace
                     strs.sort()
@@ -295,9 +293,6 @@ def shortest_derivations(sub_map, shortest_map, graph):
                     random.seed(seed)
                     i = random.randint(0, len(strs) - 1)
                     shortest_map[nt_edge] = {'trace': str_map[strs[i]]}
-    for key in shortest_map:
-        print(trace_to_str([key], graph) + ": " + trace_to_str(shortest_map[key]['trace'], graph) + ": " + str(
-            tmp_map[key]))
 
 
 def splice_segments(sub_map, graph: Graph):
