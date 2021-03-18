@@ -1,6 +1,6 @@
 from graph_components import Node
 from config import Config
-from neg_utils import extract_add, extract_del, extract_cut, extract_sub, extract_stack_del
+from neg_utils import extract_add, extract_del, extract_cut, extract_sub, extract_stack_del, extract_stack_sub, extract_stack_add
 from pos_utils import extract_pos
 
 
@@ -11,11 +11,12 @@ def extract_test_case(T, graph, test_suite_type=None, stack= None, sub_table=Non
         stack = Config.get_instance().get('stack')
     if stack:
         if test_suite_type == 'neg-sub':
-            return extract_sub(T, graph)
+            print("done")
+            return extract_stack_sub(T, sub_table, shortest_table, graph)
         elif test_suite_type == 'neg-del':
             return extract_stack_del(T, graph)
         elif test_suite_type == 'neg-add':
-            return extract_add(T, graph)
+            return extract_stack_add(T, sub_table, shortest_table, graph)
         else:
             print("No negative mutation specified with stack. Quiting...")
             exit(0)

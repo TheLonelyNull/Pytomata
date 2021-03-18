@@ -147,7 +147,27 @@ def extract_stack_add(T, sub_map, short_map, graph):
 
 
 def extract_stack_sub(T, sub_map, short_map, graph):
-    pass
+    out = []
+    for index, edge in enumerate(T):
+        if edge.label in graph.terminal and edge.label != "$end":
+            # append to back of already deleted
+            for i in range(len(out)):
+                out[i] += edge.label + ' '
+        if not edge.is_pop and edge.label in graph.nonterminal:
+            # delete last rule application
+            for key in sub_map:
+                for segment in sub_map[key]:
+                    subbed = sub_with_shortest(segment['trace'], short_map, graph)
+                    if can_insert(subbed, T, index - 1, sub_map, graph):
+                        # insert
+                        tmp = deleteFromEnd(T[:index + 1], graph)
+                        out_str = tmp
+                        for e in subbed:
+                            if not e.is_pop and e.label not in graph.nonterminal:
+                                out_str += e.label + ' '
+                        out.append(out_str)
+
+    return out
 
 
 def extract_stack_del(T, graph):
@@ -159,8 +179,44 @@ def extract_stack_del(T, graph):
                 out[i] += edge.label + ' '
         if not edge.is_pop and edge.label in graph.nonterminal and can_delete(edge, graph):
             # delete last rule application
-            out.append(deleteFromEnd(T[:index+1], graph))
+            out.append(deleteFromEnd(T[:index + 1], graph))
     return out
+
+
+def sub_with_shortest(segment, shortest_map, graph):
+    new_segment = list()
+    for i, edge in enumerate(segment):
+        if not edge.is_pop and edge.label in graph.nonterminal and not segment[i - 1].is_pop:
+            new_segment.extend(shortest_map[edge]['trace'])
+        else:
+            new_segment.append(edge)
+    return new_segment
+
+
+def can_insert(segment, trace, cur_index, sub_map, graph):
+    cur_state = trace[cur_index].next_node
+    first = get_first(segment, sub_map, graph)
+    follow = get_follow_set(cur_state.label, graph)
+    # no overlap between follow and first
+    if len(follow - first) < len(follow):
+        return False
+    return True
+
+
+def get_first(trace, sub_map, graph, prev_subbed=set()):
+    first = set()
+    for i, edge in enumerate(trace):
+        if edge.label in graph.terminal:
+            first.add(edge.label)
+            break
+        elif (not edge.is_pop and edge.label in graph.nonterminal) and (i == 0 or trace[i - 1].is_pop):
+            for p in sub_map[edge]:
+                if edge not in prev_subbed:
+                    prev_subbed.add(edge)
+                    first.update(get_first(p['trace'], sub_map, graph, prev_subbed))
+                    prev_subbed.remove(edge)
+            break
+    return first
 
 
 def can_delete(nt_edge, graph):
@@ -189,12 +245,12 @@ def can_delete(nt_edge, graph):
 
 
 def deleteFromEnd(trace, graph):
-    new_trace = trace.copy()[:-1] # delete nt push edge
+    new_trace = trace.copy()[:-1]  # delete nt push edge
     target_state = new_trace[-1].next_node
     count = -new_trace[-1].pop_count
-    i = len(new_trace)-2
+    i = len(new_trace) - 2
     cur_state = new_trace[i].next_node
-    while cur_state != target_state or count !=0:
+    while cur_state != target_state or count != 0:
         edge = new_trace[i]
         if not edge.is_pop:
             count += 1
@@ -203,7 +259,7 @@ def deleteFromEnd(trace, graph):
         i -= 1
         cur_state = new_trace[i].next_node
 
-    new_trace = new_trace[:i+1]
+    new_trace = new_trace[:i + 1]
     test_str = ""
     for e in new_trace:
         if not e.is_pop and e.label not in graph.nonterminal:

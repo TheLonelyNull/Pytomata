@@ -7,6 +7,7 @@ import sys
 import zlib
 import random
 
+shortest_deriv_map = dict()
 
 def dynamic_traversal(graph: Graph):
     # we only look at push edges during traversal to solve for pop edges. Pop edges should be solved before
@@ -50,7 +51,7 @@ def dynamic_traversal(graph: Graph):
     print("Finished Splicing Solutions.")
     tests = set()
     for path in complete:
-        tests.update(extract_test_case(path['trace'], graph))
+        tests.update(extract_test_case(path['trace'], graph, sub_table=sub_table, shortest_table=shortest_deriv_map))
     return tests
 
 
@@ -105,7 +106,6 @@ def cover_all_pop(sub_table, graph):
     start_edges = find_start_edges(sub_table, graph)
     # precompute shortest derivations
     print("Calculation shortest derivations")
-    shortest_deriv_map = dict()
     shortest_derivations(sub_table, shortest_deriv_map, graph)
     print("Finished calculation shortest derivations")
     reverse = reverse_sub_table(sub_table, graph)
