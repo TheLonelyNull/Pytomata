@@ -1,3 +1,5 @@
+import debug_utils
+
 len_map = None
 follow_map = {}
 accepting_map = {}
@@ -143,7 +145,41 @@ def extract_add(T, graph):
 
 
 def extract_stack_add(T, sub_map, short_map, graph):
-    pass
+    out = []
+    for index, edge in enumerate(T):
+        if edge.label in graph.terminal and edge.label != "$end":
+            # append to back of already deleted
+            for i in range(len(out)):
+                out[i] += edge.label + ' '
+        if not edge.is_pop and edge.label in graph.nonterminal:
+            # check beginning if rule is was applied in nullable context
+            follow_check_offset = 0
+            pop_edge = T[index-1]
+            if pop_edge.pop_count == 0:
+                follow_check_offset = 1
+            # insert after last rule application
+            for key in sub_map:
+                for segment in sub_map[key]:
+                    subbed = sub_with_shortest(segment['trace'], short_map, graph)
+                    # check that this segment is not epsilon
+                    epsilon = True
+                    for e in subbed:
+                        if not e.is_pop and e.label in graph.terminal:
+                            epsilon = False
+                            break
+                    if epsilon:
+                        continue
+                    if can_insert(subbed, T, index - follow_check_offset, sub_map, graph):
+                        # insert
+                        out_str = ''
+                        for e in T[:index + 1]:
+                            if not e.is_pop and e.label not in graph.nonterminal:
+                                out_str += e.label + ' '
+                        for e in subbed:
+                            if not e.is_pop and e.label not in graph.nonterminal:
+                                out_str += e.label + ' '
+                        out.append(out_str)
+    return out
 
 
 def extract_stack_sub(T, sub_map, short_map, graph):
@@ -166,7 +202,6 @@ def extract_stack_sub(T, sub_map, short_map, graph):
                             if not e.is_pop and e.label not in graph.nonterminal:
                                 out_str += e.label + ' '
                         out.append(out_str)
-
     return out
 
 
@@ -198,12 +233,15 @@ def can_insert(segment, trace, cur_index, sub_map, graph):
     first = get_first(segment, sub_map, graph)
     follow = get_follow_set(cur_state.label, graph)
     # no overlap between follow and first
-    if len(follow - first) < len(follow):
+
+    if len(follow - first) < len(follow) or len(first) == 0:
         return False
     return True
 
 
-def get_first(trace, sub_map, graph, prev_subbed=set()):
+def get_first(trace, sub_map, graph, prev_subbed=None):
+    if prev_subbed is None:
+        prev_subbed = set()
     first = set()
     for i, edge in enumerate(trace):
         if edge.label in graph.terminal:
