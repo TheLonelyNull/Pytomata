@@ -25,7 +25,7 @@ def parse_nonterms(file):
     nonterms = []
     started = False
     while True:
-        line = f.readline()
+        line = file.readline()
         if not line.startswith("nonterm") and started:
             break
 
@@ -72,33 +72,11 @@ def parse_rules(file, terms, nonterms):
 
 def replace_escape_char_nt(nonterms):
     nonterms_map = dict()
-    special_chars = " ()\'_\\,."
-    replace_chars = {
-        '-': 'minus',
-        '+': 'plus',
-        '?': 'optional',
-        '|': 'or',
-        '*': 'star',
-        ':': 'colon',
-        ';': 'semicolon',
-        '=': 'equal',
-        '>': 'gt',
-        '<': 'lt',
-        '&': 'and',
-        '`': '',
-        '/': 'div',
-        '%': 'percent'
-    }
-    for nt in nonterms:
-        if nt.isalpha():
-            nonterms_map[nt] = nt
-        else:
-            new_str = nt
-            for c in special_chars:
-                new_str = new_str.replace(c, "")
-            for c in replace_chars:
-                new_str = new_str.replace(c, replace_chars[c])
-            nonterms_map[nt] = new_str
+
+    for i, nt in enumerate(nonterms):
+        firstchar = chr(i // 26 + 65)
+        secondchar = chr(i % 26 + 65)
+        nonterms_map[nt] = str(firstchar) + str(secondchar)
     return nonterms_map
 
 
@@ -134,13 +112,13 @@ if __name__ == "__main__":
             for symbol in sub:
                 if symbol in nt:
                     if len(cur_t_str) > 0:
-                        line += "\'"+cur_t_str + "\' "
+                        line += "\'" + cur_t_str + "\' "
                         cur_t_str = ""
                     line += nt_map[symbol] + " "
                 elif symbol in t:
                     cur_t_str += t_map[symbol]
             if len(cur_t_str) > 0:
-                line += "\'"+cur_t_str + "\' "
+                line += "\'" + cur_t_str + "\' "
             line += "|"
             lines.append(line)
             line = " " * offset_spaces

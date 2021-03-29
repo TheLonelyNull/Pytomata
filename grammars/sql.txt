@@ -1,0 +1,1311 @@
+symbol(init_symbol).
+symbol(begin_of_file).
+symbol(end_of_file).
+symbol(sql_stmt_list).
+symbol('(;)*').
+symbol('(+ (;),sql_stmt)*').
+symbol('+ (;)').
+symbol(sql_stmt).
+symbol('(t_K_EXPLAIN,(t_K_QUERY,t_K_PLAN)?)?').
+symbol('(t_K_QUERY,t_K_PLAN)?').
+symbol('alter_table_stmt|analyze_stmt|attach_stmt|begin_stmt|commit_stmt|compound_select_stmt|create_index_stmt|create_table_stmt|create_trigger_stmt|create_view_stmt|create_virtual_table_stmt|delete_stmt|delete_stmt_limited|detach_stmt|drop_index_stmt|drop_table_stmt|drop_trigger_stmt|drop_view_stmt|factored_select_stmt|insert_stmt|pragma_stmt|reindex_stmt|release_stmt|rollback_stmt|savepoint_stmt|simple_select_stmt|select_stmt|update_stmt|update_stmt_limited|vacuum_stmt').
+symbol(alter_table_stmt).
+symbol('(database_name,(\'.\'))?').
+symbol('t_K_RENAME,t_K_TO,new_table_name|t_K_ADD,t_K_COLUMN?,column_def').
+symbol('t_K_COLUMN?').
+symbol(analyze_stmt).
+symbol('(database_name|table_or_index_name|database_name,(\'.\'),table_or_index_name)?').
+symbol(attach_stmt).
+symbol('t_K_DATABASE?').
+symbol(begin_stmt).
+symbol('(t_K_DEFERRED|t_K_IMMEDIATE|t_K_EXCLUSIVE)?').
+symbol('(t_K_TRANSACTION,transaction_name?)?').
+symbol('transaction_name?').
+symbol(commit_stmt).
+symbol('t_K_COMMIT|t_K_END').
+symbol(compound_select_stmt).
+symbol('(t_K_WITH,t_K_RECURSIVE?,common_table_expression,((\',\'),common_table_expression)*)?').
+symbol('t_K_RECURSIVE?').
+symbol('((\',\'),common_table_expression)*').
+symbol('+ ((t_K_UNION,t_K_ALL?|t_K_INTERSECT|t_K_EXCEPT),select_core)').
+symbol('t_K_UNION,t_K_ALL?|t_K_INTERSECT|t_K_EXCEPT').
+symbol('t_K_ALL?').
+symbol('(t_K_ORDER,t_K_BY,ordering_term,((\',\'),ordering_term)*)?').
+symbol('((\',\'),ordering_term)*').
+symbol('(t_K_LIMIT,expr,((t_K_OFFSET|(\',\')),expr)?)?').
+symbol('((t_K_OFFSET|(\',\')),expr)?').
+symbol('t_K_OFFSET|(\',\')').
+symbol(create_index_stmt).
+symbol('t_K_UNIQUE?').
+symbol('(t_K_IF,t_K_NOT,t_K_EXISTS)?').
+symbol('((\',\'),indexed_column)*').
+symbol('(t_K_WHERE,expr)?').
+symbol(create_table_stmt).
+symbol('(t_K_TEMP|t_K_TEMPORARY)?').
+symbol('\'(\',column_def,((\',\'),column_def)*,((\',\'),table_constraint)*,\')\',(t_K_WITHOUT,t_IDENTIFIER)?|t_K_AS,select_stmt').
+symbol('((\',\'),column_def)*').
+symbol('((\',\'),table_constraint)*').
+symbol('(t_K_WITHOUT,t_IDENTIFIER)?').
+symbol(create_trigger_stmt).
+symbol('(t_K_BEFORE|t_K_AFTER|t_K_INSTEAD,t_K_OF)?').
+symbol('t_K_DELETE|t_K_INSERT|t_K_UPDATE,(t_K_OF,column_name,((\',\'),column_name)*)?').
+symbol('(t_K_OF,column_name,((\',\'),column_name)*)?').
+symbol('((\',\'),column_name)*').
+symbol('(t_K_FOR,t_K_EACH,t_K_ROW)?').
+symbol('(t_K_WHEN,expr)?').
+symbol('+ ((update_stmt|insert_stmt|delete_stmt|select_stmt),(;))').
+symbol('update_stmt|insert_stmt|delete_stmt|select_stmt').
+symbol(create_view_stmt).
+symbol(create_virtual_table_stmt).
+symbol('(\'(\',module_argument,((\',\'),module_argument)*,\')\')?').
+symbol('((\',\'),module_argument)*').
+symbol(delete_stmt).
+symbol('with_clause?').
+symbol(delete_stmt_limited).
+symbol('((t_K_ORDER,t_K_BY,ordering_term,((\',\'),ordering_term)*)?,t_K_LIMIT,expr,((t_K_OFFSET|(\',\')),expr)?)?').
+symbol(detach_stmt).
+symbol(drop_index_stmt).
+symbol('(t_K_IF,t_K_EXISTS)?').
+symbol(drop_table_stmt).
+symbol(drop_trigger_stmt).
+symbol(drop_view_stmt).
+symbol(factored_select_stmt).
+symbol('(compound_operator,select_core)*').
+symbol(insert_stmt).
+symbol('t_K_INSERT|t_K_REPLACE|t_K_INSERT,t_K_OR,t_K_REPLACE|t_K_INSERT,t_K_OR,t_K_ROLLBACK|t_K_INSERT,t_K_OR,t_K_ABORT|t_K_INSERT,t_K_OR,t_K_FAIL|t_K_INSERT,t_K_OR,t_K_IGNORE').
+symbol('(\'(\',column_name,((\',\'),column_name)*,\')\')?').
+symbol('t_K_VALUES,\'(\',expr,((\',\'),expr)*,\')\',((\',\'),\'(\',expr,((\',\'),expr)*,\')\')*|select_stmt|t_K_DEFAULT,t_K_VALUES').
+symbol('((\',\'),expr)*').
+symbol('((\',\'),\'(\',expr,((\',\'),expr)*,\')\')*').
+symbol(pragma_stmt).
+symbol('((=),pragma_value|\'(\',pragma_value,\')\')?').
+symbol(reindex_stmt).
+symbol('(collation_name|(database_name,(\'.\'))?,(table_name|index_name))?').
+symbol('table_name|index_name').
+symbol(release_stmt).
+symbol('t_K_SAVEPOINT?').
+symbol(rollback_stmt).
+symbol('(t_K_TO,t_K_SAVEPOINT?,savepoint_name)?').
+symbol(savepoint_stmt).
+symbol(simple_select_stmt).
+symbol(select_stmt).
+symbol('(compound_operator,select_or_values)*').
+symbol(select_or_values).
+symbol('(t_K_DISTINCT|t_K_ALL)?').
+symbol('((\',\'),result_column)*').
+symbol('(t_K_FROM,(table_or_subquery,((\',\'),table_or_subquery)*|join_clause))?').
+symbol('table_or_subquery,((\',\'),table_or_subquery)*|join_clause').
+symbol('((\',\'),table_or_subquery)*').
+symbol('(t_K_GROUP,t_K_BY,expr,((\',\'),expr)*,(t_K_HAVING,expr)?)?').
+symbol('(t_K_HAVING,expr)?').
+symbol(update_stmt).
+symbol('(t_K_OR,t_K_ROLLBACK|t_K_OR,t_K_ABORT|t_K_OR,t_K_REPLACE|t_K_OR,t_K_FAIL|t_K_OR,t_K_IGNORE)?').
+symbol('((\',\'),column_name,(=),expr)*').
+symbol(update_stmt_limited).
+symbol(vacuum_stmt).
+symbol(column_def).
+symbol('type_name?').
+symbol('column_constraint*').
+symbol(type_name).
+symbol('+name').
+symbol('(\'(\',signed_number,\')\'|\'(\',signed_number,(\',\'),signed_number,\')\')?').
+symbol(column_constraint).
+symbol('(t_K_CONSTRAINT,name)?').
+symbol('t_K_PRIMARY,t_K_KEY,(t_K_ASC|t_K_DESC)?,conflict_clause,t_K_AUTOINCREMENT?|t_K_NOT?,t_K_NULL,conflict_clause|t_K_UNIQUE,conflict_clause|t_K_CHECK,\'(\',expr,\')\'|t_K_DEFAULT,(signed_number|literal_value|\'(\',expr,\')\')|t_K_COLLATE,collation_name|foreign_key_clause').
+symbol('(t_K_ASC|t_K_DESC)?').
+symbol('t_K_AUTOINCREMENT?').
+symbol('t_K_NOT?').
+symbol('signed_number|literal_value|\'(\',expr,\')\'').
+symbol(conflict_clause).
+symbol('(t_K_ON,t_K_CONFLICT,(t_K_ROLLBACK|t_K_ABORT|t_K_FAIL|t_K_IGNORE|t_K_REPLACE))?').
+symbol('t_K_ROLLBACK|t_K_ABORT|t_K_FAIL|t_K_IGNORE|t_K_REPLACE').
+symbol(expr).
+symbol('((database_name,(\'.\'))?,table_name,(\'.\'))?').
+symbol('(*)|(/)|\'%\'').
+symbol('(+)|(-)').
+symbol('(<<)|(>>)|&|\' | \'').
+symbol('(<)|<=|(>)|(>=)').
+symbol('(=)|(==)|\'!=\'|<>|t_K_IS|t_K_IS,t_K_NOT|t_K_IN|t_K_LIKE|t_K_GLOB|t_K_MATCH|t_K_REGEXP').
+symbol('(t_K_DISTINCT?,expr,((\',\'),expr)*|(*))?').
+symbol('t_K_DISTINCT?').
+symbol('t_K_LIKE|t_K_GLOB|t_K_REGEXP|t_K_MATCH').
+symbol('(t_K_ESCAPE,expr)?').
+symbol('t_K_ISNULL|t_K_NOTNULL|t_K_NOT,t_K_NULL').
+symbol('\'(\',(select_stmt|expr,((\',\'),expr)*)?,\')\'|(database_name,(\'.\'))?,table_name').
+symbol('(select_stmt|expr,((\',\'),expr)*)?').
+symbol('(t_K_NOT?,t_K_EXISTS)?').
+symbol('expr?').
+symbol('+ (t_K_WHEN,expr,t_K_THEN,expr)').
+symbol('(t_K_ELSE,expr)?').
+symbol(foreign_key_clause).
+symbol('(t_K_ON,(t_K_DELETE|t_K_UPDATE),(t_K_SET,t_K_NULL|t_K_SET,t_K_DEFAULT|t_K_CASCADE|t_K_RESTRICT|t_K_NO,t_K_ACTION)|t_K_MATCH,name)*').
+symbol('t_K_ON,(t_K_DELETE|t_K_UPDATE),(t_K_SET,t_K_NULL|t_K_SET,t_K_DEFAULT|t_K_CASCADE|t_K_RESTRICT|t_K_NO,t_K_ACTION)|t_K_MATCH,name').
+symbol('t_K_DELETE|t_K_UPDATE').
+symbol('t_K_SET,t_K_NULL|t_K_SET,t_K_DEFAULT|t_K_CASCADE|t_K_RESTRICT|t_K_NO,t_K_ACTION').
+symbol('(t_K_NOT?,t_K_DEFERRABLE,(t_K_INITIALLY,t_K_DEFERRED|t_K_INITIALLY,t_K_IMMEDIATE)?)?').
+symbol('(t_K_INITIALLY,t_K_DEFERRED|t_K_INITIALLY,t_K_IMMEDIATE)?').
+symbol(raise_function).
+symbol('t_K_IGNORE|(t_K_ROLLBACK|t_K_ABORT|t_K_FAIL),(\',\'),error_message').
+symbol('t_K_ROLLBACK|t_K_ABORT|t_K_FAIL').
+symbol(indexed_column).
+symbol('(t_K_COLLATE,collation_name)?').
+symbol(table_constraint).
+symbol('(t_K_PRIMARY,t_K_KEY|t_K_UNIQUE),\'(\',indexed_column,((\',\'),indexed_column)*,\')\',conflict_clause|t_K_CHECK,\'(\',expr,\')\'|t_K_FOREIGN,t_K_KEY,\'(\',column_name,((\',\'),column_name)*,\')\',foreign_key_clause').
+symbol('t_K_PRIMARY,t_K_KEY|t_K_UNIQUE').
+symbol(with_clause).
+symbol('((\',\'),cte_table_name,t_K_AS,\'(\',select_stmt,\')\')*').
+symbol(qualified_table_name).
+symbol('(t_K_INDEXED,t_K_BY,index_name|t_K_NOT,t_K_INDEXED)?').
+symbol(ordering_term).
+symbol(pragma_value).
+symbol(common_table_expression).
+symbol(result_column).
+symbol('(t_K_AS?,column_alias)?').
+symbol('t_K_AS?').
+symbol(table_or_subquery).
+symbol('(t_K_AS?,table_alias)?').
+symbol(join_clause).
+symbol('(join_operator,table_or_subquery,join_constraint)*').
+symbol(join_operator).
+symbol('t_K_NATURAL?').
+symbol('(t_K_LEFT,t_K_OUTER?|t_K_INNER|t_K_CROSS)?').
+symbol('t_K_OUTER?').
+symbol(join_constraint).
+symbol('(t_K_ON,expr|t_K_USING,\'(\',column_name,((\',\'),column_name)*,\')\')?').
+symbol(select_core).
+symbol(compound_operator).
+symbol(cte_table_name).
+symbol(signed_number).
+symbol('((+)|(-))?').
+symbol(literal_value).
+symbol(unary_operator).
+symbol(error_message).
+symbol(module_argument).
+symbol(column_alias).
+symbol(keyword).
+symbol(name).
+symbol(function_name).
+symbol(database_name).
+symbol(table_name).
+symbol(table_or_index_name).
+symbol(new_table_name).
+symbol(column_name).
+symbol(collation_name).
+symbol(foreign_table).
+symbol(index_name).
+symbol(trigger_name).
+symbol(view_name).
+symbol(module_name).
+symbol(pragma_name).
+symbol(savepoint_name).
+symbol(table_alias).
+symbol(transaction_name).
+symbol(any_name).
+symbol(;).
+symbol(t_K_QUERY).
+symbol(t_K_PLAN).
+symbol(t_K_EXPLAIN).
+symbol('.').
+symbol(t_K_RENAME).
+symbol(t_K_TO).
+symbol(t_K_COLUMN).
+symbol(t_K_ADD).
+symbol(t_K_ALTER).
+symbol(t_K_TABLE).
+symbol(t_K_ANALYZE).
+symbol(t_K_DATABASE).
+symbol(t_K_ATTACH).
+symbol(t_K_AS).
+symbol(t_K_DEFERRED).
+symbol(t_K_IMMEDIATE).
+symbol(t_K_EXCLUSIVE).
+symbol(t_K_TRANSACTION).
+symbol(t_K_BEGIN).
+symbol(t_K_COMMIT).
+symbol(t_K_END).
+symbol(t_K_RECURSIVE).
+symbol(',').
+symbol(t_K_WITH).
+symbol(t_K_ALL).
+symbol(t_K_UNION).
+symbol(t_K_INTERSECT).
+symbol(t_K_EXCEPT).
+symbol(t_K_ORDER).
+symbol(t_K_BY).
+symbol(t_K_OFFSET).
+symbol(t_K_LIMIT).
+symbol(t_K_UNIQUE).
+symbol(t_K_IF).
+symbol(t_K_NOT).
+symbol(t_K_EXISTS).
+symbol(t_K_WHERE).
+symbol(t_K_CREATE).
+symbol(t_K_INDEX).
+symbol(t_K_ON).
+symbol('(').
+symbol(')').
+symbol(t_K_TEMP).
+symbol(t_K_TEMPORARY).
+symbol(t_K_WITHOUT).
+symbol(t_IDENTIFIER).
+symbol(t_K_BEFORE).
+symbol(t_K_AFTER).
+symbol(t_K_INSTEAD).
+symbol(t_K_OF).
+symbol(t_K_DELETE).
+symbol(t_K_INSERT).
+symbol(t_K_UPDATE).
+symbol(t_K_FOR).
+symbol(t_K_EACH).
+symbol(t_K_ROW).
+symbol(t_K_WHEN).
+symbol(t_K_TRIGGER).
+symbol(t_K_VIEW).
+symbol(t_K_VIRTUAL).
+symbol(t_K_USING).
+symbol(t_K_FROM).
+symbol(t_K_DETACH).
+symbol(t_K_DROP).
+symbol(t_K_REPLACE).
+symbol(t_K_OR).
+symbol(t_K_ROLLBACK).
+symbol(t_K_ABORT).
+symbol(t_K_FAIL).
+symbol(t_K_IGNORE).
+symbol(t_K_VALUES).
+symbol(t_K_DEFAULT).
+symbol(t_K_INTO).
+symbol(=).
+symbol(t_K_PRAGMA).
+symbol(t_K_REINDEX).
+symbol(t_K_SAVEPOINT).
+symbol(t_K_RELEASE).
+symbol(t_K_DISTINCT).
+symbol(t_K_HAVING).
+symbol(t_K_GROUP).
+symbol(t_K_SELECT).
+symbol(t_K_SET).
+symbol(t_K_VACUUM).
+symbol(t_K_CONSTRAINT).
+symbol(t_K_ASC).
+symbol(t_K_DESC).
+symbol(t_K_AUTOINCREMENT).
+symbol(t_K_PRIMARY).
+symbol(t_K_KEY).
+symbol(t_K_NULL).
+symbol(t_K_CHECK).
+symbol(t_K_COLLATE).
+symbol(t_K_CONFLICT).
+symbol(t_BIND_PARAMETER).
+symbol('||').
+symbol(*).
+symbol(/).
+symbol('%').
+symbol(+).
+symbol(-).
+symbol(<<).
+symbol(>>).
+symbol(&).
+symbol(' | ').
+symbol(<).
+symbol(<=).
+symbol(>).
+symbol(>=).
+symbol(==).
+symbol('!=').
+symbol(<>).
+symbol(t_K_IS).
+symbol(t_K_IN).
+symbol(t_K_LIKE).
+symbol(t_K_GLOB).
+symbol(t_K_MATCH).
+symbol(t_K_REGEXP).
+symbol(t_K_AND).
+symbol(t_K_CAST).
+symbol(t_K_ESCAPE).
+symbol(t_K_ISNULL).
+symbol(t_K_NOTNULL).
+symbol(t_K_BETWEEN).
+symbol(t_K_THEN).
+symbol(t_K_ELSE).
+symbol(t_K_CASE).
+symbol(t_K_CASCADE).
+symbol(t_K_RESTRICT).
+symbol(t_K_NO).
+symbol(t_K_ACTION).
+symbol(t_K_INITIALLY).
+symbol(t_K_DEFERRABLE).
+symbol(t_K_REFERENCES).
+symbol(t_K_RAISE).
+symbol(t_K_FOREIGN).
+symbol(t_K_INDEXED).
+symbol(t_STRING_LITERAL).
+symbol(t_K_NATURAL).
+symbol(t_K_OUTER).
+symbol(t_K_LEFT).
+symbol(t_K_INNER).
+symbol(t_K_CROSS).
+symbol(t_K_JOIN).
+symbol(t_NUMERIC_LITERAL).
+symbol(t_BLOB_LITERAL).
+symbol(t_K_CURRENT_TIME).
+symbol(t_K_CURRENT_DATE).
+symbol(t_K_CURRENT_TIMESTAMP).
+symbol(~).
+symbol(t_K_FULL).
+symbol(t_K_RIGHT).
+
+:- dynamic nonterm/1.
+
+nonterm(init_symbol).
+nonterm(sql_stmt_list).
+nonterm('(;)*').
+nonterm('(+ (;),sql_stmt)*').
+nonterm('+ (;)').
+nonterm(sql_stmt).
+nonterm('(t_K_EXPLAIN,(t_K_QUERY,t_K_PLAN)?)?').
+nonterm('(t_K_QUERY,t_K_PLAN)?').
+nonterm('alter_table_stmt|analyze_stmt|attach_stmt|begin_stmt|commit_stmt|compound_select_stmt|create_index_stmt|create_table_stmt|create_trigger_stmt|create_view_stmt|create_virtual_table_stmt|delete_stmt|delete_stmt_limited|detach_stmt|drop_index_stmt|drop_table_stmt|drop_trigger_stmt|drop_view_stmt|factored_select_stmt|insert_stmt|pragma_stmt|reindex_stmt|release_stmt|rollback_stmt|savepoint_stmt|simple_select_stmt|select_stmt|update_stmt|update_stmt_limited|vacuum_stmt').
+nonterm(alter_table_stmt).
+nonterm('(database_name,(\'.\'))?').
+nonterm('t_K_RENAME,t_K_TO,new_table_name|t_K_ADD,t_K_COLUMN?,column_def').
+nonterm('t_K_COLUMN?').
+nonterm(analyze_stmt).
+nonterm('(database_name|table_or_index_name|database_name,(\'.\'),table_or_index_name)?').
+nonterm(attach_stmt).
+nonterm('t_K_DATABASE?').
+nonterm(begin_stmt).
+nonterm('(t_K_DEFERRED|t_K_IMMEDIATE|t_K_EXCLUSIVE)?').
+nonterm('(t_K_TRANSACTION,transaction_name?)?').
+nonterm('transaction_name?').
+nonterm(commit_stmt).
+nonterm('t_K_COMMIT|t_K_END').
+nonterm(compound_select_stmt).
+nonterm('(t_K_WITH,t_K_RECURSIVE?,common_table_expression,((\',\'),common_table_expression)*)?').
+nonterm('t_K_RECURSIVE?').
+nonterm('((\',\'),common_table_expression)*').
+nonterm('+ ((t_K_UNION,t_K_ALL?|t_K_INTERSECT|t_K_EXCEPT),select_core)').
+nonterm('t_K_UNION,t_K_ALL?|t_K_INTERSECT|t_K_EXCEPT').
+nonterm('t_K_ALL?').
+nonterm('(t_K_ORDER,t_K_BY,ordering_term,((\',\'),ordering_term)*)?').
+nonterm('((\',\'),ordering_term)*').
+nonterm('(t_K_LIMIT,expr,((t_K_OFFSET|(\',\')),expr)?)?').
+nonterm('((t_K_OFFSET|(\',\')),expr)?').
+nonterm('t_K_OFFSET|(\',\')').
+nonterm(create_index_stmt).
+nonterm('t_K_UNIQUE?').
+nonterm('(t_K_IF,t_K_NOT,t_K_EXISTS)?').
+nonterm('((\',\'),indexed_column)*').
+nonterm('(t_K_WHERE,expr)?').
+nonterm(create_table_stmt).
+nonterm('(t_K_TEMP|t_K_TEMPORARY)?').
+nonterm('\'(\',column_def,((\',\'),column_def)*,((\',\'),table_constraint)*,\')\',(t_K_WITHOUT,t_IDENTIFIER)?|t_K_AS,select_stmt').
+nonterm('((\',\'),column_def)*').
+nonterm('((\',\'),table_constraint)*').
+nonterm('(t_K_WITHOUT,t_IDENTIFIER)?').
+nonterm(create_trigger_stmt).
+nonterm('(t_K_BEFORE|t_K_AFTER|t_K_INSTEAD,t_K_OF)?').
+nonterm('t_K_DELETE|t_K_INSERT|t_K_UPDATE,(t_K_OF,column_name,((\',\'),column_name)*)?').
+nonterm('(t_K_OF,column_name,((\',\'),column_name)*)?').
+nonterm('((\',\'),column_name)*').
+nonterm('(t_K_FOR,t_K_EACH,t_K_ROW)?').
+nonterm('(t_K_WHEN,expr)?').
+nonterm('+ ((update_stmt|insert_stmt|delete_stmt|select_stmt),(;))').
+nonterm('update_stmt|insert_stmt|delete_stmt|select_stmt').
+nonterm(create_view_stmt).
+nonterm(create_virtual_table_stmt).
+nonterm('(\'(\',module_argument,((\',\'),module_argument)*,\')\')?').
+nonterm('((\',\'),module_argument)*').
+nonterm(delete_stmt).
+nonterm('with_clause?').
+nonterm(delete_stmt_limited).
+nonterm('((t_K_ORDER,t_K_BY,ordering_term,((\',\'),ordering_term)*)?,t_K_LIMIT,expr,((t_K_OFFSET|(\',\')),expr)?)?').
+nonterm(detach_stmt).
+nonterm(drop_index_stmt).
+nonterm('(t_K_IF,t_K_EXISTS)?').
+nonterm(drop_table_stmt).
+nonterm(drop_trigger_stmt).
+nonterm(drop_view_stmt).
+nonterm(factored_select_stmt).
+nonterm('(compound_operator,select_core)*').
+nonterm(insert_stmt).
+nonterm('t_K_INSERT|t_K_REPLACE|t_K_INSERT,t_K_OR,t_K_REPLACE|t_K_INSERT,t_K_OR,t_K_ROLLBACK|t_K_INSERT,t_K_OR,t_K_ABORT|t_K_INSERT,t_K_OR,t_K_FAIL|t_K_INSERT,t_K_OR,t_K_IGNORE').
+nonterm('(\'(\',column_name,((\',\'),column_name)*,\')\')?').
+nonterm('t_K_VALUES,\'(\',expr,((\',\'),expr)*,\')\',((\',\'),\'(\',expr,((\',\'),expr)*,\')\')*|select_stmt|t_K_DEFAULT,t_K_VALUES').
+nonterm('((\',\'),expr)*').
+nonterm('((\',\'),\'(\',expr,((\',\'),expr)*,\')\')*').
+nonterm(pragma_stmt).
+nonterm('((=),pragma_value|\'(\',pragma_value,\')\')?').
+nonterm(reindex_stmt).
+nonterm('(collation_name|(database_name,(\'.\'))?,(table_name|index_name))?').
+nonterm('table_name|index_name').
+nonterm(release_stmt).
+nonterm('t_K_SAVEPOINT?').
+nonterm(rollback_stmt).
+nonterm('(t_K_TO,t_K_SAVEPOINT?,savepoint_name)?').
+nonterm(savepoint_stmt).
+nonterm(simple_select_stmt).
+nonterm(select_stmt).
+nonterm('(compound_operator,select_or_values)*').
+nonterm(select_or_values).
+nonterm('(t_K_DISTINCT|t_K_ALL)?').
+nonterm('((\',\'),result_column)*').
+nonterm('(t_K_FROM,(table_or_subquery,((\',\'),table_or_subquery)*|join_clause))?').
+nonterm('table_or_subquery,((\',\'),table_or_subquery)*|join_clause').
+nonterm('((\',\'),table_or_subquery)*').
+nonterm('(t_K_GROUP,t_K_BY,expr,((\',\'),expr)*,(t_K_HAVING,expr)?)?').
+nonterm('(t_K_HAVING,expr)?').
+nonterm(update_stmt).
+nonterm('(t_K_OR,t_K_ROLLBACK|t_K_OR,t_K_ABORT|t_K_OR,t_K_REPLACE|t_K_OR,t_K_FAIL|t_K_OR,t_K_IGNORE)?').
+nonterm('((\',\'),column_name,(=),expr)*').
+nonterm(update_stmt_limited).
+nonterm(vacuum_stmt).
+nonterm(column_def).
+nonterm('type_name?').
+nonterm('column_constraint*').
+nonterm(type_name).
+nonterm('+name').
+nonterm('(\'(\',signed_number,\')\'|\'(\',signed_number,(\',\'),signed_number,\')\')?').
+nonterm(column_constraint).
+nonterm('(t_K_CONSTRAINT,name)?').
+nonterm('t_K_PRIMARY,t_K_KEY,(t_K_ASC|t_K_DESC)?,conflict_clause,t_K_AUTOINCREMENT?|t_K_NOT?,t_K_NULL,conflict_clause|t_K_UNIQUE,conflict_clause|t_K_CHECK,\'(\',expr,\')\'|t_K_DEFAULT,(signed_number|literal_value|\'(\',expr,\')\')|t_K_COLLATE,collation_name|foreign_key_clause').
+nonterm('(t_K_ASC|t_K_DESC)?').
+nonterm('t_K_AUTOINCREMENT?').
+nonterm('t_K_NOT?').
+nonterm('signed_number|literal_value|\'(\',expr,\')\'').
+nonterm(conflict_clause).
+nonterm('(t_K_ON,t_K_CONFLICT,(t_K_ROLLBACK|t_K_ABORT|t_K_FAIL|t_K_IGNORE|t_K_REPLACE))?').
+nonterm('t_K_ROLLBACK|t_K_ABORT|t_K_FAIL|t_K_IGNORE|t_K_REPLACE').
+nonterm(expr).
+nonterm('((database_name,(\'.\'))?,table_name,(\'.\'))?').
+nonterm('(*)|(/)|\'%\'').
+nonterm('(+)|(-)').
+nonterm('(<<)|(>>)|&|\' | \'').
+nonterm('(<)|<=|(>)|(>=)').
+nonterm('(=)|(==)|\'!=\'|<>|t_K_IS|t_K_IS,t_K_NOT|t_K_IN|t_K_LIKE|t_K_GLOB|t_K_MATCH|t_K_REGEXP').
+nonterm('(t_K_DISTINCT?,expr,((\',\'),expr)*|(*))?').
+nonterm('t_K_DISTINCT?').
+nonterm('t_K_LIKE|t_K_GLOB|t_K_REGEXP|t_K_MATCH').
+nonterm('(t_K_ESCAPE,expr)?').
+nonterm('t_K_ISNULL|t_K_NOTNULL|t_K_NOT,t_K_NULL').
+nonterm('\'(\',(select_stmt|expr,((\',\'),expr)*)?,\')\'|(database_name,(\'.\'))?,table_name').
+nonterm('(select_stmt|expr,((\',\'),expr)*)?').
+nonterm('(t_K_NOT?,t_K_EXISTS)?').
+nonterm('expr?').
+nonterm('+ (t_K_WHEN,expr,t_K_THEN,expr)').
+nonterm('(t_K_ELSE,expr)?').
+nonterm(foreign_key_clause).
+nonterm('(t_K_ON,(t_K_DELETE|t_K_UPDATE),(t_K_SET,t_K_NULL|t_K_SET,t_K_DEFAULT|t_K_CASCADE|t_K_RESTRICT|t_K_NO,t_K_ACTION)|t_K_MATCH,name)*').
+nonterm('t_K_ON,(t_K_DELETE|t_K_UPDATE),(t_K_SET,t_K_NULL|t_K_SET,t_K_DEFAULT|t_K_CASCADE|t_K_RESTRICT|t_K_NO,t_K_ACTION)|t_K_MATCH,name').
+nonterm('t_K_DELETE|t_K_UPDATE').
+nonterm('t_K_SET,t_K_NULL|t_K_SET,t_K_DEFAULT|t_K_CASCADE|t_K_RESTRICT|t_K_NO,t_K_ACTION').
+nonterm('(t_K_NOT?,t_K_DEFERRABLE,(t_K_INITIALLY,t_K_DEFERRED|t_K_INITIALLY,t_K_IMMEDIATE)?)?').
+nonterm('(t_K_INITIALLY,t_K_DEFERRED|t_K_INITIALLY,t_K_IMMEDIATE)?').
+nonterm(raise_function).
+nonterm('t_K_IGNORE|(t_K_ROLLBACK|t_K_ABORT|t_K_FAIL),(\',\'),error_message').
+nonterm('t_K_ROLLBACK|t_K_ABORT|t_K_FAIL').
+nonterm(indexed_column).
+nonterm('(t_K_COLLATE,collation_name)?').
+nonterm(table_constraint).
+nonterm('(t_K_PRIMARY,t_K_KEY|t_K_UNIQUE),\'(\',indexed_column,((\',\'),indexed_column)*,\')\',conflict_clause|t_K_CHECK,\'(\',expr,\')\'|t_K_FOREIGN,t_K_KEY,\'(\',column_name,((\',\'),column_name)*,\')\',foreign_key_clause').
+nonterm('t_K_PRIMARY,t_K_KEY|t_K_UNIQUE').
+nonterm(with_clause).
+nonterm('((\',\'),cte_table_name,t_K_AS,\'(\',select_stmt,\')\')*').
+nonterm(qualified_table_name).
+nonterm('(t_K_INDEXED,t_K_BY,index_name|t_K_NOT,t_K_INDEXED)?').
+nonterm(ordering_term).
+nonterm(pragma_value).
+nonterm(common_table_expression).
+nonterm(result_column).
+nonterm('(t_K_AS?,column_alias)?').
+nonterm('t_K_AS?').
+nonterm(table_or_subquery).
+nonterm('(t_K_AS?,table_alias)?').
+nonterm(join_clause).
+nonterm('(join_operator,table_or_subquery,join_constraint)*').
+nonterm(join_operator).
+nonterm('t_K_NATURAL?').
+nonterm('(t_K_LEFT,t_K_OUTER?|t_K_INNER|t_K_CROSS)?').
+nonterm('t_K_OUTER?').
+nonterm(join_constraint).
+nonterm('(t_K_ON,expr|t_K_USING,\'(\',column_name,((\',\'),column_name)*,\')\')?').
+nonterm(select_core).
+nonterm(compound_operator).
+nonterm(cte_table_name).
+nonterm(signed_number).
+nonterm('((+)|(-))?').
+nonterm(literal_value).
+nonterm(unary_operator).
+nonterm(error_message).
+nonterm(module_argument).
+nonterm(column_alias).
+nonterm(keyword).
+nonterm(name).
+nonterm(function_name).
+nonterm(database_name).
+nonterm(table_name).
+nonterm(table_or_index_name).
+nonterm(new_table_name).
+nonterm(column_name).
+nonterm(collation_name).
+nonterm(foreign_table).
+nonterm(index_name).
+nonterm(trigger_name).
+nonterm(view_name).
+nonterm(module_name).
+nonterm(pragma_name).
+nonterm(savepoint_name).
+nonterm(table_alias).
+nonterm(transaction_name).
+nonterm(any_name).
+
+:- dynamic init/1.
+
+init(init_symbol).
+
+:- dynamic terminal/1.
+
+terminal(begin_of_file).
+terminal(end_of_file).
+terminal(t_K_ABORT).
+terminal(t_K_ACTION).
+terminal(t_K_ADD).
+terminal(t_K_AFTER).
+terminal(t_K_ALL).
+terminal(t_K_ALTER).
+terminal(t_K_ANALYZE).
+terminal(t_K_AND).
+terminal(t_K_AS).
+terminal(t_K_ASC).
+terminal(t_K_ATTACH).
+terminal(t_K_AUTOINCREMENT).
+terminal(t_K_BEFORE).
+terminal(t_K_BEGIN).
+terminal(t_K_BETWEEN).
+terminal(t_K_BY).
+terminal(t_K_CASCADE).
+terminal(t_K_CASE).
+terminal(t_K_CAST).
+terminal(t_K_CHECK).
+terminal(t_K_COLLATE).
+terminal(t_K_COLUMN).
+terminal(t_K_COMMIT).
+terminal(t_K_CONFLICT).
+terminal(t_K_CONSTRAINT).
+terminal(t_K_CREATE).
+terminal(t_K_CROSS).
+terminal(t_K_CURRENT_DATE).
+terminal(t_K_CURRENT_TIME).
+terminal(t_K_CURRENT_TIMESTAMP).
+terminal(t_K_DATABASE).
+terminal(t_K_DEFAULT).
+terminal(t_K_DEFERRABLE).
+terminal(t_K_DEFERRED).
+terminal(t_K_DELETE).
+terminal(t_K_DESC).
+terminal(t_K_DETACH).
+terminal(t_K_DISTINCT).
+terminal(t_K_DROP).
+terminal(t_K_EACH).
+terminal(t_K_ELSE).
+terminal(t_K_END).
+terminal(t_K_ESCAPE).
+terminal(t_K_EXCEPT).
+terminal(t_K_EXCLUSIVE).
+terminal(t_K_EXISTS).
+terminal(t_K_EXPLAIN).
+terminal(t_K_FAIL).
+terminal(t_K_FOR).
+terminal(t_K_FOREIGN).
+terminal(t_K_FROM).
+terminal(t_K_FULL).
+terminal(t_K_GLOB).
+terminal(t_K_GROUP).
+terminal(t_K_HAVING).
+terminal(t_K_IF).
+terminal(t_K_IGNORE).
+terminal(t_K_IMMEDIATE).
+terminal(t_K_IN).
+terminal(t_K_INDEX).
+terminal(t_K_INDEXED).
+terminal(t_K_INITIALLY).
+terminal(t_K_INNER).
+terminal(t_K_INSERT).
+terminal(t_K_INSTEAD).
+terminal(t_K_INTERSECT).
+terminal(t_K_INTO).
+terminal(t_K_IS).
+terminal(t_K_ISNULL).
+terminal(t_K_JOIN).
+terminal(t_K_KEY).
+terminal(t_K_LEFT).
+terminal(t_K_LIKE).
+terminal(t_K_LIMIT).
+terminal(t_K_MATCH).
+terminal(t_K_NATURAL).
+terminal(t_K_NO).
+terminal(t_K_NOT).
+terminal(t_K_NOTNULL).
+terminal(t_K_NULL).
+terminal(t_K_OF).
+terminal(t_K_OFFSET).
+terminal(t_K_ON).
+terminal(t_K_OR).
+terminal(t_K_ORDER).
+terminal(t_K_OUTER).
+terminal(t_K_PLAN).
+terminal(t_K_PRAGMA).
+terminal(t_K_PRIMARY).
+terminal(t_K_QUERY).
+terminal(t_K_RAISE).
+terminal(t_K_RECURSIVE).
+terminal(t_K_REFERENCES).
+terminal(t_K_REGEXP).
+terminal(t_K_REINDEX).
+terminal(t_K_RELEASE).
+terminal(t_K_RENAME).
+terminal(t_K_REPLACE).
+terminal(t_K_RESTRICT).
+terminal(t_K_RIGHT).
+terminal(t_K_ROLLBACK).
+terminal(t_K_ROW).
+terminal(t_K_SAVEPOINT).
+terminal(t_K_SELECT).
+terminal(t_K_SET).
+terminal(t_K_TABLE).
+terminal(t_K_TEMP).
+terminal(t_K_TEMPORARY).
+terminal(t_K_THEN).
+terminal(t_K_TO).
+terminal(t_K_TRANSACTION).
+terminal(t_K_TRIGGER).
+terminal(t_K_UNION).
+terminal(t_K_UNIQUE).
+terminal(t_K_UPDATE).
+terminal(t_K_USING).
+terminal(t_K_VACUUM).
+terminal(t_K_VALUES).
+terminal(t_K_VIEW).
+terminal(t_K_VIRTUAL).
+terminal(t_K_WHEN).
+terminal(t_K_WHERE).
+terminal(t_K_WITH).
+terminal(t_K_WITHOUT).
+terminal(t_IDENTIFIER).
+terminal(t_NUMERIC_LITERAL).
+terminal(t_STRING_LITERAL).
+terminal(t_BLOB_LITERAL).
+terminal(t_BIND_PARAMETER).
+terminal(;).
+terminal('.').
+terminal(',').
+terminal('(').
+terminal(')').
+terminal(=).
+terminal('||').
+terminal(*).
+terminal(/).
+terminal('%').
+terminal(+).
+terminal(-).
+terminal(<<).
+terminal(>>).
+terminal(&).
+terminal(' | ').
+terminal(<).
+terminal(<=).
+terminal(>).
+terminal(>=).
+terminal(==).
+terminal('!=').
+terminal(<>).
+terminal(~).
+
+:- dynamic rule/3.
+
+rule(0:0, init_symbol, [begin_of_file, sql_stmt_list, end_of_file]).
+rule(1:1, '(;)*', [;, '(;)*']).
+rule(1:2, '(;)*', []).
+rule(1:3, '+ (;)', [;, '+ (;)']).
+rule(1:4, '+ (;)', [;]).
+rule(1:5, '(+ (;),sql_stmt)*', ['+ (;)', sql_stmt, '(+ (;),sql_stmt)*']).
+rule(1:6, '(+ (;),sql_stmt)*', []).
+rule(1:7, sql_stmt_list, ['(;)*', sql_stmt, '(+ (;),sql_stmt)*', '(;)*']).
+rule(2:8, '(t_K_QUERY,t_K_PLAN)?', [t_K_QUERY, t_K_PLAN]).
+rule(2:9, '(t_K_QUERY,t_K_PLAN)?', []).
+rule(2:10, '(t_K_EXPLAIN,(t_K_QUERY,t_K_PLAN)?)?', [t_K_EXPLAIN, '(t_K_QUERY,t_K_PLAN)?']).
+rule(2:11, '(t_K_EXPLAIN,(t_K_QUERY,t_K_PLAN)?)?', []).
+rule(2:12, 'alter_table_stmt|analyze_stmt|attach_stmt|begin_stmt|commit_stmt|compound_select_stmt|create_index_stmt|create_table_stmt|create_trigger_stmt|create_view_stmt|create_virtual_table_stmt|delete_stmt|delete_stmt_limited|detach_stmt|drop_index_stmt|drop_table_stmt|drop_trigger_stmt|drop_view_stmt|factored_select_stmt|insert_stmt|pragma_stmt|reindex_stmt|release_stmt|rollback_stmt|savepoint_stmt|simple_select_stmt|select_stmt|update_stmt|update_stmt_limited|vacuum_stmt', [alter_table_stmt]).
+rule(2:13, 'alter_table_stmt|analyze_stmt|attach_stmt|begin_stmt|commit_stmt|compound_select_stmt|create_index_stmt|create_table_stmt|create_trigger_stmt|create_view_stmt|create_virtual_table_stmt|delete_stmt|delete_stmt_limited|detach_stmt|drop_index_stmt|drop_table_stmt|drop_trigger_stmt|drop_view_stmt|factored_select_stmt|insert_stmt|pragma_stmt|reindex_stmt|release_stmt|rollback_stmt|savepoint_stmt|simple_select_stmt|select_stmt|update_stmt|update_stmt_limited|vacuum_stmt', [analyze_stmt]).
+rule(2:14, 'alter_table_stmt|analyze_stmt|attach_stmt|begin_stmt|commit_stmt|compound_select_stmt|create_index_stmt|create_table_stmt|create_trigger_stmt|create_view_stmt|create_virtual_table_stmt|delete_stmt|delete_stmt_limited|detach_stmt|drop_index_stmt|drop_table_stmt|drop_trigger_stmt|drop_view_stmt|factored_select_stmt|insert_stmt|pragma_stmt|reindex_stmt|release_stmt|rollback_stmt|savepoint_stmt|simple_select_stmt|select_stmt|update_stmt|update_stmt_limited|vacuum_stmt', [attach_stmt]).
+rule(2:15, 'alter_table_stmt|analyze_stmt|attach_stmt|begin_stmt|commit_stmt|compound_select_stmt|create_index_stmt|create_table_stmt|create_trigger_stmt|create_view_stmt|create_virtual_table_stmt|delete_stmt|delete_stmt_limited|detach_stmt|drop_index_stmt|drop_table_stmt|drop_trigger_stmt|drop_view_stmt|factored_select_stmt|insert_stmt|pragma_stmt|reindex_stmt|release_stmt|rollback_stmt|savepoint_stmt|simple_select_stmt|select_stmt|update_stmt|update_stmt_limited|vacuum_stmt', [begin_stmt]).
+rule(2:16, 'alter_table_stmt|analyze_stmt|attach_stmt|begin_stmt|commit_stmt|compound_select_stmt|create_index_stmt|create_table_stmt|create_trigger_stmt|create_view_stmt|create_virtual_table_stmt|delete_stmt|delete_stmt_limited|detach_stmt|drop_index_stmt|drop_table_stmt|drop_trigger_stmt|drop_view_stmt|factored_select_stmt|insert_stmt|pragma_stmt|reindex_stmt|release_stmt|rollback_stmt|savepoint_stmt|simple_select_stmt|select_stmt|update_stmt|update_stmt_limited|vacuum_stmt', [commit_stmt]).
+rule(2:17, 'alter_table_stmt|analyze_stmt|attach_stmt|begin_stmt|commit_stmt|compound_select_stmt|create_index_stmt|create_table_stmt|create_trigger_stmt|create_view_stmt|create_virtual_table_stmt|delete_stmt|delete_stmt_limited|detach_stmt|drop_index_stmt|drop_table_stmt|drop_trigger_stmt|drop_view_stmt|factored_select_stmt|insert_stmt|pragma_stmt|reindex_stmt|release_stmt|rollback_stmt|savepoint_stmt|simple_select_stmt|select_stmt|update_stmt|update_stmt_limited|vacuum_stmt', [compound_select_stmt]).
+rule(2:18, 'alter_table_stmt|analyze_stmt|attach_stmt|begin_stmt|commit_stmt|compound_select_stmt|create_index_stmt|create_table_stmt|create_trigger_stmt|create_view_stmt|create_virtual_table_stmt|delete_stmt|delete_stmt_limited|detach_stmt|drop_index_stmt|drop_table_stmt|drop_trigger_stmt|drop_view_stmt|factored_select_stmt|insert_stmt|pragma_stmt|reindex_stmt|release_stmt|rollback_stmt|savepoint_stmt|simple_select_stmt|select_stmt|update_stmt|update_stmt_limited|vacuum_stmt', [create_index_stmt]).
+rule(2:19, 'alter_table_stmt|analyze_stmt|attach_stmt|begin_stmt|commit_stmt|compound_select_stmt|create_index_stmt|create_table_stmt|create_trigger_stmt|create_view_stmt|create_virtual_table_stmt|delete_stmt|delete_stmt_limited|detach_stmt|drop_index_stmt|drop_table_stmt|drop_trigger_stmt|drop_view_stmt|factored_select_stmt|insert_stmt|pragma_stmt|reindex_stmt|release_stmt|rollback_stmt|savepoint_stmt|simple_select_stmt|select_stmt|update_stmt|update_stmt_limited|vacuum_stmt', [create_table_stmt]).
+rule(2:20, 'alter_table_stmt|analyze_stmt|attach_stmt|begin_stmt|commit_stmt|compound_select_stmt|create_index_stmt|create_table_stmt|create_trigger_stmt|create_view_stmt|create_virtual_table_stmt|delete_stmt|delete_stmt_limited|detach_stmt|drop_index_stmt|drop_table_stmt|drop_trigger_stmt|drop_view_stmt|factored_select_stmt|insert_stmt|pragma_stmt|reindex_stmt|release_stmt|rollback_stmt|savepoint_stmt|simple_select_stmt|select_stmt|update_stmt|update_stmt_limited|vacuum_stmt', [create_trigger_stmt]).
+rule(2:21, 'alter_table_stmt|analyze_stmt|attach_stmt|begin_stmt|commit_stmt|compound_select_stmt|create_index_stmt|create_table_stmt|create_trigger_stmt|create_view_stmt|create_virtual_table_stmt|delete_stmt|delete_stmt_limited|detach_stmt|drop_index_stmt|drop_table_stmt|drop_trigger_stmt|drop_view_stmt|factored_select_stmt|insert_stmt|pragma_stmt|reindex_stmt|release_stmt|rollback_stmt|savepoint_stmt|simple_select_stmt|select_stmt|update_stmt|update_stmt_limited|vacuum_stmt', [create_view_stmt]).
+rule(2:22, 'alter_table_stmt|analyze_stmt|attach_stmt|begin_stmt|commit_stmt|compound_select_stmt|create_index_stmt|create_table_stmt|create_trigger_stmt|create_view_stmt|create_virtual_table_stmt|delete_stmt|delete_stmt_limited|detach_stmt|drop_index_stmt|drop_table_stmt|drop_trigger_stmt|drop_view_stmt|factored_select_stmt|insert_stmt|pragma_stmt|reindex_stmt|release_stmt|rollback_stmt|savepoint_stmt|simple_select_stmt|select_stmt|update_stmt|update_stmt_limited|vacuum_stmt', [create_virtual_table_stmt]).
+rule(2:23, 'alter_table_stmt|analyze_stmt|attach_stmt|begin_stmt|commit_stmt|compound_select_stmt|create_index_stmt|create_table_stmt|create_trigger_stmt|create_view_stmt|create_virtual_table_stmt|delete_stmt|delete_stmt_limited|detach_stmt|drop_index_stmt|drop_table_stmt|drop_trigger_stmt|drop_view_stmt|factored_select_stmt|insert_stmt|pragma_stmt|reindex_stmt|release_stmt|rollback_stmt|savepoint_stmt|simple_select_stmt|select_stmt|update_stmt|update_stmt_limited|vacuum_stmt', [delete_stmt]).
+rule(2:24, 'alter_table_stmt|analyze_stmt|attach_stmt|begin_stmt|commit_stmt|compound_select_stmt|create_index_stmt|create_table_stmt|create_trigger_stmt|create_view_stmt|create_virtual_table_stmt|delete_stmt|delete_stmt_limited|detach_stmt|drop_index_stmt|drop_table_stmt|drop_trigger_stmt|drop_view_stmt|factored_select_stmt|insert_stmt|pragma_stmt|reindex_stmt|release_stmt|rollback_stmt|savepoint_stmt|simple_select_stmt|select_stmt|update_stmt|update_stmt_limited|vacuum_stmt', [delete_stmt_limited]).
+rule(2:25, 'alter_table_stmt|analyze_stmt|attach_stmt|begin_stmt|commit_stmt|compound_select_stmt|create_index_stmt|create_table_stmt|create_trigger_stmt|create_view_stmt|create_virtual_table_stmt|delete_stmt|delete_stmt_limited|detach_stmt|drop_index_stmt|drop_table_stmt|drop_trigger_stmt|drop_view_stmt|factored_select_stmt|insert_stmt|pragma_stmt|reindex_stmt|release_stmt|rollback_stmt|savepoint_stmt|simple_select_stmt|select_stmt|update_stmt|update_stmt_limited|vacuum_stmt', [detach_stmt]).
+rule(2:26, 'alter_table_stmt|analyze_stmt|attach_stmt|begin_stmt|commit_stmt|compound_select_stmt|create_index_stmt|create_table_stmt|create_trigger_stmt|create_view_stmt|create_virtual_table_stmt|delete_stmt|delete_stmt_limited|detach_stmt|drop_index_stmt|drop_table_stmt|drop_trigger_stmt|drop_view_stmt|factored_select_stmt|insert_stmt|pragma_stmt|reindex_stmt|release_stmt|rollback_stmt|savepoint_stmt|simple_select_stmt|select_stmt|update_stmt|update_stmt_limited|vacuum_stmt', [drop_index_stmt]).
+rule(2:27, 'alter_table_stmt|analyze_stmt|attach_stmt|begin_stmt|commit_stmt|compound_select_stmt|create_index_stmt|create_table_stmt|create_trigger_stmt|create_view_stmt|create_virtual_table_stmt|delete_stmt|delete_stmt_limited|detach_stmt|drop_index_stmt|drop_table_stmt|drop_trigger_stmt|drop_view_stmt|factored_select_stmt|insert_stmt|pragma_stmt|reindex_stmt|release_stmt|rollback_stmt|savepoint_stmt|simple_select_stmt|select_stmt|update_stmt|update_stmt_limited|vacuum_stmt', [drop_table_stmt]).
+rule(2:28, 'alter_table_stmt|analyze_stmt|attach_stmt|begin_stmt|commit_stmt|compound_select_stmt|create_index_stmt|create_table_stmt|create_trigger_stmt|create_view_stmt|create_virtual_table_stmt|delete_stmt|delete_stmt_limited|detach_stmt|drop_index_stmt|drop_table_stmt|drop_trigger_stmt|drop_view_stmt|factored_select_stmt|insert_stmt|pragma_stmt|reindex_stmt|release_stmt|rollback_stmt|savepoint_stmt|simple_select_stmt|select_stmt|update_stmt|update_stmt_limited|vacuum_stmt', [drop_trigger_stmt]).
+rule(2:29, 'alter_table_stmt|analyze_stmt|attach_stmt|begin_stmt|commit_stmt|compound_select_stmt|create_index_stmt|create_table_stmt|create_trigger_stmt|create_view_stmt|create_virtual_table_stmt|delete_stmt|delete_stmt_limited|detach_stmt|drop_index_stmt|drop_table_stmt|drop_trigger_stmt|drop_view_stmt|factored_select_stmt|insert_stmt|pragma_stmt|reindex_stmt|release_stmt|rollback_stmt|savepoint_stmt|simple_select_stmt|select_stmt|update_stmt|update_stmt_limited|vacuum_stmt', [drop_view_stmt]).
+rule(2:30, 'alter_table_stmt|analyze_stmt|attach_stmt|begin_stmt|commit_stmt|compound_select_stmt|create_index_stmt|create_table_stmt|create_trigger_stmt|create_view_stmt|create_virtual_table_stmt|delete_stmt|delete_stmt_limited|detach_stmt|drop_index_stmt|drop_table_stmt|drop_trigger_stmt|drop_view_stmt|factored_select_stmt|insert_stmt|pragma_stmt|reindex_stmt|release_stmt|rollback_stmt|savepoint_stmt|simple_select_stmt|select_stmt|update_stmt|update_stmt_limited|vacuum_stmt', [factored_select_stmt]).
+rule(2:31, 'alter_table_stmt|analyze_stmt|attach_stmt|begin_stmt|commit_stmt|compound_select_stmt|create_index_stmt|create_table_stmt|create_trigger_stmt|create_view_stmt|create_virtual_table_stmt|delete_stmt|delete_stmt_limited|detach_stmt|drop_index_stmt|drop_table_stmt|drop_trigger_stmt|drop_view_stmt|factored_select_stmt|insert_stmt|pragma_stmt|reindex_stmt|release_stmt|rollback_stmt|savepoint_stmt|simple_select_stmt|select_stmt|update_stmt|update_stmt_limited|vacuum_stmt', [insert_stmt]).
+rule(2:32, 'alter_table_stmt|analyze_stmt|attach_stmt|begin_stmt|commit_stmt|compound_select_stmt|create_index_stmt|create_table_stmt|create_trigger_stmt|create_view_stmt|create_virtual_table_stmt|delete_stmt|delete_stmt_limited|detach_stmt|drop_index_stmt|drop_table_stmt|drop_trigger_stmt|drop_view_stmt|factored_select_stmt|insert_stmt|pragma_stmt|reindex_stmt|release_stmt|rollback_stmt|savepoint_stmt|simple_select_stmt|select_stmt|update_stmt|update_stmt_limited|vacuum_stmt', [pragma_stmt]).
+rule(2:33, 'alter_table_stmt|analyze_stmt|attach_stmt|begin_stmt|commit_stmt|compound_select_stmt|create_index_stmt|create_table_stmt|create_trigger_stmt|create_view_stmt|create_virtual_table_stmt|delete_stmt|delete_stmt_limited|detach_stmt|drop_index_stmt|drop_table_stmt|drop_trigger_stmt|drop_view_stmt|factored_select_stmt|insert_stmt|pragma_stmt|reindex_stmt|release_stmt|rollback_stmt|savepoint_stmt|simple_select_stmt|select_stmt|update_stmt|update_stmt_limited|vacuum_stmt', [reindex_stmt]).
+rule(2:34, 'alter_table_stmt|analyze_stmt|attach_stmt|begin_stmt|commit_stmt|compound_select_stmt|create_index_stmt|create_table_stmt|create_trigger_stmt|create_view_stmt|create_virtual_table_stmt|delete_stmt|delete_stmt_limited|detach_stmt|drop_index_stmt|drop_table_stmt|drop_trigger_stmt|drop_view_stmt|factored_select_stmt|insert_stmt|pragma_stmt|reindex_stmt|release_stmt|rollback_stmt|savepoint_stmt|simple_select_stmt|select_stmt|update_stmt|update_stmt_limited|vacuum_stmt', [release_stmt]).
+rule(2:35, 'alter_table_stmt|analyze_stmt|attach_stmt|begin_stmt|commit_stmt|compound_select_stmt|create_index_stmt|create_table_stmt|create_trigger_stmt|create_view_stmt|create_virtual_table_stmt|delete_stmt|delete_stmt_limited|detach_stmt|drop_index_stmt|drop_table_stmt|drop_trigger_stmt|drop_view_stmt|factored_select_stmt|insert_stmt|pragma_stmt|reindex_stmt|release_stmt|rollback_stmt|savepoint_stmt|simple_select_stmt|select_stmt|update_stmt|update_stmt_limited|vacuum_stmt', [rollback_stmt]).
+rule(2:36, 'alter_table_stmt|analyze_stmt|attach_stmt|begin_stmt|commit_stmt|compound_select_stmt|create_index_stmt|create_table_stmt|create_trigger_stmt|create_view_stmt|create_virtual_table_stmt|delete_stmt|delete_stmt_limited|detach_stmt|drop_index_stmt|drop_table_stmt|drop_trigger_stmt|drop_view_stmt|factored_select_stmt|insert_stmt|pragma_stmt|reindex_stmt|release_stmt|rollback_stmt|savepoint_stmt|simple_select_stmt|select_stmt|update_stmt|update_stmt_limited|vacuum_stmt', [savepoint_stmt]).
+rule(2:37, 'alter_table_stmt|analyze_stmt|attach_stmt|begin_stmt|commit_stmt|compound_select_stmt|create_index_stmt|create_table_stmt|create_trigger_stmt|create_view_stmt|create_virtual_table_stmt|delete_stmt|delete_stmt_limited|detach_stmt|drop_index_stmt|drop_table_stmt|drop_trigger_stmt|drop_view_stmt|factored_select_stmt|insert_stmt|pragma_stmt|reindex_stmt|release_stmt|rollback_stmt|savepoint_stmt|simple_select_stmt|select_stmt|update_stmt|update_stmt_limited|vacuum_stmt', [simple_select_stmt]).
+rule(2:38, 'alter_table_stmt|analyze_stmt|attach_stmt|begin_stmt|commit_stmt|compound_select_stmt|create_index_stmt|create_table_stmt|create_trigger_stmt|create_view_stmt|create_virtual_table_stmt|delete_stmt|delete_stmt_limited|detach_stmt|drop_index_stmt|drop_table_stmt|drop_trigger_stmt|drop_view_stmt|factored_select_stmt|insert_stmt|pragma_stmt|reindex_stmt|release_stmt|rollback_stmt|savepoint_stmt|simple_select_stmt|select_stmt|update_stmt|update_stmt_limited|vacuum_stmt', [select_stmt]).
+rule(2:39, 'alter_table_stmt|analyze_stmt|attach_stmt|begin_stmt|commit_stmt|compound_select_stmt|create_index_stmt|create_table_stmt|create_trigger_stmt|create_view_stmt|create_virtual_table_stmt|delete_stmt|delete_stmt_limited|detach_stmt|drop_index_stmt|drop_table_stmt|drop_trigger_stmt|drop_view_stmt|factored_select_stmt|insert_stmt|pragma_stmt|reindex_stmt|release_stmt|rollback_stmt|savepoint_stmt|simple_select_stmt|select_stmt|update_stmt|update_stmt_limited|vacuum_stmt', [update_stmt]).
+rule(2:40, 'alter_table_stmt|analyze_stmt|attach_stmt|begin_stmt|commit_stmt|compound_select_stmt|create_index_stmt|create_table_stmt|create_trigger_stmt|create_view_stmt|create_virtual_table_stmt|delete_stmt|delete_stmt_limited|detach_stmt|drop_index_stmt|drop_table_stmt|drop_trigger_stmt|drop_view_stmt|factored_select_stmt|insert_stmt|pragma_stmt|reindex_stmt|release_stmt|rollback_stmt|savepoint_stmt|simple_select_stmt|select_stmt|update_stmt|update_stmt_limited|vacuum_stmt', [update_stmt_limited]).
+rule(2:41, 'alter_table_stmt|analyze_stmt|attach_stmt|begin_stmt|commit_stmt|compound_select_stmt|create_index_stmt|create_table_stmt|create_trigger_stmt|create_view_stmt|create_virtual_table_stmt|delete_stmt|delete_stmt_limited|detach_stmt|drop_index_stmt|drop_table_stmt|drop_trigger_stmt|drop_view_stmt|factored_select_stmt|insert_stmt|pragma_stmt|reindex_stmt|release_stmt|rollback_stmt|savepoint_stmt|simple_select_stmt|select_stmt|update_stmt|update_stmt_limited|vacuum_stmt', [vacuum_stmt]).
+rule(2:42, sql_stmt, ['(t_K_EXPLAIN,(t_K_QUERY,t_K_PLAN)?)?', 'alter_table_stmt|analyze_stmt|attach_stmt|begin_stmt|commit_stmt|compound_select_stmt|create_index_stmt|create_table_stmt|create_trigger_stmt|create_view_stmt|create_virtual_table_stmt|delete_stmt|delete_stmt_limited|detach_stmt|drop_index_stmt|drop_table_stmt|drop_trigger_stmt|drop_view_stmt|factored_select_stmt|insert_stmt|pragma_stmt|reindex_stmt|release_stmt|rollback_stmt|savepoint_stmt|simple_select_stmt|select_stmt|update_stmt|update_stmt_limited|vacuum_stmt']).
+rule(3:43, '(database_name,(\'.\'))?', [database_name, '.']).
+rule(3:44, '(database_name,(\'.\'))?', []).
+rule(3:45, 't_K_RENAME,t_K_TO,new_table_name|t_K_ADD,t_K_COLUMN?,column_def', [t_K_RENAME, t_K_TO, new_table_name]).
+rule(3:46, 't_K_COLUMN?', [t_K_COLUMN]).
+rule(3:47, 't_K_COLUMN?', []).
+rule(3:48, 't_K_RENAME,t_K_TO,new_table_name|t_K_ADD,t_K_COLUMN?,column_def', [t_K_ADD, 't_K_COLUMN?', column_def]).
+rule(3:49, alter_table_stmt, [t_K_ALTER, t_K_TABLE, '(database_name,(\'.\'))?', table_name, 't_K_RENAME,t_K_TO,new_table_name|t_K_ADD,t_K_COLUMN?,column_def']).
+rule(4:50, '(database_name|table_or_index_name|database_name,(\'.\'),table_or_index_name)?', [database_name]).
+rule(4:51, '(database_name|table_or_index_name|database_name,(\'.\'),table_or_index_name)?', [table_or_index_name]).
+rule(4:52, '(database_name|table_or_index_name|database_name,(\'.\'),table_or_index_name)?', [database_name, '.', table_or_index_name]).
+rule(4:53, '(database_name|table_or_index_name|database_name,(\'.\'),table_or_index_name)?', []).
+rule(4:54, analyze_stmt, [t_K_ANALYZE, '(database_name|table_or_index_name|database_name,(\'.\'),table_or_index_name)?']).
+rule(5:55, 't_K_DATABASE?', [t_K_DATABASE]).
+rule(5:56, 't_K_DATABASE?', []).
+rule(5:57, attach_stmt, [t_K_ATTACH, 't_K_DATABASE?', expr, t_K_AS, database_name]).
+rule(6:58, '(t_K_DEFERRED|t_K_IMMEDIATE|t_K_EXCLUSIVE)?', [t_K_DEFERRED]).
+rule(6:59, '(t_K_DEFERRED|t_K_IMMEDIATE|t_K_EXCLUSIVE)?', [t_K_IMMEDIATE]).
+rule(6:60, '(t_K_DEFERRED|t_K_IMMEDIATE|t_K_EXCLUSIVE)?', [t_K_EXCLUSIVE]).
+rule(6:61, '(t_K_DEFERRED|t_K_IMMEDIATE|t_K_EXCLUSIVE)?', []).
+rule(6:62, 'transaction_name?', [transaction_name]).
+rule(6:63, 'transaction_name?', []).
+rule(6:64, '(t_K_TRANSACTION,transaction_name?)?', [t_K_TRANSACTION, 'transaction_name?']).
+rule(6:65, '(t_K_TRANSACTION,transaction_name?)?', []).
+rule(6:66, begin_stmt, [t_K_BEGIN, '(t_K_DEFERRED|t_K_IMMEDIATE|t_K_EXCLUSIVE)?', '(t_K_TRANSACTION,transaction_name?)?']).
+rule(7:67, 't_K_COMMIT|t_K_END', [t_K_COMMIT]).
+rule(7:68, 't_K_COMMIT|t_K_END', [t_K_END]).
+rule(7:69, commit_stmt, ['t_K_COMMIT|t_K_END', '(t_K_TRANSACTION,transaction_name?)?']).
+rule(8:70, 't_K_RECURSIVE?', [t_K_RECURSIVE]).
+rule(8:71, 't_K_RECURSIVE?', []).
+rule(8:72, '((\',\'),common_table_expression)*', [',', common_table_expression, '((\',\'),common_table_expression)*']).
+rule(8:73, '((\',\'),common_table_expression)*', []).
+rule(8:74, '(t_K_WITH,t_K_RECURSIVE?,common_table_expression,((\',\'),common_table_expression)*)?', [t_K_WITH, 't_K_RECURSIVE?', common_table_expression, '((\',\'),common_table_expression)*']).
+rule(8:75, '(t_K_WITH,t_K_RECURSIVE?,common_table_expression,((\',\'),common_table_expression)*)?', []).
+rule(8:76, 't_K_ALL?', [t_K_ALL]).
+rule(8:77, 't_K_ALL?', []).
+rule(8:78, 't_K_UNION,t_K_ALL?|t_K_INTERSECT|t_K_EXCEPT', [t_K_UNION, 't_K_ALL?']).
+rule(8:79, 't_K_UNION,t_K_ALL?|t_K_INTERSECT|t_K_EXCEPT', [t_K_INTERSECT]).
+rule(8:80, 't_K_UNION,t_K_ALL?|t_K_INTERSECT|t_K_EXCEPT', [t_K_EXCEPT]).
+rule(8:81, '+ ((t_K_UNION,t_K_ALL?|t_K_INTERSECT|t_K_EXCEPT),select_core)', ['t_K_UNION,t_K_ALL?|t_K_INTERSECT|t_K_EXCEPT', select_core, '+ ((t_K_UNION,t_K_ALL?|t_K_INTERSECT|t_K_EXCEPT),select_core)']).
+rule(8:82, '+ ((t_K_UNION,t_K_ALL?|t_K_INTERSECT|t_K_EXCEPT),select_core)', ['t_K_UNION,t_K_ALL?|t_K_INTERSECT|t_K_EXCEPT', select_core]).
+rule(8:83, '((\',\'),ordering_term)*', [',', ordering_term, '((\',\'),ordering_term)*']).
+rule(8:84, '((\',\'),ordering_term)*', []).
+rule(8:85, '(t_K_ORDER,t_K_BY,ordering_term,((\',\'),ordering_term)*)?', [t_K_ORDER, t_K_BY, ordering_term, '((\',\'),ordering_term)*']).
+rule(8:86, '(t_K_ORDER,t_K_BY,ordering_term,((\',\'),ordering_term)*)?', []).
+rule(8:87, 't_K_OFFSET|(\',\')', [t_K_OFFSET]).
+rule(8:88, 't_K_OFFSET|(\',\')', [',']).
+rule(8:89, '((t_K_OFFSET|(\',\')),expr)?', ['t_K_OFFSET|(\',\')', expr]).
+rule(8:90, '((t_K_OFFSET|(\',\')),expr)?', []).
+rule(8:91, '(t_K_LIMIT,expr,((t_K_OFFSET|(\',\')),expr)?)?', [t_K_LIMIT, expr, '((t_K_OFFSET|(\',\')),expr)?']).
+rule(8:92, '(t_K_LIMIT,expr,((t_K_OFFSET|(\',\')),expr)?)?', []).
+rule(8:93, compound_select_stmt, ['(t_K_WITH,t_K_RECURSIVE?,common_table_expression,((\',\'),common_table_expression)*)?', select_core, '+ ((t_K_UNION,t_K_ALL?|t_K_INTERSECT|t_K_EXCEPT),select_core)', '(t_K_ORDER,t_K_BY,ordering_term,((\',\'),ordering_term)*)?', '(t_K_LIMIT,expr,((t_K_OFFSET|(\',\')),expr)?)?']).
+rule(9:94, 't_K_UNIQUE?', [t_K_UNIQUE]).
+rule(9:95, 't_K_UNIQUE?', []).
+rule(9:96, '(t_K_IF,t_K_NOT,t_K_EXISTS)?', [t_K_IF, t_K_NOT, t_K_EXISTS]).
+rule(9:97, '(t_K_IF,t_K_NOT,t_K_EXISTS)?', []).
+rule(9:98, '((\',\'),indexed_column)*', [',', indexed_column, '((\',\'),indexed_column)*']).
+rule(9:99, '((\',\'),indexed_column)*', []).
+rule(9:100, '(t_K_WHERE,expr)?', [t_K_WHERE, expr]).
+rule(9:101, '(t_K_WHERE,expr)?', []).
+rule(9:102, create_index_stmt, [t_K_CREATE, 't_K_UNIQUE?', t_K_INDEX, '(t_K_IF,t_K_NOT,t_K_EXISTS)?', '(database_name,(\'.\'))?', index_name, t_K_ON, table_name, '(', indexed_column, '((\',\'),indexed_column)*', ')', '(t_K_WHERE,expr)?']).
+rule(10:103, '(t_K_TEMP|t_K_TEMPORARY)?', [t_K_TEMP]).
+rule(10:104, '(t_K_TEMP|t_K_TEMPORARY)?', [t_K_TEMPORARY]).
+rule(10:105, '(t_K_TEMP|t_K_TEMPORARY)?', []).
+rule(10:106, '((\',\'),column_def)*', [',', column_def, '((\',\'),column_def)*']).
+rule(10:107, '((\',\'),column_def)*', []).
+rule(10:108, '((\',\'),table_constraint)*', [',', table_constraint, '((\',\'),table_constraint)*']).
+rule(10:109, '((\',\'),table_constraint)*', []).
+rule(10:110, '(t_K_WITHOUT,t_IDENTIFIER)?', [t_K_WITHOUT, t_IDENTIFIER]).
+rule(10:111, '(t_K_WITHOUT,t_IDENTIFIER)?', []).
+rule(10:112, '\'(\',column_def,((\',\'),column_def)*,((\',\'),table_constraint)*,\')\',(t_K_WITHOUT,t_IDENTIFIER)?|t_K_AS,select_stmt', ['(', column_def, '((\',\'),column_def)*', '((\',\'),table_constraint)*', ')', '(t_K_WITHOUT,t_IDENTIFIER)?']).
+rule(10:113, '\'(\',column_def,((\',\'),column_def)*,((\',\'),table_constraint)*,\')\',(t_K_WITHOUT,t_IDENTIFIER)?|t_K_AS,select_stmt', [t_K_AS, select_stmt]).
+rule(10:114, create_table_stmt, [t_K_CREATE, '(t_K_TEMP|t_K_TEMPORARY)?', t_K_TABLE, '(t_K_IF,t_K_NOT,t_K_EXISTS)?', '(database_name,(\'.\'))?', table_name, '\'(\',column_def,((\',\'),column_def)*,((\',\'),table_constraint)*,\')\',(t_K_WITHOUT,t_IDENTIFIER)?|t_K_AS,select_stmt']).
+rule(11:115, '(t_K_BEFORE|t_K_AFTER|t_K_INSTEAD,t_K_OF)?', [t_K_BEFORE]).
+rule(11:116, '(t_K_BEFORE|t_K_AFTER|t_K_INSTEAD,t_K_OF)?', [t_K_AFTER]).
+rule(11:117, '(t_K_BEFORE|t_K_AFTER|t_K_INSTEAD,t_K_OF)?', [t_K_INSTEAD, t_K_OF]).
+rule(11:118, '(t_K_BEFORE|t_K_AFTER|t_K_INSTEAD,t_K_OF)?', []).
+rule(11:119, 't_K_DELETE|t_K_INSERT|t_K_UPDATE,(t_K_OF,column_name,((\',\'),column_name)*)?', [t_K_DELETE]).
+rule(11:120, 't_K_DELETE|t_K_INSERT|t_K_UPDATE,(t_K_OF,column_name,((\',\'),column_name)*)?', [t_K_INSERT]).
+rule(11:121, '((\',\'),column_name)*', [',', column_name, '((\',\'),column_name)*']).
+rule(11:122, '((\',\'),column_name)*', []).
+rule(11:123, '(t_K_OF,column_name,((\',\'),column_name)*)?', [t_K_OF, column_name, '((\',\'),column_name)*']).
+rule(11:124, '(t_K_OF,column_name,((\',\'),column_name)*)?', []).
+rule(11:125, 't_K_DELETE|t_K_INSERT|t_K_UPDATE,(t_K_OF,column_name,((\',\'),column_name)*)?', [t_K_UPDATE, '(t_K_OF,column_name,((\',\'),column_name)*)?']).
+rule(11:126, '(t_K_FOR,t_K_EACH,t_K_ROW)?', [t_K_FOR, t_K_EACH, t_K_ROW]).
+rule(11:127, '(t_K_FOR,t_K_EACH,t_K_ROW)?', []).
+rule(11:128, '(t_K_WHEN,expr)?', [t_K_WHEN, expr]).
+rule(11:129, '(t_K_WHEN,expr)?', []).
+rule(11:130, 'update_stmt|insert_stmt|delete_stmt|select_stmt', [update_stmt]).
+rule(11:131, 'update_stmt|insert_stmt|delete_stmt|select_stmt', [insert_stmt]).
+rule(11:132, 'update_stmt|insert_stmt|delete_stmt|select_stmt', [delete_stmt]).
+rule(11:133, 'update_stmt|insert_stmt|delete_stmt|select_stmt', [select_stmt]).
+rule(11:134, '+ ((update_stmt|insert_stmt|delete_stmt|select_stmt),(;))', ['update_stmt|insert_stmt|delete_stmt|select_stmt', ;, '+ ((update_stmt|insert_stmt|delete_stmt|select_stmt),(;))']).
+rule(11:135, '+ ((update_stmt|insert_stmt|delete_stmt|select_stmt),(;))', ['update_stmt|insert_stmt|delete_stmt|select_stmt', ;]).
+rule(11:136, create_trigger_stmt, [t_K_CREATE, '(t_K_TEMP|t_K_TEMPORARY)?', t_K_TRIGGER, '(t_K_IF,t_K_NOT,t_K_EXISTS)?', '(database_name,(\'.\'))?', trigger_name, '(t_K_BEFORE|t_K_AFTER|t_K_INSTEAD,t_K_OF)?', 't_K_DELETE|t_K_INSERT|t_K_UPDATE,(t_K_OF,column_name,((\',\'),column_name)*)?', t_K_ON, '(database_name,(\'.\'))?', table_name, '(t_K_FOR,t_K_EACH,t_K_ROW)?', '(t_K_WHEN,expr)?', t_K_BEGIN, '+ ((update_stmt|insert_stmt|delete_stmt|select_stmt),(;))', t_K_END]).
+rule(12:137, create_view_stmt, [t_K_CREATE, '(t_K_TEMP|t_K_TEMPORARY)?', t_K_VIEW, '(t_K_IF,t_K_NOT,t_K_EXISTS)?', '(database_name,(\'.\'))?', view_name, t_K_AS, select_stmt]).
+rule(13:138, '((\',\'),module_argument)*', [',', module_argument, '((\',\'),module_argument)*']).
+rule(13:139, '((\',\'),module_argument)*', []).
+rule(13:140, '(\'(\',module_argument,((\',\'),module_argument)*,\')\')?', ['(', module_argument, '((\',\'),module_argument)*', ')']).
+rule(13:141, '(\'(\',module_argument,((\',\'),module_argument)*,\')\')?', []).
+rule(13:142, create_virtual_table_stmt, [t_K_CREATE, t_K_VIRTUAL, t_K_TABLE, '(t_K_IF,t_K_NOT,t_K_EXISTS)?', '(database_name,(\'.\'))?', table_name, t_K_USING, module_name, '(\'(\',module_argument,((\',\'),module_argument)*,\')\')?']).
+rule(14:143, 'with_clause?', [with_clause]).
+rule(14:144, 'with_clause?', []).
+rule(14:145, delete_stmt, ['with_clause?', t_K_DELETE, t_K_FROM, qualified_table_name, '(t_K_WHERE,expr)?']).
+rule(15:146, '((t_K_ORDER,t_K_BY,ordering_term,((\',\'),ordering_term)*)?,t_K_LIMIT,expr,((t_K_OFFSET|(\',\')),expr)?)?', ['(t_K_ORDER,t_K_BY,ordering_term,((\',\'),ordering_term)*)?', t_K_LIMIT, expr, '((t_K_OFFSET|(\',\')),expr)?']).
+rule(15:147, '((t_K_ORDER,t_K_BY,ordering_term,((\',\'),ordering_term)*)?,t_K_LIMIT,expr,((t_K_OFFSET|(\',\')),expr)?)?', []).
+rule(15:148, delete_stmt_limited, ['with_clause?', t_K_DELETE, t_K_FROM, qualified_table_name, '(t_K_WHERE,expr)?', '((t_K_ORDER,t_K_BY,ordering_term,((\',\'),ordering_term)*)?,t_K_LIMIT,expr,((t_K_OFFSET|(\',\')),expr)?)?']).
+rule(16:149, detach_stmt, [t_K_DETACH, 't_K_DATABASE?', database_name]).
+rule(17:150, '(t_K_IF,t_K_EXISTS)?', [t_K_IF, t_K_EXISTS]).
+rule(17:151, '(t_K_IF,t_K_EXISTS)?', []).
+rule(17:152, drop_index_stmt, [t_K_DROP, t_K_INDEX, '(t_K_IF,t_K_EXISTS)?', '(database_name,(\'.\'))?', index_name]).
+rule(18:153, drop_table_stmt, [t_K_DROP, t_K_TABLE, '(t_K_IF,t_K_EXISTS)?', '(database_name,(\'.\'))?', table_name]).
+rule(19:154, drop_trigger_stmt, [t_K_DROP, t_K_TRIGGER, '(t_K_IF,t_K_EXISTS)?', '(database_name,(\'.\'))?', trigger_name]).
+rule(20:155, drop_view_stmt, [t_K_DROP, t_K_VIEW, '(t_K_IF,t_K_EXISTS)?', '(database_name,(\'.\'))?', view_name]).
+rule(21:156, '(compound_operator,select_core)*', [compound_operator, select_core, '(compound_operator,select_core)*']).
+rule(21:157, '(compound_operator,select_core)*', []).
+rule(21:158, factored_select_stmt, ['(t_K_WITH,t_K_RECURSIVE?,common_table_expression,((\',\'),common_table_expression)*)?', select_core, '(compound_operator,select_core)*', '(t_K_ORDER,t_K_BY,ordering_term,((\',\'),ordering_term)*)?', '(t_K_LIMIT,expr,((t_K_OFFSET|(\',\')),expr)?)?']).
+rule(22:159, 't_K_INSERT|t_K_REPLACE|t_K_INSERT,t_K_OR,t_K_REPLACE|t_K_INSERT,t_K_OR,t_K_ROLLBACK|t_K_INSERT,t_K_OR,t_K_ABORT|t_K_INSERT,t_K_OR,t_K_FAIL|t_K_INSERT,t_K_OR,t_K_IGNORE', [t_K_INSERT]).
+rule(22:160, 't_K_INSERT|t_K_REPLACE|t_K_INSERT,t_K_OR,t_K_REPLACE|t_K_INSERT,t_K_OR,t_K_ROLLBACK|t_K_INSERT,t_K_OR,t_K_ABORT|t_K_INSERT,t_K_OR,t_K_FAIL|t_K_INSERT,t_K_OR,t_K_IGNORE', [t_K_REPLACE]).
+rule(22:161, 't_K_INSERT|t_K_REPLACE|t_K_INSERT,t_K_OR,t_K_REPLACE|t_K_INSERT,t_K_OR,t_K_ROLLBACK|t_K_INSERT,t_K_OR,t_K_ABORT|t_K_INSERT,t_K_OR,t_K_FAIL|t_K_INSERT,t_K_OR,t_K_IGNORE', [t_K_INSERT, t_K_OR, t_K_REPLACE]).
+rule(22:162, 't_K_INSERT|t_K_REPLACE|t_K_INSERT,t_K_OR,t_K_REPLACE|t_K_INSERT,t_K_OR,t_K_ROLLBACK|t_K_INSERT,t_K_OR,t_K_ABORT|t_K_INSERT,t_K_OR,t_K_FAIL|t_K_INSERT,t_K_OR,t_K_IGNORE', [t_K_INSERT, t_K_OR, t_K_ROLLBACK]).
+rule(22:163, 't_K_INSERT|t_K_REPLACE|t_K_INSERT,t_K_OR,t_K_REPLACE|t_K_INSERT,t_K_OR,t_K_ROLLBACK|t_K_INSERT,t_K_OR,t_K_ABORT|t_K_INSERT,t_K_OR,t_K_FAIL|t_K_INSERT,t_K_OR,t_K_IGNORE', [t_K_INSERT, t_K_OR, t_K_ABORT]).
+rule(22:164, 't_K_INSERT|t_K_REPLACE|t_K_INSERT,t_K_OR,t_K_REPLACE|t_K_INSERT,t_K_OR,t_K_ROLLBACK|t_K_INSERT,t_K_OR,t_K_ABORT|t_K_INSERT,t_K_OR,t_K_FAIL|t_K_INSERT,t_K_OR,t_K_IGNORE', [t_K_INSERT, t_K_OR, t_K_FAIL]).
+rule(22:165, 't_K_INSERT|t_K_REPLACE|t_K_INSERT,t_K_OR,t_K_REPLACE|t_K_INSERT,t_K_OR,t_K_ROLLBACK|t_K_INSERT,t_K_OR,t_K_ABORT|t_K_INSERT,t_K_OR,t_K_FAIL|t_K_INSERT,t_K_OR,t_K_IGNORE', [t_K_INSERT, t_K_OR, t_K_IGNORE]).
+rule(22:166, '(\'(\',column_name,((\',\'),column_name)*,\')\')?', ['(', column_name, '((\',\'),column_name)*', ')']).
+rule(22:167, '(\'(\',column_name,((\',\'),column_name)*,\')\')?', []).
+rule(22:168, '((\',\'),expr)*', [',', expr, '((\',\'),expr)*']).
+rule(22:169, '((\',\'),expr)*', []).
+rule(22:170, '((\',\'),\'(\',expr,((\',\'),expr)*,\')\')*', [',', '(', expr, '((\',\'),expr)*', ')', '((\',\'),\'(\',expr,((\',\'),expr)*,\')\')*']).
+rule(22:171, '((\',\'),\'(\',expr,((\',\'),expr)*,\')\')*', []).
+rule(22:172, 't_K_VALUES,\'(\',expr,((\',\'),expr)*,\')\',((\',\'),\'(\',expr,((\',\'),expr)*,\')\')*|select_stmt|t_K_DEFAULT,t_K_VALUES', [t_K_VALUES, '(', expr, '((\',\'),expr)*', ')', '((\',\'),\'(\',expr,((\',\'),expr)*,\')\')*']).
+rule(22:173, 't_K_VALUES,\'(\',expr,((\',\'),expr)*,\')\',((\',\'),\'(\',expr,((\',\'),expr)*,\')\')*|select_stmt|t_K_DEFAULT,t_K_VALUES', [select_stmt]).
+rule(22:174, 't_K_VALUES,\'(\',expr,((\',\'),expr)*,\')\',((\',\'),\'(\',expr,((\',\'),expr)*,\')\')*|select_stmt|t_K_DEFAULT,t_K_VALUES', [t_K_DEFAULT, t_K_VALUES]).
+rule(22:175, insert_stmt, ['with_clause?', 't_K_INSERT|t_K_REPLACE|t_K_INSERT,t_K_OR,t_K_REPLACE|t_K_INSERT,t_K_OR,t_K_ROLLBACK|t_K_INSERT,t_K_OR,t_K_ABORT|t_K_INSERT,t_K_OR,t_K_FAIL|t_K_INSERT,t_K_OR,t_K_IGNORE', t_K_INTO, '(database_name,(\'.\'))?', table_name, '(\'(\',column_name,((\',\'),column_name)*,\')\')?', 't_K_VALUES,\'(\',expr,((\',\'),expr)*,\')\',((\',\'),\'(\',expr,((\',\'),expr)*,\')\')*|select_stmt|t_K_DEFAULT,t_K_VALUES']).
+rule(23:176, '((=),pragma_value|\'(\',pragma_value,\')\')?', [=, pragma_value]).
+rule(23:177, '((=),pragma_value|\'(\',pragma_value,\')\')?', ['(', pragma_value, ')']).
+rule(23:178, '((=),pragma_value|\'(\',pragma_value,\')\')?', []).
+rule(23:179, pragma_stmt, [t_K_PRAGMA, '(database_name,(\'.\'))?', pragma_name, '((=),pragma_value|\'(\',pragma_value,\')\')?']).
+rule(24:180, '(collation_name|(database_name,(\'.\'))?,(table_name|index_name))?', [collation_name]).
+rule(24:181, 'table_name|index_name', [table_name]).
+rule(24:182, 'table_name|index_name', [index_name]).
+rule(24:183, '(collation_name|(database_name,(\'.\'))?,(table_name|index_name))?', ['(database_name,(\'.\'))?', 'table_name|index_name']).
+rule(24:184, '(collation_name|(database_name,(\'.\'))?,(table_name|index_name))?', []).
+rule(24:185, reindex_stmt, [t_K_REINDEX, '(collation_name|(database_name,(\'.\'))?,(table_name|index_name))?']).
+rule(25:186, 't_K_SAVEPOINT?', [t_K_SAVEPOINT]).
+rule(25:187, 't_K_SAVEPOINT?', []).
+rule(25:188, release_stmt, [t_K_RELEASE, 't_K_SAVEPOINT?', savepoint_name]).
+rule(26:189, '(t_K_TO,t_K_SAVEPOINT?,savepoint_name)?', [t_K_TO, 't_K_SAVEPOINT?', savepoint_name]).
+rule(26:190, '(t_K_TO,t_K_SAVEPOINT?,savepoint_name)?', []).
+rule(26:191, rollback_stmt, [t_K_ROLLBACK, '(t_K_TRANSACTION,transaction_name?)?', '(t_K_TO,t_K_SAVEPOINT?,savepoint_name)?']).
+rule(27:192, savepoint_stmt, [t_K_SAVEPOINT, savepoint_name]).
+rule(28:193, simple_select_stmt, ['(t_K_WITH,t_K_RECURSIVE?,common_table_expression,((\',\'),common_table_expression)*)?', select_core, '(t_K_ORDER,t_K_BY,ordering_term,((\',\'),ordering_term)*)?', '(t_K_LIMIT,expr,((t_K_OFFSET|(\',\')),expr)?)?']).
+rule(29:194, '(compound_operator,select_or_values)*', [compound_operator, select_or_values, '(compound_operator,select_or_values)*']).
+rule(29:195, '(compound_operator,select_or_values)*', []).
+rule(29:196, select_stmt, ['(t_K_WITH,t_K_RECURSIVE?,common_table_expression,((\',\'),common_table_expression)*)?', select_or_values, '(compound_operator,select_or_values)*', '(t_K_ORDER,t_K_BY,ordering_term,((\',\'),ordering_term)*)?', '(t_K_LIMIT,expr,((t_K_OFFSET|(\',\')),expr)?)?']).
+rule(30:197, '(t_K_DISTINCT|t_K_ALL)?', [t_K_DISTINCT]).
+rule(30:198, '(t_K_DISTINCT|t_K_ALL)?', [t_K_ALL]).
+rule(30:199, '(t_K_DISTINCT|t_K_ALL)?', []).
+rule(30:200, '((\',\'),result_column)*', [',', result_column, '((\',\'),result_column)*']).
+rule(30:201, '((\',\'),result_column)*', []).
+rule(30:202, '((\',\'),table_or_subquery)*', [',', table_or_subquery, '((\',\'),table_or_subquery)*']).
+rule(30:203, '((\',\'),table_or_subquery)*', []).
+rule(30:204, 'table_or_subquery,((\',\'),table_or_subquery)*|join_clause', [table_or_subquery, '((\',\'),table_or_subquery)*']).
+rule(30:205, 'table_or_subquery,((\',\'),table_or_subquery)*|join_clause', [join_clause]).
+rule(30:206, '(t_K_FROM,(table_or_subquery,((\',\'),table_or_subquery)*|join_clause))?', [t_K_FROM, 'table_or_subquery,((\',\'),table_or_subquery)*|join_clause']).
+rule(30:207, '(t_K_FROM,(table_or_subquery,((\',\'),table_or_subquery)*|join_clause))?', []).
+rule(30:208, '(t_K_HAVING,expr)?', [t_K_HAVING, expr]).
+rule(30:209, '(t_K_HAVING,expr)?', []).
+rule(30:210, '(t_K_GROUP,t_K_BY,expr,((\',\'),expr)*,(t_K_HAVING,expr)?)?', [t_K_GROUP, t_K_BY, expr, '((\',\'),expr)*', '(t_K_HAVING,expr)?']).
+rule(30:211, '(t_K_GROUP,t_K_BY,expr,((\',\'),expr)*,(t_K_HAVING,expr)?)?', []).
+rule(30:212, select_or_values, [t_K_SELECT, '(t_K_DISTINCT|t_K_ALL)?', result_column, '((\',\'),result_column)*', '(t_K_FROM,(table_or_subquery,((\',\'),table_or_subquery)*|join_clause))?', '(t_K_WHERE,expr)?', '(t_K_GROUP,t_K_BY,expr,((\',\'),expr)*,(t_K_HAVING,expr)?)?']).
+rule(30:213, select_or_values, [t_K_VALUES, '(', expr, '((\',\'),expr)*', ')', '((\',\'),\'(\',expr,((\',\'),expr)*,\')\')*']).
+rule(31:214, '(t_K_OR,t_K_ROLLBACK|t_K_OR,t_K_ABORT|t_K_OR,t_K_REPLACE|t_K_OR,t_K_FAIL|t_K_OR,t_K_IGNORE)?', [t_K_OR, t_K_ROLLBACK]).
+rule(31:215, '(t_K_OR,t_K_ROLLBACK|t_K_OR,t_K_ABORT|t_K_OR,t_K_REPLACE|t_K_OR,t_K_FAIL|t_K_OR,t_K_IGNORE)?', [t_K_OR, t_K_ABORT]).
+rule(31:216, '(t_K_OR,t_K_ROLLBACK|t_K_OR,t_K_ABORT|t_K_OR,t_K_REPLACE|t_K_OR,t_K_FAIL|t_K_OR,t_K_IGNORE)?', [t_K_OR, t_K_REPLACE]).
+rule(31:217, '(t_K_OR,t_K_ROLLBACK|t_K_OR,t_K_ABORT|t_K_OR,t_K_REPLACE|t_K_OR,t_K_FAIL|t_K_OR,t_K_IGNORE)?', [t_K_OR, t_K_FAIL]).
+rule(31:218, '(t_K_OR,t_K_ROLLBACK|t_K_OR,t_K_ABORT|t_K_OR,t_K_REPLACE|t_K_OR,t_K_FAIL|t_K_OR,t_K_IGNORE)?', [t_K_OR, t_K_IGNORE]).
+rule(31:219, '(t_K_OR,t_K_ROLLBACK|t_K_OR,t_K_ABORT|t_K_OR,t_K_REPLACE|t_K_OR,t_K_FAIL|t_K_OR,t_K_IGNORE)?', []).
+rule(31:220, '((\',\'),column_name,(=),expr)*', [',', column_name, =, expr, '((\',\'),column_name,(=),expr)*']).
+rule(31:221, '((\',\'),column_name,(=),expr)*', []).
+rule(31:222, update_stmt, ['with_clause?', t_K_UPDATE, '(t_K_OR,t_K_ROLLBACK|t_K_OR,t_K_ABORT|t_K_OR,t_K_REPLACE|t_K_OR,t_K_FAIL|t_K_OR,t_K_IGNORE)?', qualified_table_name, t_K_SET, column_name, =, expr, '((\',\'),column_name,(=),expr)*', '(t_K_WHERE,expr)?']).
+rule(32:223, update_stmt_limited, ['with_clause?', t_K_UPDATE, '(t_K_OR,t_K_ROLLBACK|t_K_OR,t_K_ABORT|t_K_OR,t_K_REPLACE|t_K_OR,t_K_FAIL|t_K_OR,t_K_IGNORE)?', qualified_table_name, t_K_SET, column_name, =, expr, '((\',\'),column_name,(=),expr)*', '(t_K_WHERE,expr)?', '((t_K_ORDER,t_K_BY,ordering_term,((\',\'),ordering_term)*)?,t_K_LIMIT,expr,((t_K_OFFSET|(\',\')),expr)?)?']).
+rule(33:224, vacuum_stmt, [t_K_VACUUM]).
+rule(34:225, 'type_name?', [type_name]).
+rule(34:226, 'type_name?', []).
+rule(34:227, 'column_constraint*', [column_constraint, 'column_constraint*']).
+rule(34:228, 'column_constraint*', []).
+rule(34:229, column_def, [column_name, 'type_name?', 'column_constraint*']).
+rule(35:230, '+name', [name, '+name']).
+rule(35:231, '+name', [name]).
+rule(35:232, '(\'(\',signed_number,\')\'|\'(\',signed_number,(\',\'),signed_number,\')\')?', ['(', signed_number, ')']).
+rule(35:233, '(\'(\',signed_number,\')\'|\'(\',signed_number,(\',\'),signed_number,\')\')?', ['(', signed_number, ',', signed_number, ')']).
+rule(35:234, '(\'(\',signed_number,\')\'|\'(\',signed_number,(\',\'),signed_number,\')\')?', []).
+rule(35:235, type_name, ['+name', '(\'(\',signed_number,\')\'|\'(\',signed_number,(\',\'),signed_number,\')\')?']).
+rule(36:236, '(t_K_CONSTRAINT,name)?', [t_K_CONSTRAINT, name]).
+rule(36:237, '(t_K_CONSTRAINT,name)?', []).
+rule(36:238, '(t_K_ASC|t_K_DESC)?', [t_K_ASC]).
+rule(36:239, '(t_K_ASC|t_K_DESC)?', [t_K_DESC]).
+rule(36:240, '(t_K_ASC|t_K_DESC)?', []).
+rule(36:241, 't_K_AUTOINCREMENT?', [t_K_AUTOINCREMENT]).
+rule(36:242, 't_K_AUTOINCREMENT?', []).
+rule(36:243, 't_K_PRIMARY,t_K_KEY,(t_K_ASC|t_K_DESC)?,conflict_clause,t_K_AUTOINCREMENT?|t_K_NOT?,t_K_NULL,conflict_clause|t_K_UNIQUE,conflict_clause|t_K_CHECK,\'(\',expr,\')\'|t_K_DEFAULT,(signed_number|literal_value|\'(\',expr,\')\')|t_K_COLLATE,collation_name|foreign_key_clause', [t_K_PRIMARY, t_K_KEY, '(t_K_ASC|t_K_DESC)?', conflict_clause, 't_K_AUTOINCREMENT?']).
+rule(36:244, 't_K_NOT?', [t_K_NOT]).
+rule(36:245, 't_K_NOT?', []).
+rule(36:246, 't_K_PRIMARY,t_K_KEY,(t_K_ASC|t_K_DESC)?,conflict_clause,t_K_AUTOINCREMENT?|t_K_NOT?,t_K_NULL,conflict_clause|t_K_UNIQUE,conflict_clause|t_K_CHECK,\'(\',expr,\')\'|t_K_DEFAULT,(signed_number|literal_value|\'(\',expr,\')\')|t_K_COLLATE,collation_name|foreign_key_clause', ['t_K_NOT?', t_K_NULL, conflict_clause]).
+rule(36:247, 't_K_PRIMARY,t_K_KEY,(t_K_ASC|t_K_DESC)?,conflict_clause,t_K_AUTOINCREMENT?|t_K_NOT?,t_K_NULL,conflict_clause|t_K_UNIQUE,conflict_clause|t_K_CHECK,\'(\',expr,\')\'|t_K_DEFAULT,(signed_number|literal_value|\'(\',expr,\')\')|t_K_COLLATE,collation_name|foreign_key_clause', [t_K_UNIQUE, conflict_clause]).
+rule(36:248, 't_K_PRIMARY,t_K_KEY,(t_K_ASC|t_K_DESC)?,conflict_clause,t_K_AUTOINCREMENT?|t_K_NOT?,t_K_NULL,conflict_clause|t_K_UNIQUE,conflict_clause|t_K_CHECK,\'(\',expr,\')\'|t_K_DEFAULT,(signed_number|literal_value|\'(\',expr,\')\')|t_K_COLLATE,collation_name|foreign_key_clause', [t_K_CHECK, '(', expr, ')']).
+rule(36:249, 'signed_number|literal_value|\'(\',expr,\')\'', [signed_number]).
+rule(36:250, 'signed_number|literal_value|\'(\',expr,\')\'', [literal_value]).
+rule(36:251, 'signed_number|literal_value|\'(\',expr,\')\'', ['(', expr, ')']).
+rule(36:252, 't_K_PRIMARY,t_K_KEY,(t_K_ASC|t_K_DESC)?,conflict_clause,t_K_AUTOINCREMENT?|t_K_NOT?,t_K_NULL,conflict_clause|t_K_UNIQUE,conflict_clause|t_K_CHECK,\'(\',expr,\')\'|t_K_DEFAULT,(signed_number|literal_value|\'(\',expr,\')\')|t_K_COLLATE,collation_name|foreign_key_clause', [t_K_DEFAULT, 'signed_number|literal_value|\'(\',expr,\')\'']).
+rule(36:253, 't_K_PRIMARY,t_K_KEY,(t_K_ASC|t_K_DESC)?,conflict_clause,t_K_AUTOINCREMENT?|t_K_NOT?,t_K_NULL,conflict_clause|t_K_UNIQUE,conflict_clause|t_K_CHECK,\'(\',expr,\')\'|t_K_DEFAULT,(signed_number|literal_value|\'(\',expr,\')\')|t_K_COLLATE,collation_name|foreign_key_clause', [t_K_COLLATE, collation_name]).
+rule(36:254, 't_K_PRIMARY,t_K_KEY,(t_K_ASC|t_K_DESC)?,conflict_clause,t_K_AUTOINCREMENT?|t_K_NOT?,t_K_NULL,conflict_clause|t_K_UNIQUE,conflict_clause|t_K_CHECK,\'(\',expr,\')\'|t_K_DEFAULT,(signed_number|literal_value|\'(\',expr,\')\')|t_K_COLLATE,collation_name|foreign_key_clause', [foreign_key_clause]).
+rule(36:255, column_constraint, ['(t_K_CONSTRAINT,name)?', 't_K_PRIMARY,t_K_KEY,(t_K_ASC|t_K_DESC)?,conflict_clause,t_K_AUTOINCREMENT?|t_K_NOT?,t_K_NULL,conflict_clause|t_K_UNIQUE,conflict_clause|t_K_CHECK,\'(\',expr,\')\'|t_K_DEFAULT,(signed_number|literal_value|\'(\',expr,\')\')|t_K_COLLATE,collation_name|foreign_key_clause']).
+rule(37:256, 't_K_ROLLBACK|t_K_ABORT|t_K_FAIL|t_K_IGNORE|t_K_REPLACE', [t_K_ROLLBACK]).
+rule(37:257, 't_K_ROLLBACK|t_K_ABORT|t_K_FAIL|t_K_IGNORE|t_K_REPLACE', [t_K_ABORT]).
+rule(37:258, 't_K_ROLLBACK|t_K_ABORT|t_K_FAIL|t_K_IGNORE|t_K_REPLACE', [t_K_FAIL]).
+rule(37:259, 't_K_ROLLBACK|t_K_ABORT|t_K_FAIL|t_K_IGNORE|t_K_REPLACE', [t_K_IGNORE]).
+rule(37:260, 't_K_ROLLBACK|t_K_ABORT|t_K_FAIL|t_K_IGNORE|t_K_REPLACE', [t_K_REPLACE]).
+rule(37:261, '(t_K_ON,t_K_CONFLICT,(t_K_ROLLBACK|t_K_ABORT|t_K_FAIL|t_K_IGNORE|t_K_REPLACE))?', [t_K_ON, t_K_CONFLICT, 't_K_ROLLBACK|t_K_ABORT|t_K_FAIL|t_K_IGNORE|t_K_REPLACE']).
+rule(37:262, '(t_K_ON,t_K_CONFLICT,(t_K_ROLLBACK|t_K_ABORT|t_K_FAIL|t_K_IGNORE|t_K_REPLACE))?', []).
+rule(37:263, conflict_clause, ['(t_K_ON,t_K_CONFLICT,(t_K_ROLLBACK|t_K_ABORT|t_K_FAIL|t_K_IGNORE|t_K_REPLACE))?']).
+rule(38:264, expr, [literal_value]).
+rule(38:265, expr, [t_BIND_PARAMETER]).
+rule(38:266, '((database_name,(\'.\'))?,table_name,(\'.\'))?', ['(database_name,(\'.\'))?', table_name, '.']).
+rule(38:267, '((database_name,(\'.\'))?,table_name,(\'.\'))?', []).
+rule(38:268, expr, ['((database_name,(\'.\'))?,table_name,(\'.\'))?', column_name]).
+rule(38:269, expr, [unary_operator, expr]).
+rule(38:270, expr, [expr, '||', expr]).
+rule(38:271, '(*)|(/)|\'%\'', [*]).
+rule(38:272, '(*)|(/)|\'%\'', [/]).
+rule(38:273, '(*)|(/)|\'%\'', ['%']).
+rule(38:274, expr, [expr, '(*)|(/)|\'%\'', expr]).
+rule(38:275, '(+)|(-)', [+]).
+rule(38:276, '(+)|(-)', [-]).
+rule(38:277, expr, [expr, '(+)|(-)', expr]).
+rule(38:278, '(<<)|(>>)|&|\' | \'', [<<]).
+rule(38:279, '(<<)|(>>)|&|\' | \'', [>>]).
+rule(38:280, '(<<)|(>>)|&|\' | \'', [&]).
+rule(38:281, '(<<)|(>>)|&|\' | \'', [' | ']).
+rule(38:282, expr, [expr, '(<<)|(>>)|&|\' | \'', expr]).
+rule(38:283, '(<)|<=|(>)|(>=)', [<]).
+rule(38:284, '(<)|<=|(>)|(>=)', [<=]).
+rule(38:285, '(<)|<=|(>)|(>=)', [>]).
+rule(38:286, '(<)|<=|(>)|(>=)', [>=]).
+rule(38:287, expr, [expr, '(<)|<=|(>)|(>=)', expr]).
+rule(38:288, '(=)|(==)|\'!=\'|<>|t_K_IS|t_K_IS,t_K_NOT|t_K_IN|t_K_LIKE|t_K_GLOB|t_K_MATCH|t_K_REGEXP', [=]).
+rule(38:289, '(=)|(==)|\'!=\'|<>|t_K_IS|t_K_IS,t_K_NOT|t_K_IN|t_K_LIKE|t_K_GLOB|t_K_MATCH|t_K_REGEXP', [==]).
+rule(38:290, '(=)|(==)|\'!=\'|<>|t_K_IS|t_K_IS,t_K_NOT|t_K_IN|t_K_LIKE|t_K_GLOB|t_K_MATCH|t_K_REGEXP', ['!=']).
+rule(38:291, '(=)|(==)|\'!=\'|<>|t_K_IS|t_K_IS,t_K_NOT|t_K_IN|t_K_LIKE|t_K_GLOB|t_K_MATCH|t_K_REGEXP', [<>]).
+rule(38:292, '(=)|(==)|\'!=\'|<>|t_K_IS|t_K_IS,t_K_NOT|t_K_IN|t_K_LIKE|t_K_GLOB|t_K_MATCH|t_K_REGEXP', [t_K_IS]).
+rule(38:293, '(=)|(==)|\'!=\'|<>|t_K_IS|t_K_IS,t_K_NOT|t_K_IN|t_K_LIKE|t_K_GLOB|t_K_MATCH|t_K_REGEXP', [t_K_IS, t_K_NOT]).
+rule(38:294, '(=)|(==)|\'!=\'|<>|t_K_IS|t_K_IS,t_K_NOT|t_K_IN|t_K_LIKE|t_K_GLOB|t_K_MATCH|t_K_REGEXP', [t_K_IN]).
+rule(38:295, '(=)|(==)|\'!=\'|<>|t_K_IS|t_K_IS,t_K_NOT|t_K_IN|t_K_LIKE|t_K_GLOB|t_K_MATCH|t_K_REGEXP', [t_K_LIKE]).
+rule(38:296, '(=)|(==)|\'!=\'|<>|t_K_IS|t_K_IS,t_K_NOT|t_K_IN|t_K_LIKE|t_K_GLOB|t_K_MATCH|t_K_REGEXP', [t_K_GLOB]).
+rule(38:297, '(=)|(==)|\'!=\'|<>|t_K_IS|t_K_IS,t_K_NOT|t_K_IN|t_K_LIKE|t_K_GLOB|t_K_MATCH|t_K_REGEXP', [t_K_MATCH]).
+rule(38:298, '(=)|(==)|\'!=\'|<>|t_K_IS|t_K_IS,t_K_NOT|t_K_IN|t_K_LIKE|t_K_GLOB|t_K_MATCH|t_K_REGEXP', [t_K_REGEXP]).
+rule(38:299, expr, [expr, '(=)|(==)|\'!=\'|<>|t_K_IS|t_K_IS,t_K_NOT|t_K_IN|t_K_LIKE|t_K_GLOB|t_K_MATCH|t_K_REGEXP', expr]).
+rule(38:300, expr, [expr, t_K_AND, expr]).
+rule(38:301, expr, [expr, t_K_OR, expr]).
+rule(38:302, 't_K_DISTINCT?', [t_K_DISTINCT]).
+rule(38:303, 't_K_DISTINCT?', []).
+rule(38:304, '(t_K_DISTINCT?,expr,((\',\'),expr)*|(*))?', ['t_K_DISTINCT?', expr, '((\',\'),expr)*']).
+rule(38:305, '(t_K_DISTINCT?,expr,((\',\'),expr)*|(*))?', [*]).
+rule(38:306, '(t_K_DISTINCT?,expr,((\',\'),expr)*|(*))?', []).
+rule(38:307, expr, [function_name, '(', '(t_K_DISTINCT?,expr,((\',\'),expr)*|(*))?', ')']).
+rule(38:308, expr, ['(', expr, ')']).
+rule(38:309, expr, [t_K_CAST, '(', expr, t_K_AS, type_name, ')']).
+rule(38:310, expr, [expr, t_K_COLLATE, collation_name]).
+rule(38:311, 't_K_LIKE|t_K_GLOB|t_K_REGEXP|t_K_MATCH', [t_K_LIKE]).
+rule(38:312, 't_K_LIKE|t_K_GLOB|t_K_REGEXP|t_K_MATCH', [t_K_GLOB]).
+rule(38:313, 't_K_LIKE|t_K_GLOB|t_K_REGEXP|t_K_MATCH', [t_K_REGEXP]).
+rule(38:314, 't_K_LIKE|t_K_GLOB|t_K_REGEXP|t_K_MATCH', [t_K_MATCH]).
+rule(38:315, '(t_K_ESCAPE,expr)?', [t_K_ESCAPE, expr]).
+rule(38:316, '(t_K_ESCAPE,expr)?', []).
+rule(38:317, expr, [expr, 't_K_NOT?', 't_K_LIKE|t_K_GLOB|t_K_REGEXP|t_K_MATCH', expr, '(t_K_ESCAPE,expr)?']).
+rule(38:318, 't_K_ISNULL|t_K_NOTNULL|t_K_NOT,t_K_NULL', [t_K_ISNULL]).
+rule(38:319, 't_K_ISNULL|t_K_NOTNULL|t_K_NOT,t_K_NULL', [t_K_NOTNULL]).
+rule(38:320, 't_K_ISNULL|t_K_NOTNULL|t_K_NOT,t_K_NULL', [t_K_NOT, t_K_NULL]).
+rule(38:321, expr, [expr, 't_K_ISNULL|t_K_NOTNULL|t_K_NOT,t_K_NULL']).
+rule(38:322, expr, [expr, t_K_IS, 't_K_NOT?', expr]).
+rule(38:323, expr, [expr, 't_K_NOT?', t_K_BETWEEN, expr, t_K_AND, expr]).
+rule(38:324, '(select_stmt|expr,((\',\'),expr)*)?', [select_stmt]).
+rule(38:325, '(select_stmt|expr,((\',\'),expr)*)?', [expr, '((\',\'),expr)*']).
+rule(38:326, '(select_stmt|expr,((\',\'),expr)*)?', []).
+rule(38:327, '\'(\',(select_stmt|expr,((\',\'),expr)*)?,\')\'|(database_name,(\'.\'))?,table_name', ['(', '(select_stmt|expr,((\',\'),expr)*)?', ')']).
+rule(38:328, '\'(\',(select_stmt|expr,((\',\'),expr)*)?,\')\'|(database_name,(\'.\'))?,table_name', ['(database_name,(\'.\'))?', table_name]).
+rule(38:329, expr, [expr, 't_K_NOT?', t_K_IN, '\'(\',(select_stmt|expr,((\',\'),expr)*)?,\')\'|(database_name,(\'.\'))?,table_name']).
+rule(38:330, '(t_K_NOT?,t_K_EXISTS)?', ['t_K_NOT?', t_K_EXISTS]).
+rule(38:331, '(t_K_NOT?,t_K_EXISTS)?', []).
+rule(38:332, expr, ['(t_K_NOT?,t_K_EXISTS)?', '(', select_stmt, ')']).
+rule(38:333, 'expr?', [expr]).
+rule(38:334, 'expr?', []).
+rule(38:335, '+ (t_K_WHEN,expr,t_K_THEN,expr)', [t_K_WHEN, expr, t_K_THEN, expr, '+ (t_K_WHEN,expr,t_K_THEN,expr)']).
+rule(38:336, '+ (t_K_WHEN,expr,t_K_THEN,expr)', [t_K_WHEN, expr, t_K_THEN, expr]).
+rule(38:337, '(t_K_ELSE,expr)?', [t_K_ELSE, expr]).
+rule(38:338, '(t_K_ELSE,expr)?', []).
+rule(38:339, expr, [t_K_CASE, 'expr?', '+ (t_K_WHEN,expr,t_K_THEN,expr)', '(t_K_ELSE,expr)?', t_K_END]).
+rule(38:340, expr, [raise_function]).
+rule(39:341, 't_K_DELETE|t_K_UPDATE', [t_K_DELETE]).
+rule(39:342, 't_K_DELETE|t_K_UPDATE', [t_K_UPDATE]).
+rule(39:343, 't_K_SET,t_K_NULL|t_K_SET,t_K_DEFAULT|t_K_CASCADE|t_K_RESTRICT|t_K_NO,t_K_ACTION', [t_K_SET, t_K_NULL]).
+rule(39:344, 't_K_SET,t_K_NULL|t_K_SET,t_K_DEFAULT|t_K_CASCADE|t_K_RESTRICT|t_K_NO,t_K_ACTION', [t_K_SET, t_K_DEFAULT]).
+rule(39:345, 't_K_SET,t_K_NULL|t_K_SET,t_K_DEFAULT|t_K_CASCADE|t_K_RESTRICT|t_K_NO,t_K_ACTION', [t_K_CASCADE]).
+rule(39:346, 't_K_SET,t_K_NULL|t_K_SET,t_K_DEFAULT|t_K_CASCADE|t_K_RESTRICT|t_K_NO,t_K_ACTION', [t_K_RESTRICT]).
+rule(39:347, 't_K_SET,t_K_NULL|t_K_SET,t_K_DEFAULT|t_K_CASCADE|t_K_RESTRICT|t_K_NO,t_K_ACTION', [t_K_NO, t_K_ACTION]).
+rule(39:348, 't_K_ON,(t_K_DELETE|t_K_UPDATE),(t_K_SET,t_K_NULL|t_K_SET,t_K_DEFAULT|t_K_CASCADE|t_K_RESTRICT|t_K_NO,t_K_ACTION)|t_K_MATCH,name', [t_K_ON, 't_K_DELETE|t_K_UPDATE', 't_K_SET,t_K_NULL|t_K_SET,t_K_DEFAULT|t_K_CASCADE|t_K_RESTRICT|t_K_NO,t_K_ACTION']).
+rule(39:349, 't_K_ON,(t_K_DELETE|t_K_UPDATE),(t_K_SET,t_K_NULL|t_K_SET,t_K_DEFAULT|t_K_CASCADE|t_K_RESTRICT|t_K_NO,t_K_ACTION)|t_K_MATCH,name', [t_K_MATCH, name]).
+rule(39:350, '(t_K_ON,(t_K_DELETE|t_K_UPDATE),(t_K_SET,t_K_NULL|t_K_SET,t_K_DEFAULT|t_K_CASCADE|t_K_RESTRICT|t_K_NO,t_K_ACTION)|t_K_MATCH,name)*', ['t_K_ON,(t_K_DELETE|t_K_UPDATE),(t_K_SET,t_K_NULL|t_K_SET,t_K_DEFAULT|t_K_CASCADE|t_K_RESTRICT|t_K_NO,t_K_ACTION)|t_K_MATCH,name', '(t_K_ON,(t_K_DELETE|t_K_UPDATE),(t_K_SET,t_K_NULL|t_K_SET,t_K_DEFAULT|t_K_CASCADE|t_K_RESTRICT|t_K_NO,t_K_ACTION)|t_K_MATCH,name)*']).
+rule(39:351, '(t_K_ON,(t_K_DELETE|t_K_UPDATE),(t_K_SET,t_K_NULL|t_K_SET,t_K_DEFAULT|t_K_CASCADE|t_K_RESTRICT|t_K_NO,t_K_ACTION)|t_K_MATCH,name)*', []).
+rule(39:352, '(t_K_INITIALLY,t_K_DEFERRED|t_K_INITIALLY,t_K_IMMEDIATE)?', [t_K_INITIALLY, t_K_DEFERRED]).
+rule(39:353, '(t_K_INITIALLY,t_K_DEFERRED|t_K_INITIALLY,t_K_IMMEDIATE)?', [t_K_INITIALLY, t_K_IMMEDIATE]).
+rule(39:354, '(t_K_INITIALLY,t_K_DEFERRED|t_K_INITIALLY,t_K_IMMEDIATE)?', []).
+rule(39:355, '(t_K_NOT?,t_K_DEFERRABLE,(t_K_INITIALLY,t_K_DEFERRED|t_K_INITIALLY,t_K_IMMEDIATE)?)?', ['t_K_NOT?', t_K_DEFERRABLE, '(t_K_INITIALLY,t_K_DEFERRED|t_K_INITIALLY,t_K_IMMEDIATE)?']).
+rule(39:356, '(t_K_NOT?,t_K_DEFERRABLE,(t_K_INITIALLY,t_K_DEFERRED|t_K_INITIALLY,t_K_IMMEDIATE)?)?', []).
+rule(39:357, foreign_key_clause, [t_K_REFERENCES, foreign_table, '(\'(\',column_name,((\',\'),column_name)*,\')\')?', '(t_K_ON,(t_K_DELETE|t_K_UPDATE),(t_K_SET,t_K_NULL|t_K_SET,t_K_DEFAULT|t_K_CASCADE|t_K_RESTRICT|t_K_NO,t_K_ACTION)|t_K_MATCH,name)*', '(t_K_NOT?,t_K_DEFERRABLE,(t_K_INITIALLY,t_K_DEFERRED|t_K_INITIALLY,t_K_IMMEDIATE)?)?']).
+rule(40:358, 't_K_IGNORE|(t_K_ROLLBACK|t_K_ABORT|t_K_FAIL),(\',\'),error_message', [t_K_IGNORE]).
+rule(40:359, 't_K_ROLLBACK|t_K_ABORT|t_K_FAIL', [t_K_ROLLBACK]).
+rule(40:360, 't_K_ROLLBACK|t_K_ABORT|t_K_FAIL', [t_K_ABORT]).
+rule(40:361, 't_K_ROLLBACK|t_K_ABORT|t_K_FAIL', [t_K_FAIL]).
+rule(40:362, 't_K_IGNORE|(t_K_ROLLBACK|t_K_ABORT|t_K_FAIL),(\',\'),error_message', ['t_K_ROLLBACK|t_K_ABORT|t_K_FAIL', ',', error_message]).
+rule(40:363, raise_function, [t_K_RAISE, '(', 't_K_IGNORE|(t_K_ROLLBACK|t_K_ABORT|t_K_FAIL),(\',\'),error_message', ')']).
+rule(41:364, '(t_K_COLLATE,collation_name)?', [t_K_COLLATE, collation_name]).
+rule(41:365, '(t_K_COLLATE,collation_name)?', []).
+rule(41:366, indexed_column, [column_name, '(t_K_COLLATE,collation_name)?', '(t_K_ASC|t_K_DESC)?']).
+rule(42:367, 't_K_PRIMARY,t_K_KEY|t_K_UNIQUE', [t_K_PRIMARY, t_K_KEY]).
+rule(42:368, 't_K_PRIMARY,t_K_KEY|t_K_UNIQUE', [t_K_UNIQUE]).
+rule(42:369, '(t_K_PRIMARY,t_K_KEY|t_K_UNIQUE),\'(\',indexed_column,((\',\'),indexed_column)*,\')\',conflict_clause|t_K_CHECK,\'(\',expr,\')\'|t_K_FOREIGN,t_K_KEY,\'(\',column_name,((\',\'),column_name)*,\')\',foreign_key_clause', ['t_K_PRIMARY,t_K_KEY|t_K_UNIQUE', '(', indexed_column, '((\',\'),indexed_column)*', ')', conflict_clause]).
+rule(42:370, '(t_K_PRIMARY,t_K_KEY|t_K_UNIQUE),\'(\',indexed_column,((\',\'),indexed_column)*,\')\',conflict_clause|t_K_CHECK,\'(\',expr,\')\'|t_K_FOREIGN,t_K_KEY,\'(\',column_name,((\',\'),column_name)*,\')\',foreign_key_clause', [t_K_CHECK, '(', expr, ')']).
+rule(42:371, '(t_K_PRIMARY,t_K_KEY|t_K_UNIQUE),\'(\',indexed_column,((\',\'),indexed_column)*,\')\',conflict_clause|t_K_CHECK,\'(\',expr,\')\'|t_K_FOREIGN,t_K_KEY,\'(\',column_name,((\',\'),column_name)*,\')\',foreign_key_clause', [t_K_FOREIGN, t_K_KEY, '(', column_name, '((\',\'),column_name)*', ')', foreign_key_clause]).
+rule(42:372, table_constraint, ['(t_K_CONSTRAINT,name)?', '(t_K_PRIMARY,t_K_KEY|t_K_UNIQUE),\'(\',indexed_column,((\',\'),indexed_column)*,\')\',conflict_clause|t_K_CHECK,\'(\',expr,\')\'|t_K_FOREIGN,t_K_KEY,\'(\',column_name,((\',\'),column_name)*,\')\',foreign_key_clause']).
+rule(43:373, '((\',\'),cte_table_name,t_K_AS,\'(\',select_stmt,\')\')*', [',', cte_table_name, t_K_AS, '(', select_stmt, ')', '((\',\'),cte_table_name,t_K_AS,\'(\',select_stmt,\')\')*']).
+rule(43:374, '((\',\'),cte_table_name,t_K_AS,\'(\',select_stmt,\')\')*', []).
+rule(43:375, with_clause, [t_K_WITH, 't_K_RECURSIVE?', cte_table_name, t_K_AS, '(', select_stmt, ')', '((\',\'),cte_table_name,t_K_AS,\'(\',select_stmt,\')\')*']).
+rule(44:376, '(t_K_INDEXED,t_K_BY,index_name|t_K_NOT,t_K_INDEXED)?', [t_K_INDEXED, t_K_BY, index_name]).
+rule(44:377, '(t_K_INDEXED,t_K_BY,index_name|t_K_NOT,t_K_INDEXED)?', [t_K_NOT, t_K_INDEXED]).
+rule(44:378, '(t_K_INDEXED,t_K_BY,index_name|t_K_NOT,t_K_INDEXED)?', []).
+rule(44:379, qualified_table_name, ['(database_name,(\'.\'))?', table_name, '(t_K_INDEXED,t_K_BY,index_name|t_K_NOT,t_K_INDEXED)?']).
+rule(45:380, ordering_term, [expr, '(t_K_COLLATE,collation_name)?', '(t_K_ASC|t_K_DESC)?']).
+rule(46:381, pragma_value, [signed_number]).
+rule(46:382, pragma_value, [name]).
+rule(46:383, pragma_value, [t_STRING_LITERAL]).
+rule(47:384, common_table_expression, [table_name, '(\'(\',column_name,((\',\'),column_name)*,\')\')?', t_K_AS, '(', select_stmt, ')']).
+rule(48:385, result_column, [*]).
+rule(48:386, result_column, [table_name, '.', *]).
+rule(48:387, 't_K_AS?', [t_K_AS]).
+rule(48:388, 't_K_AS?', []).
+rule(48:389, '(t_K_AS?,column_alias)?', ['t_K_AS?', column_alias]).
+rule(48:390, '(t_K_AS?,column_alias)?', []).
+rule(48:391, result_column, [expr, '(t_K_AS?,column_alias)?']).
+rule(49:392, '(t_K_AS?,table_alias)?', ['t_K_AS?', table_alias]).
+rule(49:393, '(t_K_AS?,table_alias)?', []).
+rule(49:394, table_or_subquery, ['(database_name,(\'.\'))?', table_name, '(t_K_AS?,table_alias)?', '(t_K_INDEXED,t_K_BY,index_name|t_K_NOT,t_K_INDEXED)?']).
+rule(49:395, table_or_subquery, ['(', 'table_or_subquery,((\',\'),table_or_subquery)*|join_clause', ')', '(t_K_AS?,table_alias)?']).
+rule(49:396, table_or_subquery, ['(', select_stmt, ')', '(t_K_AS?,table_alias)?']).
+rule(50:397, '(join_operator,table_or_subquery,join_constraint)*', [join_operator, table_or_subquery, join_constraint, '(join_operator,table_or_subquery,join_constraint)*']).
+rule(50:398, '(join_operator,table_or_subquery,join_constraint)*', []).
+rule(50:399, join_clause, [table_or_subquery, '(join_operator,table_or_subquery,join_constraint)*']).
+rule(51:400, join_operator, [',']).
+rule(51:401, 't_K_NATURAL?', [t_K_NATURAL]).
+rule(51:402, 't_K_NATURAL?', []).
+rule(51:403, 't_K_OUTER?', [t_K_OUTER]).
+rule(51:404, 't_K_OUTER?', []).
+rule(51:405, '(t_K_LEFT,t_K_OUTER?|t_K_INNER|t_K_CROSS)?', [t_K_LEFT, 't_K_OUTER?']).
+rule(51:406, '(t_K_LEFT,t_K_OUTER?|t_K_INNER|t_K_CROSS)?', [t_K_INNER]).
+rule(51:407, '(t_K_LEFT,t_K_OUTER?|t_K_INNER|t_K_CROSS)?', [t_K_CROSS]).
+rule(51:408, '(t_K_LEFT,t_K_OUTER?|t_K_INNER|t_K_CROSS)?', []).
+rule(51:409, join_operator, ['t_K_NATURAL?', '(t_K_LEFT,t_K_OUTER?|t_K_INNER|t_K_CROSS)?', t_K_JOIN]).
+rule(52:410, '(t_K_ON,expr|t_K_USING,\'(\',column_name,((\',\'),column_name)*,\')\')?', [t_K_ON, expr]).
+rule(52:411, '(t_K_ON,expr|t_K_USING,\'(\',column_name,((\',\'),column_name)*,\')\')?', [t_K_USING, '(', column_name, '((\',\'),column_name)*', ')']).
+rule(52:412, '(t_K_ON,expr|t_K_USING,\'(\',column_name,((\',\'),column_name)*,\')\')?', []).
+rule(52:413, join_constraint, ['(t_K_ON,expr|t_K_USING,\'(\',column_name,((\',\'),column_name)*,\')\')?']).
+rule(53:414, select_core, [t_K_SELECT, '(t_K_DISTINCT|t_K_ALL)?', result_column, '((\',\'),result_column)*', '(t_K_FROM,(table_or_subquery,((\',\'),table_or_subquery)*|join_clause))?', '(t_K_WHERE,expr)?', '(t_K_GROUP,t_K_BY,expr,((\',\'),expr)*,(t_K_HAVING,expr)?)?']).
+rule(53:415, select_core, [t_K_VALUES, '(', expr, '((\',\'),expr)*', ')', '((\',\'),\'(\',expr,((\',\'),expr)*,\')\')*']).
+rule(54:416, compound_operator, [t_K_UNION]).
+rule(54:417, compound_operator, [t_K_UNION, t_K_ALL]).
+rule(54:418, compound_operator, [t_K_INTERSECT]).
+rule(54:419, compound_operator, [t_K_EXCEPT]).
+rule(55:420, cte_table_name, [table_name, '(\'(\',column_name,((\',\'),column_name)*,\')\')?']).
+rule(56:421, '((+)|(-))?', [+]).
+rule(56:422, '((+)|(-))?', [-]).
+rule(56:423, '((+)|(-))?', []).
+rule(56:424, signed_number, ['((+)|(-))?', t_NUMERIC_LITERAL]).
+rule(57:425, literal_value, [t_NUMERIC_LITERAL]).
+rule(57:426, literal_value, [t_STRING_LITERAL]).
+rule(57:427, literal_value, [t_BLOB_LITERAL]).
+rule(57:428, literal_value, [t_K_NULL]).
+rule(57:429, literal_value, [t_K_CURRENT_TIME]).
+rule(57:430, literal_value, [t_K_CURRENT_DATE]).
+rule(57:431, literal_value, [t_K_CURRENT_TIMESTAMP]).
+rule(58:432, unary_operator, [-]).
+rule(58:433, unary_operator, [+]).
+rule(58:434, unary_operator, [~]).
+rule(58:435, unary_operator, [t_K_NOT]).
+rule(59:436, error_message, [t_STRING_LITERAL]).
+rule(60:437, module_argument, [expr]).
+rule(60:438, module_argument, [column_def]).
+rule(61:439, column_alias, [t_IDENTIFIER]).
+rule(61:440, column_alias, [t_STRING_LITERAL]).
+rule(62:441, keyword, [t_K_ABORT]).
+rule(62:442, keyword, [t_K_ACTION]).
+rule(62:443, keyword, [t_K_ADD]).
+rule(62:444, keyword, [t_K_AFTER]).
+rule(62:445, keyword, [t_K_ALL]).
+rule(62:446, keyword, [t_K_ALTER]).
+rule(62:447, keyword, [t_K_ANALYZE]).
+rule(62:448, keyword, [t_K_AND]).
+rule(62:449, keyword, [t_K_AS]).
+rule(62:450, keyword, [t_K_ASC]).
+rule(62:451, keyword, [t_K_ATTACH]).
+rule(62:452, keyword, [t_K_AUTOINCREMENT]).
+rule(62:453, keyword, [t_K_BEFORE]).
+rule(62:454, keyword, [t_K_BEGIN]).
+rule(62:455, keyword, [t_K_BETWEEN]).
+rule(62:456, keyword, [t_K_BY]).
+rule(62:457, keyword, [t_K_CASCADE]).
+rule(62:458, keyword, [t_K_CASE]).
+rule(62:459, keyword, [t_K_CAST]).
+rule(62:460, keyword, [t_K_CHECK]).
+rule(62:461, keyword, [t_K_COLLATE]).
+rule(62:462, keyword, [t_K_COLUMN]).
+rule(62:463, keyword, [t_K_COMMIT]).
+rule(62:464, keyword, [t_K_CONFLICT]).
+rule(62:465, keyword, [t_K_CONSTRAINT]).
+rule(62:466, keyword, [t_K_CREATE]).
+rule(62:467, keyword, [t_K_CROSS]).
+rule(62:468, keyword, [t_K_CURRENT_DATE]).
+rule(62:469, keyword, [t_K_CURRENT_TIME]).
+rule(62:470, keyword, [t_K_CURRENT_TIMESTAMP]).
+rule(62:471, keyword, [t_K_DATABASE]).
+rule(62:472, keyword, [t_K_DEFAULT]).
+rule(62:473, keyword, [t_K_DEFERRABLE]).
+rule(62:474, keyword, [t_K_DEFERRED]).
+rule(62:475, keyword, [t_K_DELETE]).
+rule(62:476, keyword, [t_K_DESC]).
+rule(62:477, keyword, [t_K_DETACH]).
+rule(62:478, keyword, [t_K_DISTINCT]).
+rule(62:479, keyword, [t_K_DROP]).
+rule(62:480, keyword, [t_K_EACH]).
+rule(62:481, keyword, [t_K_ELSE]).
+rule(62:482, keyword, [t_K_END]).
+rule(62:483, keyword, [t_K_ESCAPE]).
+rule(62:484, keyword, [t_K_EXCEPT]).
+rule(62:485, keyword, [t_K_EXCLUSIVE]).
+rule(62:486, keyword, [t_K_EXISTS]).
+rule(62:487, keyword, [t_K_EXPLAIN]).
+rule(62:488, keyword, [t_K_FAIL]).
+rule(62:489, keyword, [t_K_FOR]).
+rule(62:490, keyword, [t_K_FOREIGN]).
+rule(62:491, keyword, [t_K_FROM]).
+rule(62:492, keyword, [t_K_FULL]).
+rule(62:493, keyword, [t_K_GLOB]).
+rule(62:494, keyword, [t_K_GROUP]).
+rule(62:495, keyword, [t_K_HAVING]).
+rule(62:496, keyword, [t_K_IF]).
+rule(62:497, keyword, [t_K_IGNORE]).
+rule(62:498, keyword, [t_K_IMMEDIATE]).
+rule(62:499, keyword, [t_K_IN]).
+rule(62:500, keyword, [t_K_INDEX]).
+rule(62:501, keyword, [t_K_INDEXED]).
+rule(62:502, keyword, [t_K_INITIALLY]).
+rule(62:503, keyword, [t_K_INNER]).
+rule(62:504, keyword, [t_K_INSERT]).
+rule(62:505, keyword, [t_K_INSTEAD]).
+rule(62:506, keyword, [t_K_INTERSECT]).
+rule(62:507, keyword, [t_K_INTO]).
+rule(62:508, keyword, [t_K_IS]).
+rule(62:509, keyword, [t_K_ISNULL]).
+rule(62:510, keyword, [t_K_JOIN]).
+rule(62:511, keyword, [t_K_KEY]).
+rule(62:512, keyword, [t_K_LEFT]).
+rule(62:513, keyword, [t_K_LIKE]).
+rule(62:514, keyword, [t_K_LIMIT]).
+rule(62:515, keyword, [t_K_MATCH]).
+rule(62:516, keyword, [t_K_NATURAL]).
+rule(62:517, keyword, [t_K_NO]).
+rule(62:518, keyword, [t_K_NOT]).
+rule(62:519, keyword, [t_K_NOTNULL]).
+rule(62:520, keyword, [t_K_NULL]).
+rule(62:521, keyword, [t_K_OF]).
+rule(62:522, keyword, [t_K_OFFSET]).
+rule(62:523, keyword, [t_K_ON]).
+rule(62:524, keyword, [t_K_OR]).
+rule(62:525, keyword, [t_K_ORDER]).
+rule(62:526, keyword, [t_K_OUTER]).
+rule(62:527, keyword, [t_K_PLAN]).
+rule(62:528, keyword, [t_K_PRAGMA]).
+rule(62:529, keyword, [t_K_PRIMARY]).
+rule(62:530, keyword, [t_K_QUERY]).
+rule(62:531, keyword, [t_K_RAISE]).
+rule(62:532, keyword, [t_K_RECURSIVE]).
+rule(62:533, keyword, [t_K_REFERENCES]).
+rule(62:534, keyword, [t_K_REGEXP]).
+rule(62:535, keyword, [t_K_REINDEX]).
+rule(62:536, keyword, [t_K_RELEASE]).
+rule(62:537, keyword, [t_K_RENAME]).
+rule(62:538, keyword, [t_K_REPLACE]).
+rule(62:539, keyword, [t_K_RESTRICT]).
+rule(62:540, keyword, [t_K_RIGHT]).
+rule(62:541, keyword, [t_K_ROLLBACK]).
+rule(62:542, keyword, [t_K_ROW]).
+rule(62:543, keyword, [t_K_SAVEPOINT]).
+rule(62:544, keyword, [t_K_SELECT]).
+rule(62:545, keyword, [t_K_SET]).
+rule(62:546, keyword, [t_K_TABLE]).
+rule(62:547, keyword, [t_K_TEMP]).
+rule(62:548, keyword, [t_K_TEMPORARY]).
+rule(62:549, keyword, [t_K_THEN]).
+rule(62:550, keyword, [t_K_TO]).
+rule(62:551, keyword, [t_K_TRANSACTION]).
+rule(62:552, keyword, [t_K_TRIGGER]).
+rule(62:553, keyword, [t_K_UNION]).
+rule(62:554, keyword, [t_K_UNIQUE]).
+rule(62:555, keyword, [t_K_UPDATE]).
+rule(62:556, keyword, [t_K_USING]).
+rule(62:557, keyword, [t_K_VACUUM]).
+rule(62:558, keyword, [t_K_VALUES]).
+rule(62:559, keyword, [t_K_VIEW]).
+rule(62:560, keyword, [t_K_VIRTUAL]).
+rule(62:561, keyword, [t_K_WHEN]).
+rule(62:562, keyword, [t_K_WHERE]).
+rule(62:563, keyword, [t_K_WITH]).
+rule(62:564, keyword, [t_K_WITHOUT]).
+rule(63:565, name, [any_name]).
+rule(64:566, function_name, [any_name]).
+rule(65:567, database_name, [any_name]).
+rule(66:568, table_name, [any_name]).
+rule(67:569, table_or_index_name, [any_name]).
+rule(68:570, new_table_name, [any_name]).
+rule(69:571, column_name, [any_name]).
+rule(70:572, collation_name, [any_name]).
+rule(71:573, foreign_table, [any_name]).
+rule(72:574, index_name, [any_name]).
+rule(73:575, trigger_name, [any_name]).
+rule(74:576, view_name, [any_name]).
+rule(75:577, module_name, [any_name]).
+rule(76:578, pragma_name, [any_name]).
+rule(77:579, savepoint_name, [any_name]).
+rule(78:580, table_alias, [any_name]).
+rule(79:581, transaction_name, [any_name]).
+rule(80:582, any_name, [t_IDENTIFIER]).
+rule(80:583, any_name, [keyword]).
+rule(80:584, any_name, [t_STRING_LITERAL]).
+rule(80:585, any_name, ['(', any_name, ')']).

@@ -1,6 +1,6 @@
 %%
 
-initsymbol: 'begin_of_file' value 'end_of_file' 
+initsymbol: value
           ;
 
 value: object 
@@ -29,54 +29,49 @@ pair: fname |
       phones 
     ;
 
-fname: '"first-name":string' 
+fname: 'first-name:' 'string' 
      ;
 
-lname: '"last-name":string' 
+lname: 'last-name:' 'string'
      ;
 
-dob: '"dob":date_string' 
+dob: 'dob:' 'date_string'
    ;
 
-age: '"age":' integer 
+age: 'age:' integer 
    ;
 
-email: '"email":email_string' 
+email: 'email:' 'email_string' 
      ;
 
-addr: '"address":' addrobj 
+addr: 'address:' addrobj 
     ;
 
-phones: '"phones":' phonearray 
+phones: 'phones:' phonearray 
       ;
 
 addrmember: streetname |
             streetnum 
           ;
 
-streetname: '"street-name":string' 
+streetname: 'street-name:''string' 
           ;
 
-streetnum: '"street-num":string' 
+streetnum: 'street-num:''string' 
          ;
 
 phonemember: phonelabel |
              phonenum 
            ;
 
-phonelabel: 'label:string' 
+phonelabel: 'label:' 'string' 
           ;
 
-phonenum: 'number:string' 
+phonenum: 'number:' 'phone_string'
         ;
 
-integer: '0' |
-         digit19 digitstar 
-       ;
+integer: '1';
 
-digitstar: |
-           digit digitstar 
-         ;
 
 addrmembersoptional: |
                      addrmembers 
@@ -119,20 +114,4 @@ phonemembersstar: |
 
 phonemembers: phonemember phonemembersstar 
             ;
-
-digit: '0'
-     ;
-
-digit19: '1' |
-         '2' |
-         '3' |
-         '4' |
-         '5' |
-         '6' |
-         '7' |
-         '8' |
-         '9' 
-       ;
-
-
 %%

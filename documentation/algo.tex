@@ -1,0 +1,92 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+%=======================================================================
+% Packages
+%=======================================================================
+
+%
+% Layout
+%
+\usepackage{microtype} 
+
+
+%
+% Math
+%
+\usepackage{MnSymbol}
+
+%
+% Graphics
+%
+\usepackage{graphicx}\graphicspath{{./images/}}
+
+%
+% Algorithm
+%
+\usepackage[linesnumbered,lined,algoruled]{algorithm2e}
+
+\title{Masters Algorithm}
+\author{chris.rossouw5 }
+\date{March 2021}
+
+\newcommand{\LRG}{\mathit{LR}_G}
+\newcommand{\shift}[1]{\rightarrow_{#1}}
+\newcommand{\reduce}[1]{\dashedrightarrow_{#1}}
+\newcommand{\shiftstar}[1]{\rightarrow^*_{#1}}
+\newcommand{\reducestar}[1]{\dashedrightarrow^*_{#1}}
+\newcommand{\vinit}{v_0}
+\newcommand{\vaccept}{v_{\mathit{acc}}}
+\newcommand{\Eshift}{E_\rightarrow}
+\newcommand{\Ereduce}{E_\dashedrightarrow}
+
+\newcommand{\lritem}[3]{#1\rightarrow#2\bullet#3}
+\newcommand{\lritemA}{\lritem{A}{\alpha}{\beta}}
+\newcommand{\LRA}{{\mathit{LR}}^*_G}
+ 
+\mathchardef\mhyphen="2D
+
+\begin{document}
+
+\maketitle
+
+\section{Positive Algorithm}
+
+\begin{algorithm}
+\DontPrintSemicolon
+\SetKwInOut{Input}{input}\SetKwInOut{Output}{output}
+\SetKwData{Queue}{queue}
+\SetKwData{E}{E}
+\SetKwData{Seen}{seen\_edges}
+\SetKwData{Cur}{prefix}
+\Input{An LR Graph $\LRG=(V,E,\vinit,\vaccept)$}
+%\Output{A List of valid paths starting at $v_0$ that cover all states and transitions in the automaton}
+\Output{A test suite covering all edges in $\LRG$}
+$\mathit{reduction\_path}( u\reduce{A/|\gamma|}v ) =\iota(p \in \Eshift^{|\gamma|} , vert(p) = v \ldots u) \; \circ \; (u\reduce{A/|\gamma|}v)\; \circ \; \iota(v\shift{A}v')$\;
+$\mathit{embed}(red\_path) = complete\_path \; | \; complete\_path = \vinit \ldots \circ p \circ \ldots \vaccept, \mathit{complete\_path\ is\ shallowest\ imbedding\ of\ red\_path}$\;
+$\mathit{test\_suite}\leftarrow \emptyset$\;
+\For{$\mathit{ e \; \in \; \Ereduce}$}{
+	$\mathit{complete = embed(reduction\_path(e))}$\;
+	$\mathit{test\_suite}.\!\cup \left\lbrace wp(complete) \right\rbrace$ \;
+}
+\Return{$\mathit{test\_suite}$}
+\caption{Automaton Coverage}\label{alg:flood}
+\end{algorithm}
+
+\section{Negative Stack Mutations}
+
+We define equivalent stack sequences as
+$wp(p) = wp(q) \implies vert(p)\ is\ equivalent\ to\ vert(q)$
+for paths p and q.
+
+\subsection{Deletion}
+
+Let s be a reduction path such that
+$pre \cup s \cup post$ is a valid path over an automaton graph $\LRG$.
+
+We may delete $s$ if $vert(post)$ is not equivalent to the stack sequences originating from the last vertex in $pre$
+\subsection{Insertion}
+We may insert a stack sequence $vert(s)$ of a reduction path s after any node $v$ such that $u \shift{A} v$ is the last edge visited before $v$ and $vert(s)$ is not equivalent to a stack sequence corresponding to any reduction path originating from $v$.
+\subsection{Substitution}
+
+We may substitute a reduction path $p \; | \; vert(p) = u...v$ by a reduction path $s$ if $vert(s)$ is not equivalent to any stack sequences corresponding to reduction paths originating from $u$ 
+\end{document}

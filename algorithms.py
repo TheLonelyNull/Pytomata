@@ -9,6 +9,7 @@ import random
 
 shortest_deriv_map = dict()
 
+
 def dynamic_traversal(graph: Graph):
     # we only look at push edges during traversal to solve for pop edges. Pop edges should be solved before
     # the corresponding non-terminal push edges is considered valid. We initialize valid edges with all terminal
@@ -111,7 +112,8 @@ def cover_all_pop(sub_table, graph):
     reverse = reverse_sub_table(sub_table, graph)
     # sub together shortest paths to cover all segments
     complete = []
-    for key in sub_table:
+    for i, key in enumerate(sub_table):
+        print(str(len(sub_table)) + ": " + str(i))
         for p in sub_table[key]:
             # print('------------')
             # print(trace_to_str([key], graph))
