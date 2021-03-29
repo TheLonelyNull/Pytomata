@@ -114,12 +114,14 @@ def cover_all_pop(sub_table, graph):
     complete = []
     for i, key in enumerate(sub_table):
         print(str(len(sub_table)) + ": " + str(i))
+        print("Sub for key: " + str(len(sub_table[key])))
         for p in sub_table[key]:
             # print('------------')
             # print(trace_to_str([key], graph))
             # print(trace_to_str(p['trace'], graph))
             path = complete_segment(p, sub_table, shortest_deriv_map, reverse, start_edges, graph)
             complete.append(path)
+            print("complete sub")
             # print(extract_test_case(path['trace'], graph))
             # print('------------')
     return complete
