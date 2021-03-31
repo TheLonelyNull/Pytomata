@@ -62,7 +62,7 @@
 %\Output{A List of valid paths starting at $v_0$ that cover all states and transitions in the automaton}
 \Output{A test suite covering all edges in $\LRG$}
 $\mathit{reduction\_path}( u\reduce{A/|\gamma|}v ) =\iota(p \in \Eshift^{|\gamma|} , vert(p) = v \ldots u) \; \circ \; (u\reduce{A/|\gamma|}v)\; \circ \; \iota(v\shift{A}v')$\;
-$\mathit{embed}(red\_path) = complete\_path \; | \; complete\_path = \vinit \ldots \circ p \circ \ldots \vaccept, \mathit{complete\_path\ is\ shallowest\ imbedding\ of\ red\_path}$\;
+$\mathit{embed}(red\_path) = \{ complete\_path \; | \; complete\_path = \vinit \ldots \circ p \circ \ldots \vaccept, \mathit{complete\_path\ is\ shallowest\ imbedding\ of\ red\_path} \}$\;
 $\mathit{test\_suite}\leftarrow \emptyset$\;
 \For{$\mathit{ e \; \in \; \Ereduce}$}{
 	$\mathit{complete = embed(reduction\_path(e))}$\;

@@ -23,14 +23,11 @@ def dynamic_traversal(graph: Graph):
             rem_pop.add(e)
     # start solving for pop edges
     print("Started Solving for Pop Edges. Total " + str(len(rem_pop)))
-    count = 0
     while len(rem_pop) + len(waiting) > 0:
         rem_pop.update(waiting)
         waiting = set()
         for edge in rem_pop.copy():
-            # print("Solving for " + str(edge))
             solved, solution = solve_for_pop(edge, graph)
-            # print("Solved: " + str(count) + " . Solved for " + str(edge))
             if solved:
                 # find non term push edge in sub table add to table
                 for e in edge.next_node.edges:
@@ -41,12 +38,11 @@ def dynamic_traversal(graph: Graph):
                             solution['stack'] = [e.next_node]
                             solution['trace'].append(e)
                             sub_table[e].append(solution)
-                            count += 1
             else:
                 print("Waiting")
                 waiting.add(edge)
             rem_pop.remove(edge)
-    print("Finished Solving for Pop Edges. Started Splicing.")
+    print("Finished Solving for Pop Edges.")
     # splice solutions together
     complete = cover_all_pop(sub_table, graph)
     print("Finished Splicing Solutions.")
@@ -59,7 +55,6 @@ def dynamic_traversal(graph: Graph):
 def solve_for_pop(candidate: Edge, graph):
     assert candidate.is_pop
     # make a path out of only push edges which can then be subbed out in later pass
-    target_stack_depth = candidate.pop_count
     src = candidate.next_node
     target = candidate.source
     assert candidate.local_stack[0] == src
@@ -105,124 +100,110 @@ def solve_for_pop(candidate: Edge, graph):
 def cover_all_pop(sub_table, graph):
     # find starting branches
     start_edges = find_start_edges(sub_table, graph)
+    print('Constructing reduction graph')
+    reduction_graph = construct_reduction_graph(sub_table, graph)
+    print('Finished constructing reduction graph')
     # precompute shortest derivations
     print("Calculation shortest derivations")
     shortest_derivations(sub_table, shortest_deriv_map, graph)
     print("Finished calculation shortest derivations")
-    reverse = reverse_sub_table(sub_table, graph)
     # sub together shortest paths to cover all segments
     complete = []
     for i, key in enumerate(sub_table):
-        print(str(len(sub_table)) + ": " + str(i))
-        print("Sub for key: " + str(len(sub_table[key])))
         for p in sub_table[key]:
-            # print('------------')
-            # print(trace_to_str([key], graph))
-            # print(trace_to_str(p['trace'], graph))
-            path = complete_segment(p, sub_table, shortest_deriv_map, reverse, start_edges, graph)
+            path = complete_segment(p, shortest_deriv_map, reduction_graph, graph)
             complete.append(path)
-            print("complete sub")
-            # print(extract_test_case(path['trace'], graph))
-            # print('------------')
     return complete
 
 
-def complete_segment(path, sub_table, shortest_derivations, reverse, start_edges, graph):
-    # sub out path with shortest derivations
-    new_nt_edge = path['trace'][-1]
-    new_trace = []
-    cur_trace = path['trace']
-    for i in range(len(cur_trace)):
-        edge = cur_trace[i]
-        if not edge.is_pop and edge.label in graph.nonterminal and not cur_trace[i - 1].is_pop:
-            new_trace.extend(shortest_derivations[edge]['trace'])
-        else:
-            new_trace.append(edge)
-    cur_layer = [new_trace]
-    possible_solutions = []
-    while len(possible_solutions) == 0:
-        next_layer = []
-        for t in cur_layer:
-            cur_edge = t[-1]
-            # spot possible answer
-            if cur_edge in start_edges:
-                possible_solutions.append(t)
-                continue
-            # check for next layer embedding
-            for trace in reverse[cur_edge]:
-                # skip recursive embedding
-                if cur_edge == trace[-1]:
-                    continue
-                # sub in for next trace
-                for i in range(len(trace)):
-                    edge = trace[i]
-                    if edge == cur_edge and is_unsubbed_nt(i, trace, graph):
-                        next_trace = trace[:i] + t + trace[i + 1:]
-                        next_layer.append(next_trace)
-        cur_layer = next_layer
-    # sub out all unsubbed edges and find shortest
-    subbed_possible = []
-    for t in possible_solutions:
-        subbed = []
-        i = 0
-        for e in t:
-            if e in graph.terminal or e.is_pop:
-                subbed.append(e)
-            else:
-                if is_unsubbed_nt(i, t, graph):
-                    subbed.extend(shortest_derivations[e]['trace'])
-                else:
-                    subbed.append(e)
-            i += 1
-        # print("Possible: " + extract_test_case(subbed, graph)[0])
-        subbed_possible.append(subbed)
-    min_len = 10000000
-    min_subs = []
-    for trace in subbed_possible:
-        symbols = 0
-        for e in trace:
-            if e.label in graph.terminal:
-                symbols += 1
-        if symbols < min_len:
-            min_subs = list()
-            min_subs.append(trace)
-            min_len = symbols
-        elif symbols == min_len:
-            min_subs.append(trace)
+def construct_reduction_graph(sub_table, graph):
+    # find starting branches
+    start_edges = find_start_edges(sub_table, graph)
+    node_map = dict()
+    tree_content = set()
+    next_layer_contents = set()
+    current_layer = list()
+    next_layer = list()
+    # fill in first layer from start edges
+    for edge in start_edges:
+        node = {
+            'edge': edge,
+            'traces': [],
+            'parent': None,
+            'index_in_parent': None,
+        }
+        """
+        edge is this edge,
+        traces or its possible reduction paths, contains children of this edge in trace
+        parent is the parent node of this node
+        index_in_parent is a tuple indicating trace and position in trace
+        """
+        for path in sub_table[edge]:
+            node['traces'].append(path['trace'])
+        current_layer.append(node)
+        if edge not in node_map:
+            node_map[edge] = []
+        node_map[edge].append(node)
+        tree_content.add(edge)
 
-    strs = []
-    str_map = dict()
-    for trace in min_subs:
-        string = extract_test_case(trace, graph, test_suite_type='positive', stack=False)[0]
-        strs.append(string)
-        str_map[string] = trace
-    # sub new path up into shortest other path that will take it and sub out other non
-    # terminals with shortest derivation
-    # stop when at covering a segment mapped to a start edge
-    # shortest = str_map[strs[0]]
-    strs.sort()
+    # loop until we have a tree of shallowest embeddings
+    next_layer = current_layer
+    layer_count = 1
+    while len(next_layer) != 0:
+        current_layer = next_layer
+        next_layer = list()
+        next_layer_contents = set()
+        print("Layer %d: %d" % (layer_count, len(current_layer)))
+        layer_count += 1
+        for node in current_layer:
+            for i, t in enumerate(node['traces']):
+                for j, e in enumerate(t):
+                    # only embed new reduction paths or ones at the same depth
+                    if (not e.is_pop and e.label in graph.nonterminal) and (
+                            e not in tree_content or e in next_layer_contents):
+                        new_node = {
+                            'edge': e,
+                            'traces': [],
+                            'parent': node,
+                            'index_in_parent': (i, j)
+                        }
+                        for path in sub_table[e]:
+                            new_node['traces'].append(path['trace'])
+                        next_layer.append(new_node)
+                        if e not in node_map:
+                            node_map[e] = []
+                        node_map[e].append(new_node)
+                        tree_content.add(e)
+                        next_layer_contents.add(e)
+    return node_map
+
+
+def complete_segment(path, shortest_derivation_map, reduction_tree_map, graph):
+    trace = path['trace']
+    cur_node_list = reduction_tree_map[trace[-1]]
+    # pick a node from the same depth at random
     seed = Config.get_instance().get_seed()
     seed += zlib.adler32(str(path['trace'][-1]).encode('utf_8'))
     random.seed(seed)
-    i = random.randint(0, len(strs) - 1)
-    shortest = str_map[strs[i]]
-
-    # tmp_cdrc = CDRC.get_instance()
-    # for trace in min_subs:
-    #    case = extract_test_case(trace, graph)[0]
-    #    if tmp_cdrc.is_in_cdrc(case):
-    #        shortest = trace
-    #        break
-
-    # interactive
-    # if len(strs) > 1:
-    #    for i, s in enumerate(strs):
-    #        print(str(i) + ": " + str(s))
-    #    i = -1
-    #    while i < 0 or i >= len(strs):
-    #        i = int(input("Pick an option"))
-    #    shortest = str_map[strs[i]]
-    return {'trace': shortest}
+    i = random.randint(0, len(cur_node_list) - 1)
+    cur_node = cur_node_list[i]
+    # imbed till we reach the top of the reduction tree
+    while cur_node['parent'] is not None:
+        parent_node = cur_node['parent']
+        trace_index = cur_node['index_in_parent'][0]
+        parent_trace = parent_node['traces'][trace_index]
+        embed_index = cur_node['index_in_parent'][1]
+        trace = parent_trace[:embed_index] + trace + parent_trace[embed_index + 1:]
+        cur_node = parent_node
+    # sub out all remaining with shortest derivation
+    subbed_trace = []
+    for i, e in enumerate(trace):
+        if not e.is_pop and e.label in graph.nonterminal and not (
+                trace[i - 1].is_pop):
+            subbed_trace.extend(shortest_deriv_map[e]['trace'])
+        else:
+            subbed_trace.append(e)
+    return {'trace': subbed_trace}
 
 
 def is_unsubbed_nt(i, cur_trace, graph):
