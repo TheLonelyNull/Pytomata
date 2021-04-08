@@ -155,7 +155,7 @@ def add_return_edges(nodes):
                 # during reduce reduce conflict
                 already_added = False
                 for e in node.edges:
-                    if e.label == edge.label and e.next_node == edge.next_node and e.is_pop:
+                    if e.label == edge.label and e.next_node == edge.next_node and e.is_pop and e.pop_count == edge.pop_count:
                         already_added = True
                         break
                 if not already_added:
