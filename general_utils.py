@@ -11,7 +11,6 @@ def extract_test_case(T, graph, test_suite_type=None, stack= None, sub_table=Non
         stack = Config.get_instance().get('stack')
     if stack:
         if test_suite_type == 'neg-sub':
-            print("done")
             return extract_stack_sub(T, sub_table, shortest_table, graph)
         elif test_suite_type == 'neg-del':
             return extract_stack_del(T, graph)

@@ -197,7 +197,7 @@ BS: |
   ;
 
 BT: |
-    't_K_WITHOUTt_IDENTIFIER' 
+    't_K_WITHOUT' t_id
   ;
 
 BQ: DZ BR BS BT |
@@ -503,7 +503,7 @@ EM: EN
   ;
 
 EP: GV |
-    't_BIND_PARAMETER' |
+    t_bind_parameter |
     EQ HH |
     GW EP |
     EP '||' EP |
@@ -527,6 +527,15 @@ EP: GV |
     't_K_CASE' FE FF FG 't_K_END' |
     FO 
   ;
+
+t_bind_parameter: '?' '0'|
+		  ':' t_id|
+		  '@' t_id|
+		  '$' t_id
+		  ;
+
+t_id: 'A';
+
 
 EQ: |
     AK HE '.' 
@@ -801,7 +810,7 @@ GY: EP |
     DZ 
   ;
 
-GZ: 't_IDENTIFIER' |
+GZ: t_id |
     't_STRING_LITERAL' 
   ;
 
@@ -982,7 +991,7 @@ HQ: HS
 HR: HS 
   ;
 
-HS: 't_IDENTIFIER' |
+HS: t_id |
     HA |
     't_STRING_LITERAL' |
     HS 
