@@ -138,7 +138,9 @@ def construct_reduction_graph(sub_table, graph):
         parent is the parent node of this node
         index_in_parent is a tuple indicating trace and position in trace
         """
-        for path in sub_table[edge]:
+        paths = sub_table[edge]
+        paths.sort(key=lambda x: trace_to_str(x['trace'], graph))
+        for path in paths:
             node['traces'].append(path['trace'])
         current_layer.append(node)
         if edge not in node_map:
@@ -167,7 +169,9 @@ def construct_reduction_graph(sub_table, graph):
                             'parent': node,
                             'index_in_parent': (i, j)
                         }
-                        for path in sub_table[e]:
+                        paths = sub_table[e]
+                        paths.sort(key=lambda x: trace_to_str(x['trace'], graph))
+                        for path in paths:
                             new_node['traces'].append(path['trace'])
                         next_layer.append(new_node)
                         if e not in node_map:
@@ -186,6 +190,7 @@ def complete_segment(path, shortest_derivation_map, reduction_tree_map, graph):
     seed += zlib.adler32(str(path['trace'][-1]).encode('utf_8'))
     random.seed(seed)
     i = random.randint(0, len(cur_node_list) - 1)
+    cur_node_list.sort(key=lambda x: str(x['edge']))
     cur_node = cur_node_list[i]
     # imbed till we reach the top of the reduction tree
     while cur_node['parent'] is not None:
