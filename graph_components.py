@@ -24,7 +24,6 @@ class Edge:
         self.pop_count = 0
         self.local_stack = None
 
-
     def __eq__(self, other):
         if other is None:
             return False
@@ -35,6 +34,8 @@ class Edge:
         if self.next_node.label != other.next_node.label:
             return False
         if self.is_pop != other.is_pop:
+            return False
+        if self.pop_count != other.pop_count:
             return False
         return True
 
@@ -49,10 +50,13 @@ class Edge:
             return True
         if self.is_pop != other.is_pop:
             return True
+        if self.pop_count != other.pop_count:
+            return True
         return False
 
     def __hash__(self):
-        return hash(self.label) + hash(self.source.label) + hash(self.next_node.label) + hash(self.is_pop)
+        return hash(self.label) + hash(self.source.label) + hash(self.next_node.label) + hash(self.is_pop) + hash(
+            self.pop_count)
 
     def __str__(self):
         pop_str = ""
