@@ -154,7 +154,7 @@ def extract_stack_add(T, sub_map, short_map, graph):
         if not edge.is_pop and edge.label in graph.nonterminal:
             # check beginning if rule is was applied in nullable context
             follow_check_offset = 0
-            pop_edge = T[index-1]
+            pop_edge = T[index - 1]
             if pop_edge.pop_count == 0:
                 follow_check_offset = 1
             # insert after last rule application
@@ -196,13 +196,32 @@ def extract_stack_sub(T, sub_map, short_map, graph):
                     subbed = sub_with_shortest(segment['trace'], short_map, graph)
                     if can_insert(subbed, T, index - 1, sub_map, graph):
                         # insert
+                        print(index)
+                        print(trace_to_str(segment, graph))
+                        print(trace_to_str(T, graph))
                         tmp = deleteFromEnd(T[:index + 1], graph)
+                        print(trace_to_str(tmp, graph))
                         out_str = tmp
                         for e in subbed:
                             if not e.is_pop and e.label not in graph.nonterminal:
                                 out_str += e.label + ' '
                         out.append(out_str)
+                        exit(0)
     return out
+
+
+def trace_to_str(T, graph):
+    if len(T) == 0:
+        return ""
+    trace = str(T[0].source.label)
+    for edge in T:
+        colour = "\033[1;32;40m"
+        if edge.is_pop:
+            colour = "\033[94m"
+        elif edge.label in graph.nonterminal:
+            colour = "\033[1;33;40m"
+        trace += colour + " -" + str(edge.label) + "-> \033[0m" + str(edge.next_node.label)
+    return trace
 
 
 def extract_stack_del(T, graph):
@@ -214,7 +233,10 @@ def extract_stack_del(T, graph):
                 out[i] += edge.label + ' '
         if not edge.is_pop and edge.label in graph.nonterminal and can_delete(edge, graph):
             # delete last rule application
+            print('Deleting from: ' + trace_to_str(T, graph))
+            print(trace_to_str(T[:index + 1], graph))
             out.append(deleteFromEnd(T[:index + 1], graph))
+    print(out)
     return out
 
 
@@ -232,7 +254,6 @@ def can_insert(segment, trace, cur_index, sub_map, graph):
     cur_state = trace[cur_index].next_node
     first = get_first(segment, sub_map, graph)
     follow = get_follow_set(cur_state.label, graph)
-    # no overlap between follow and first
 
     if len(follow - first) < len(follow) or len(first) == 0:
         return False

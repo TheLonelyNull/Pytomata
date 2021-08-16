@@ -125,11 +125,19 @@ sub_map = {
     't_K_WHERE': 'WHERE',
     't_K_WITH': 'WITH',
     't_K_WITHOUT': 'WITHOUT',
-    't_STRING_LITERAL': '\'a\'',
+    't_STRING_LITERAL': '\'\'',
     't_NUMERIC_LITERAL': '1',
     't_BLOB_LITERAL': 'X\'a\''
 }
 
+def sub(lines):
+    for i, l in enumerate(lines):
+        subbed = l
+        for key in sub_map:
+            subbed = subbed.replace(key, sub_map[key])
+        lines[i] = subbed
+    return lines
+    
 if __name__ == '__main__':
     f = open('out/sql.test', 'r')
     lines = f.readlines()

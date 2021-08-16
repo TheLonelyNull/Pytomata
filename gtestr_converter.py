@@ -15,7 +15,7 @@ def parse_terms(f: IO):
             started = True
 
         if started:
-            arr = re.split("\(|\)", line)
+            arr = re.split("terminal\(|\).\n", line)
             term = arr[1]
             terms.append(term)
     return terms
@@ -116,7 +116,10 @@ if __name__ == "__main__":
                         cur_t_str = ""
                     line += nt_map[symbol] + " "
                 elif symbol in t:
-                    cur_t_str += t_map[symbol]
+                    if len(cur_t_str) == 0:
+                        cur_t_str += t_map[symbol]
+                    else:
+                        cur_t_str += ' ' + t_map[symbol]
             if len(cur_t_str) > 0:
                 line += "\'" + cur_t_str + "\' "
             line += "|"

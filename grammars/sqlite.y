@@ -19,7 +19,7 @@ AB: AC AF AD AC
   ;
 
 AH: |
-    't_K_QUERYt_K_PLAN' 
+    't_K_QUERY t_K_PLAN' 
   ;
 
 AG: |
@@ -65,7 +65,7 @@ AK: |
     HD '.' 
   ;
 
-AL: 't_K_RENAMEt_K_TO' HG |
+AL: 't_K_RENAME t_K_TO' HG |
     't_K_ADD' AM DZ 
   ;
 
@@ -73,7 +73,7 @@ AM: |
     't_K_COLUMN' 
   ;
 
-AJ: 't_K_ALTERt_K_TABLE' AK HE AL 
+AJ: 't_K_ALTER t_K_TABLE' AK HE AL 
   ;
 
 AO: |
@@ -146,7 +146,7 @@ BF: |
   ;
 
 BE: |
-    't_K_ORDERt_K_BY' GA BF 
+    't_K_ORDER t_K_BY' GA BF 
   ;
 
 BI: 't_K_OFFSET' |
@@ -169,7 +169,7 @@ BK: |
   ;
 
 BL: |
-    't_K_IFt_K_NOTt_K_EXISTS' 
+    't_K_IF t_K_NOT t_K_EXISTS' 
   ;
 
 BM: |
@@ -180,7 +180,7 @@ BN: |
     't_K_WHERE' EP 
   ;
 
-BJ: 't_K_CREATE' BK 't_K_INDEX' BL AK HK 't_K_ON' HE FR BM BN 
+BJ: 't_K_CREATE' BK 't_K_INDEX' BL AK HK 't_K_ON' HE '(' FR BM ')' BN 
   ;
 
 BP: |
@@ -197,10 +197,10 @@ BS: |
   ;
 
 BT: |
-    't_K_WITHOUT' t_id
+    't_K_WITHOUT t_IDENTIFIER' 
   ;
 
-BQ: DZ BR BS BT |
+BQ: '(' DZ BR BS ')' BT |
     't_K_AS' DK 
   ;
 
@@ -210,7 +210,7 @@ BO: 't_K_CREATE' BP 't_K_TABLE' BL AK HE BQ
 BV: |
     't_K_BEFORE' |
     't_K_AFTER' |
-    't_K_INSTEADt_K_OF' 
+    't_K_INSTEAD t_K_OF' 
   ;
 
 BW: 't_K_DELETE' |
@@ -227,7 +227,7 @@ BX: |
   ;
 
 BZ: |
-    't_K_FORt_K_EACHt_K_ROW' 
+    't_K_FOR t_K_EACH t_K_ROW' 
   ;
 
 CA: |
@@ -255,43 +255,43 @@ CG: |
   ;
 
 CF: |
-    GY CG 
+    '(' GY CG ')' 
   ;
 
-CE: 't_K_CREATEt_K_VIRTUALt_K_TABLE' BL AK HE 't_K_USING' HN CF 
+CE: 't_K_CREATE t_K_VIRTUAL t_K_TABLE' BL AK HE 't_K_USING' HN CF 
   ;
 
 CI: |
     FW 
   ;
 
-CH: CI 't_K_DELETEt_K_FROM' FY BN 
+CH: CI 't_K_DELETE t_K_FROM' FY BN 
   ;
 
 CK: |
     BE 't_K_LIMIT' EP BH 
   ;
 
-CJ: CI 't_K_DELETEt_K_FROM' FY BN CK 
+CJ: CI 't_K_DELETE t_K_FROM' FY BN CK 
   ;
 
 CL: 't_K_DETACH' AQ HD 
   ;
 
 CN: |
-    't_K_IFt_K_EXISTS' 
+    't_K_IF t_K_EXISTS' 
   ;
 
-CM: 't_K_DROPt_K_INDEX' CN AK HK 
+CM: 't_K_DROP t_K_INDEX' CN AK HK 
   ;
 
-CO: 't_K_DROPt_K_TABLE' CN AK HE 
+CO: 't_K_DROP t_K_TABLE' CN AK HE 
   ;
 
-CP: 't_K_DROPt_K_TRIGGER' CN AK HL 
+CP: 't_K_DROP t_K_TRIGGER' CN AK HL 
   ;
 
-CQ: 't_K_DROPt_K_VIEW' CN AK HM 
+CQ: 't_K_DROP t_K_VIEW' CN AK HM 
   ;
 
 CS: |
@@ -303,15 +303,15 @@ CR: AY GQ CS BE BG
 
 CU: 't_K_INSERT' |
     't_K_REPLACE' |
-    't_K_INSERTt_K_ORt_K_REPLACE' |
-    't_K_INSERTt_K_ORt_K_ROLLBACK' |
-    't_K_INSERTt_K_ORt_K_ABORT' |
-    't_K_INSERTt_K_ORt_K_FAIL' |
-    't_K_INSERTt_K_ORt_K_IGNORE' 
+    't_K_INSERT t_K_OR t_K_REPLACE' |
+    't_K_INSERT t_K_OR t_K_ROLLBACK' |
+    't_K_INSERT t_K_OR t_K_ABORT' |
+    't_K_INSERT t_K_OR t_K_FAIL' |
+    't_K_INSERT t_K_OR t_K_IGNORE' 
   ;
 
 CV: |
-    HH BY 
+    '(' HH BY ')' 
   ;
 
 CX: |
@@ -319,12 +319,12 @@ CX: |
   ;
 
 CY: |
-    ',' EP CX CY 
+    ', (' EP CX ')' CY 
   ;
 
-CW: 't_K_VALUES' EP CX CY |
+CW: 't_K_VALUES (' EP CX ')' CY |
     DK |
-    't_K_DEFAULTt_K_VALUES' 
+    't_K_DEFAULT t_K_VALUES' 
   ;
 
 CT: CI CU 't_K_INTO' AK HE CV CW 
@@ -332,7 +332,7 @@ CT: CI CU 't_K_INTO' AK HE CV CW
 
 DA: |
     '=' GB |
-    GB 
+    '(' GB ')' 
   ;
 
 CZ: 't_K_PRAGMA' AK HO DA 
@@ -403,19 +403,19 @@ DT: |
   ;
 
 DS: |
-    't_K_GROUPt_K_BY' EP CX DT 
+    't_K_GROUP t_K_BY' EP CX DT 
   ;
 
 DM: 't_K_SELECT' DN GD DO DP BN DS |
-    't_K_VALUES' EP CX CY 
+    't_K_VALUES (' EP CX ')' CY 
   ;
 
 DV: |
-    't_K_ORt_K_ROLLBACK' |
-    't_K_ORt_K_ABORT' |
-    't_K_ORt_K_REPLACE' |
-    't_K_ORt_K_FAIL' |
-    't_K_ORt_K_IGNORE' 
+    't_K_OR t_K_ROLLBACK' |
+    't_K_OR t_K_ABORT' |
+    't_K_OR t_K_REPLACE' |
+    't_K_OR t_K_FAIL' |
+    't_K_OR t_K_IGNORE' 
   ;
 
 DW: |
@@ -447,8 +447,8 @@ ED: HB ED |
   ;
 
 EE: |
-    GT |
-    GT ',' GT 
+    '(' GT ')' |
+    '(' GT ',' GT ')' 
   ;
 
 EC: ED EE 
@@ -467,10 +467,10 @@ EJ: |
     't_K_AUTOINCREMENT' 
   ;
 
-EH: 't_K_PRIMARYt_K_KEY' EI EM EJ |
+EH: 't_K_PRIMARY t_K_KEY' EI EM EJ |
     EK 't_K_NULL' EM |
     't_K_UNIQUE' EM |
-    't_K_CHECK' EP |
+    't_K_CHECK (' EP ')' |
     't_K_DEFAULT' EL |
     't_K_COLLATE' HI |
     FH 
@@ -482,7 +482,7 @@ EK: |
 
 EL: GT |
     GV |
-    EP 
+    '(' EP ')' 
   ;
 
 EF: EG EH 
@@ -496,7 +496,7 @@ EO: 't_K_ROLLBACK' |
   ;
 
 EN: |
-    't_K_ONt_K_CONFLICT' EO 
+    't_K_ON t_K_CONFLICT' EO 
   ;
 
 EM: EN 
@@ -514,28 +514,19 @@ EP: GV |
     EP EV EP |
     EP 't_K_AND' EP |
     EP 't_K_OR' EP |
-    HC EW |
-    EP |
-    't_K_CAST' EP 't_K_AS' EC |
+    HC '(' EW ')' |
+    '(' EP ')' |
+    't_K_CAST (' EP 't_K_AS' EC ')' |
     EP 't_K_COLLATE' HI |
     EP EK EY EP EZ |
     EP FA |
     EP 't_K_IS' EK EP |
     EP EK 't_K_BETWEEN' EP 't_K_AND' EP |
     EP EK 't_K_IN' FB |
-    FD DK |
+    FD '(' DK ')' |
     't_K_CASE' FE FF FG 't_K_END' |
     FO 
   ;
-
-t_bind_parameter: '?' '0'|
-		  ':' t_id|
-		  '@' t_id|
-		  '$' t_id
-		  ;
-
-t_id: 'A';
-
 
 EQ: |
     AK HE '.' 
@@ -567,7 +558,7 @@ EV: '=' |
     '!=' |
     '<>' |
     't_K_IS' |
-    't_K_ISt_K_NOT' |
+    't_K_IS t_K_NOT' |
     't_K_IN' |
     't_K_LIKE' |
     't_K_GLOB' |
@@ -596,7 +587,7 @@ EZ: |
 
 FA: 't_K_ISNULL' |
     't_K_NOTNULL' |
-    't_K_NOTt_K_NULL' 
+    't_K_NOT t_K_NULL' 
   ;
 
 FC: |
@@ -604,7 +595,7 @@ FC: |
     EP CX 
   ;
 
-FB: FC |
+FB: '(' FC ')' |
     AK HE 
   ;
 
@@ -628,11 +619,11 @@ FK: 't_K_DELETE' |
     't_K_UPDATE' 
   ;
 
-FL: 't_K_SETt_K_NULL' |
-    't_K_SETt_K_DEFAULT' |
+FL: 't_K_SET t_K_NULL' |
+    't_K_SET t_K_DEFAULT' |
     't_K_CASCADE' |
     't_K_RESTRICT' |
-    't_K_NOt_K_ACTION' 
+    't_K_NO t_K_ACTION' 
   ;
 
 FJ: 't_K_ON' FK FL |
@@ -644,8 +635,8 @@ FI: |
   ;
 
 FN: |
-    't_K_INITIALLYt_K_DEFERRED' |
-    't_K_INITIALLYt_K_IMMEDIATE' 
+    't_K_INITIALLY t_K_DEFERRED' |
+    't_K_INITIALLY t_K_IMMEDIATE' 
   ;
 
 FM: |
@@ -664,7 +655,7 @@ FQ: 't_K_ROLLBACK' |
     't_K_FAIL' 
   ;
 
-FO: 't_K_RAISE' FP 
+FO: 't_K_RAISE (' FP ')' 
   ;
 
 FS: |
@@ -674,28 +665,28 @@ FS: |
 FR: HH FS EI 
   ;
 
-FV: 't_K_PRIMARYt_K_KEY' |
+FV: 't_K_PRIMARY t_K_KEY' |
     't_K_UNIQUE' 
   ;
 
-FU: FV FR BM EM |
-    't_K_CHECK' EP |
-    't_K_FOREIGNt_K_KEY' HH BY FH 
+FU: FV '(' FR BM ')' EM |
+    't_K_CHECK (' EP ')' |
+    't_K_FOREIGN t_K_KEY (' HH BY ')' FH 
   ;
 
 FT: EG FU 
   ;
 
 FX: |
-    ',' GS 't_K_AS' DK FX 
+    ',' GS 't_K_AS (' DK ')' FX 
   ;
 
-FW: 't_K_WITH' AZ GS 't_K_AS' DK FX 
+FW: 't_K_WITH' AZ GS 't_K_AS (' DK ')' FX 
   ;
 
 FZ: |
-    't_K_INDEXEDt_K_BY' HK |
-    't_K_NOTt_K_INDEXED' 
+    't_K_INDEXED t_K_BY' HK |
+    't_K_NOT t_K_INDEXED' 
   ;
 
 FY: AK HE FZ 
@@ -709,11 +700,11 @@ GB: GT |
     't_STRING_LITERAL' 
   ;
 
-GC: HE CV 't_K_AS' DK 
+GC: HE CV 't_K_AS (' DK ')' 
   ;
 
 GD: '*' |
-    HE '.*' |
+    HE '. *' |
     EP GE 
   ;
 
@@ -730,8 +721,8 @@ GH: |
   ;
 
 GG: AK HE GH FZ |
-    DQ GH |
-    DK GH 
+    '(' DQ ')' GH |
+    '(' DK ')' GH 
   ;
 
 GJ: |
@@ -761,18 +752,18 @@ GM: |
 
 GP: |
     't_K_ON' EP |
-    't_K_USING' HH BY 
+    't_K_USING (' HH BY ')' 
   ;
 
 GO: GP 
   ;
 
 GQ: 't_K_SELECT' DN GD DO DP BN DS |
-    't_K_VALUES' EP CX CY 
+    't_K_VALUES (' EP CX ')' CY 
   ;
 
 GR: 't_K_UNION' |
-    't_K_UNIONt_K_ALL' |
+    't_K_UNION t_K_ALL' |
     't_K_INTERSECT' |
     't_K_EXCEPT' 
   ;
@@ -994,8 +985,15 @@ HR: HS
 HS: t_id |
     HA |
     't_STRING_LITERAL' |
-    HS 
+    '(' HS ')' 
   ;
 
+t_bind_parameter: '?' '0'|
+		  ':' t_id|
+		  '@' t_id|
+		  '$' t_id
+		  ;
+
+t_id: 'A';
 
 %%
