@@ -1,0 +1,324 @@
+symbol(init_symbol).
+symbol(begin_of_file).
+symbol(end_of_file).
+symbol(prog).
+symbol('(\'[\',int,\']\')?').
+symbol(sysblock).
+symbol('decls?').
+symbol('stmts?').
+symbol(decls).
+symbol('((;),decl)*').
+symbol(decl).
+symbol(constdecl).
+symbol(vardecl).
+symbol('((\',\'),id)*').
+symbol(fundecl).
+symbol('funparams?').
+symbol(funparams).
+symbol('((\',\'),funparam)*').
+symbol(funparam).
+symbol(procdecl).
+symbol('procparams?').
+symbol(procparams).
+symbol('((\',\'),procparam)*').
+symbol(procparam).
+symbol('\'VER\'?').
+symbol(type).
+symbol('\'SKIKKING\'?').
+symbol(stype).
+symbol('(\'LANK\',(\'LANK\',\'LANK\'?)?)?').
+symbol('(\'LANK\',\'LANK\'?)?').
+symbol('\'LANK\'?').
+symbol(ntype).
+symbol(stmts).
+symbol('((;),stmt)*').
+symbol(stmt).
+symbol(assign).
+symbol(lval).
+symbol('(\'[\',expr,\']\')?').
+symbol(cond).
+symbol('(\'ANDERS\',stmt)?').
+symbol(loop).
+symbol(call).
+symbol('args?').
+symbol(args).
+symbol('((\',\'),expr)*').
+symbol(block).
+symbol('vdecls?').
+symbol(vdecls).
+symbol('((;),vardecl)*').
+symbol(lstmts).
+symbol('((;),lstmt)*').
+symbol(lstmt).
+symbol(lcond).
+symbol('(\'ANDERS\',lstmt)?').
+symbol(lblock).
+symbol('lstmts?').
+symbol(expr).
+symbol(binop).
+symbol('[').
+symbol(int).
+symbol(']').
+symbol('EENHEID').
+symbol(id).
+symbol('.').
+symbol('BEGIN').
+symbol('EINDE').
+symbol(;).
+symbol('KONST').
+symbol(:).
+symbol(:=).
+symbol(',').
+symbol('VER').
+symbol('FUNKSIE').
+symbol('(').
+symbol(')').
+symbol('PROSEDURE').
+symbol('SKIKKING').
+symbol('WAARHEID').
+symbol('LANK').
+symbol('AFTELBAR').
+symbol('BREUK').
+symbol('ANDERS').
+symbol('INDIEN').
+symbol('DAN').
+symbol('TERWYL').
+symbol('DOEN').
+symbol('AFBREEK').
+symbol(-).
+symbol('WAAR').
+symbol('VALS').
+symbol(==).
+symbol('!=').
+symbol(>=).
+symbol(>).
+symbol(<=).
+symbol(<).
+symbol(+).
+symbol(/).
+symbol(*).
+symbol(**).
+
+:- dynamic nonterm/1.
+
+nonterm(init_symbol).
+nonterm(prog).
+nonterm('(\'[\',int,\']\')?').
+nonterm(sysblock).
+nonterm('decls?').
+nonterm('stmts?').
+nonterm(decls).
+nonterm('((;),decl)*').
+nonterm(decl).
+nonterm(constdecl).
+nonterm(vardecl).
+nonterm('((\',\'),id)*').
+nonterm(fundecl).
+nonterm('funparams?').
+nonterm(funparams).
+nonterm('((\',\'),funparam)*').
+nonterm(funparam).
+nonterm(procdecl).
+nonterm('procparams?').
+nonterm(procparams).
+nonterm('((\',\'),procparam)*').
+nonterm(procparam).
+nonterm('\'VER\'?').
+nonterm(type).
+nonterm('\'SKIKKING\'?').
+nonterm(stype).
+nonterm('(\'LANK\',(\'LANK\',\'LANK\'?)?)?').
+nonterm('(\'LANK\',\'LANK\'?)?').
+nonterm('\'LANK\'?').
+nonterm(ntype).
+nonterm(stmts).
+nonterm('((;),stmt)*').
+nonterm(stmt).
+nonterm(assign).
+nonterm(lval).
+nonterm('(\'[\',expr,\']\')?').
+nonterm(cond).
+nonterm('(\'ANDERS\',stmt)?').
+nonterm(loop).
+nonterm(call).
+nonterm('args?').
+nonterm(args).
+nonterm('((\',\'),expr)*').
+nonterm(block).
+nonterm('vdecls?').
+nonterm(vdecls).
+nonterm('((;),vardecl)*').
+nonterm(lstmts).
+nonterm('((;),lstmt)*').
+nonterm(lstmt).
+nonterm(lcond).
+nonterm('(\'ANDERS\',lstmt)?').
+nonterm(lblock).
+nonterm('lstmts?').
+nonterm(expr).
+nonterm(binop).
+
+:- dynamic init/1.
+
+init(init_symbol).
+
+:- dynamic terminal/1.
+
+terminal(begin_of_file).
+terminal(end_of_file).
+terminal(id).
+terminal(int).
+terminal('[').
+terminal(']').
+terminal('EENHEID').
+terminal('.').
+terminal('BEGIN').
+terminal('EINDE').
+terminal(;).
+terminal('KONST').
+terminal(:).
+terminal(:=).
+terminal(',').
+terminal('VER').
+terminal('FUNKSIE').
+terminal('(').
+terminal(')').
+terminal('PROSEDURE').
+terminal('SKIKKING').
+terminal('WAARHEID').
+terminal('LANK').
+terminal('AFTELBAR').
+terminal('BREUK').
+terminal('ANDERS').
+terminal('INDIEN').
+terminal('DAN').
+terminal('TERWYL').
+terminal('DOEN').
+terminal('AFBREEK').
+terminal(-).
+terminal('WAAR').
+terminal('VALS').
+terminal(==).
+terminal('!=').
+terminal(>=).
+terminal(>).
+terminal(<=).
+terminal(<).
+terminal(+).
+terminal(/).
+terminal(*).
+terminal(**).
+
+:- dynamic rule/3.
+
+rule(0:0, init_symbol, [begin_of_file, prog, end_of_file]).
+rule(1:1, '(\'[\',int,\']\')?', ['[', int, ']']).
+rule(1:2, '(\'[\',int,\']\')?', []).
+rule(1:3, prog, ['EENHEID', id, '(\'[\',int,\']\')?', sysblock, id, '.']).
+rule(2:4, 'decls?', [decls]).
+rule(2:5, 'decls?', []).
+rule(2:6, 'stmts?', [stmts]).
+rule(2:7, 'stmts?', []).
+rule(2:8, sysblock, ['BEGIN', 'decls?', 'stmts?', 'EINDE']).
+rule(3:9, '((;),decl)*', [;, decl, '((;),decl)*']).
+rule(3:10, '((;),decl)*', []).
+rule(3:11, decls, [decl, '((;),decl)*']).
+rule(4:12, decl, [constdecl]).
+rule(4:13, decl, [vardecl]).
+rule(4:14, decl, [fundecl]).
+rule(4:15, decl, [procdecl]).
+rule(5:16, constdecl, ['KONST', id, :, stype, :=, expr]).
+rule(6:17, '((\',\'),id)*', [',', id, '((\',\'),id)*']).
+rule(6:18, '((\',\'),id)*', []).
+rule(6:19, vardecl, ['VER', id, '((\',\'),id)*', :, type]).
+rule(7:20, 'funparams?', [funparams]).
+rule(7:21, 'funparams?', []).
+rule(7:22, fundecl, ['FUNKSIE', id, '(', 'funparams?', ')', :, type, :=, block, id]).
+rule(8:23, '((\',\'),funparam)*', [',', funparam, '((\',\'),funparam)*']).
+rule(8:24, '((\',\'),funparam)*', []).
+rule(8:25, funparams, [funparam, '((\',\'),funparam)*']).
+rule(9:26, funparam, [id, '((\',\'),id)*', :, type]).
+rule(10:27, 'procparams?', [procparams]).
+rule(10:28, 'procparams?', []).
+rule(10:29, procdecl, ['PROSEDURE', id, '(', 'procparams?', ')', :=, block, id]).
+rule(11:30, '((\',\'),procparam)*', [',', procparam, '((\',\'),procparam)*']).
+rule(11:31, '((\',\'),procparam)*', []).
+rule(11:32, procparams, [procparam, '((\',\'),procparam)*']).
+rule(12:33, '\'VER\'?', ['VER']).
+rule(12:34, '\'VER\'?', []).
+rule(12:35, procparam, ['\'VER\'?', id, '((\',\'),id)*', :, type]).
+rule(13:36, '\'SKIKKING\'?', ['SKIKKING']).
+rule(13:37, '\'SKIKKING\'?', []).
+rule(13:38, type, [stype, '\'SKIKKING\'?']).
+rule(14:39, stype, ['WAARHEID']).
+rule(14:40, '\'LANK\'?', ['LANK']).
+rule(14:41, '\'LANK\'?', []).
+rule(14:42, '(\'LANK\',\'LANK\'?)?', ['LANK', '\'LANK\'?']).
+rule(14:43, '(\'LANK\',\'LANK\'?)?', []).
+rule(14:44, '(\'LANK\',(\'LANK\',\'LANK\'?)?)?', ['LANK', '(\'LANK\',\'LANK\'?)?']).
+rule(14:45, '(\'LANK\',(\'LANK\',\'LANK\'?)?)?', []).
+rule(14:46, stype, ['(\'LANK\',(\'LANK\',\'LANK\'?)?)?', ntype]).
+rule(15:47, ntype, ['AFTELBAR']).
+rule(15:48, ntype, ['BREUK']).
+rule(16:49, '((;),stmt)*', [;, stmt, '((;),stmt)*']).
+rule(16:50, '((;),stmt)*', []).
+rule(16:51, stmts, [stmt, '((;),stmt)*']).
+rule(17:52, stmt, [assign]).
+rule(17:53, stmt, [cond]).
+rule(17:54, stmt, [loop]).
+rule(17:55, stmt, [call]).
+rule(17:56, stmt, [block]).
+rule(18:57, assign, [lval, :=, expr]).
+rule(19:58, '(\'[\',expr,\']\')?', ['[', expr, ']']).
+rule(19:59, '(\'[\',expr,\']\')?', []).
+rule(19:60, lval, [id, '(\'[\',expr,\']\')?']).
+rule(20:61, '(\'ANDERS\',stmt)?', ['ANDERS', stmt]).
+rule(20:62, '(\'ANDERS\',stmt)?', []).
+rule(20:63, cond, ['INDIEN', expr, 'DAN', stmt, '(\'ANDERS\',stmt)?']).
+rule(21:64, loop, ['TERWYL', expr, 'DOEN', lstmt]).
+rule(22:65, 'args?', [args]).
+rule(22:66, 'args?', []).
+rule(22:67, call, [id, '(', 'args?', ')']).
+rule(23:68, '((\',\'),expr)*', [',', expr, '((\',\'),expr)*']).
+rule(23:69, '((\',\'),expr)*', []).
+rule(23:70, args, [expr, '((\',\'),expr)*']).
+rule(24:71, 'vdecls?', [vdecls]).
+rule(24:72, 'vdecls?', []).
+rule(24:73, block, ['BEGIN', 'vdecls?', 'stmts?', 'EINDE']).
+rule(25:74, '((;),vardecl)*', [;, vardecl, '((;),vardecl)*']).
+rule(25:75, '((;),vardecl)*', []).
+rule(25:76, vdecls, [vardecl, '((;),vardecl)*']).
+rule(26:77, '((;),lstmt)*', [;, lstmt, '((;),lstmt)*']).
+rule(26:78, '((;),lstmt)*', []).
+rule(26:79, lstmts, [lstmt, '((;),lstmt)*']).
+rule(27:80, lstmt, ['AFBREEK']).
+rule(27:81, lstmt, [assign]).
+rule(27:82, lstmt, [call]).
+rule(27:83, lstmt, [loop]).
+rule(27:84, lstmt, [lcond]).
+rule(27:85, lstmt, [lblock]).
+rule(28:86, '(\'ANDERS\',lstmt)?', ['ANDERS', lstmt]).
+rule(28:87, '(\'ANDERS\',lstmt)?', []).
+rule(28:88, lcond, ['INDIEN', expr, 'DAN', lstmt, '(\'ANDERS\',lstmt)?']).
+rule(29:89, 'lstmts?', [lstmts]).
+rule(29:90, 'lstmts?', []).
+rule(29:91, lblock, ['BEGIN', 'vdecls?', 'lstmts?', 'EINDE']).
+rule(30:92, expr, [expr, binop, expr]).
+rule(30:93, expr, [lval]).
+rule(30:94, expr, [call]).
+rule(30:95, expr, [-, expr]).
+rule(30:96, expr, ['(', expr, ')']).
+rule(30:97, expr, [int]).
+rule(30:98, expr, ['WAAR']).
+rule(30:99, expr, ['VALS']).
+rule(31:100, binop, [==]).
+rule(31:101, binop, ['!=']).
+rule(31:102, binop, [>=]).
+rule(31:103, binop, [>]).
+rule(31:104, binop, [<=]).
+rule(31:105, binop, [<]).
+rule(31:106, binop, [-]).
+rule(31:107, binop, [+]).
+rule(31:108, binop, [/]).
+rule(31:109, binop, [*]).
+rule(31:110, binop, [**]).

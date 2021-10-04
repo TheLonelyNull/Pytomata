@@ -1,0 +1,294 @@
+symbol(init_symbol).
+symbol(begin_of_file).
+symbol(end_of_file).
+symbol(programN).
+symbol('funcdef*').
+symbol(funcdef).
+symbol('(type,id,((\',\'),type,id)*)?').
+symbol('((\',\'),type,id)*').
+symbol('((->),type)?').
+symbol(body).
+symbol('vardef*').
+symbol(type).
+symbol('boolean|integer').
+symbol('array?').
+symbol(vardef).
+symbol('((\',\'),id)*').
+symbol(statements).
+symbol('((;),statement)*').
+symbol(statement).
+symbol(exitN).
+symbol('expr?').
+symbol(ifN).
+symbol('(elsif,expr,then,statements)*').
+symbol('(else,statements)?').
+symbol(name).
+symbol('arglist|index?,<-,(expr|array,simple)').
+symbol('index?').
+symbol('expr|array,simple').
+symbol(readN).
+symbol(writeN).
+symbol('string|expr').
+symbol('((\'.\'),(string|expr))*').
+symbol(whileN).
+symbol(arglist).
+symbol('(expr,((\',\'),expr)*)?').
+symbol('((\',\'),expr)*').
+symbol(index).
+symbol(expr).
+symbol('(relop,simple)?').
+symbol(relop).
+symbol(simple).
+symbol('(-)?').
+symbol('(addop,term)*').
+symbol(addop).
+symbol(term).
+symbol('(mulop,factor)*').
+symbol(mulop).
+symbol(factor).
+symbol('(index|arglist)?').
+symbol(program).
+symbol(id).
+symbol(',').
+symbol(->).
+symbol(define).
+symbol('(').
+symbol(')').
+symbol(begin).
+symbol(end).
+symbol(boolean).
+symbol(integer).
+symbol(array).
+symbol(;).
+symbol(chill).
+symbol(exit).
+symbol(elsif).
+symbol(then).
+symbol(else).
+symbol(if).
+symbol(<-).
+symbol(read).
+symbol(string).
+symbol('.').
+symbol(write).
+symbol(while).
+symbol(do).
+symbol('[').
+symbol(']').
+symbol(=).
+symbol(>=).
+symbol(>).
+symbol(<=).
+symbol(<).
+symbol(#).
+symbol(-).
+symbol(or).
+symbol(+).
+symbol(and).
+symbol(/).
+symbol(*).
+symbol(mod).
+symbol(num).
+symbol(not).
+symbol(true).
+symbol(false).
+
+:- dynamic nonterm/1.
+
+nonterm(init_symbol).
+nonterm(programN).
+nonterm('funcdef*').
+nonterm(funcdef).
+nonterm('(type,id,((\',\'),type,id)*)?').
+nonterm('((\',\'),type,id)*').
+nonterm('((->),type)?').
+nonterm(body).
+nonterm('vardef*').
+nonterm(type).
+nonterm('boolean|integer').
+nonterm('array?').
+nonterm(vardef).
+nonterm('((\',\'),id)*').
+nonterm(statements).
+nonterm('((;),statement)*').
+nonterm(statement).
+nonterm(exitN).
+nonterm('expr?').
+nonterm(ifN).
+nonterm('(elsif,expr,then,statements)*').
+nonterm('(else,statements)?').
+nonterm(name).
+nonterm('arglist|index?,<-,(expr|array,simple)').
+nonterm('index?').
+nonterm('expr|array,simple').
+nonterm(readN).
+nonterm(writeN).
+nonterm('string|expr').
+nonterm('((\'.\'),(string|expr))*').
+nonterm(whileN).
+nonterm(arglist).
+nonterm('(expr,((\',\'),expr)*)?').
+nonterm('((\',\'),expr)*').
+nonterm(index).
+nonterm(expr).
+nonterm('(relop,simple)?').
+nonterm(relop).
+nonterm(simple).
+nonterm('(-)?').
+nonterm('(addop,term)*').
+nonterm(addop).
+nonterm(term).
+nonterm('(mulop,factor)*').
+nonterm(mulop).
+nonterm(factor).
+nonterm('(index|arglist)?').
+
+:- dynamic init/1.
+
+init(init_symbol).
+
+:- dynamic terminal/1.
+
+terminal(begin_of_file).
+terminal(end_of_file).
+terminal(id).
+terminal(num).
+terminal(string).
+terminal(program).
+terminal(',').
+terminal(->).
+terminal(define).
+terminal('(').
+terminal(')').
+terminal(begin).
+terminal(end).
+terminal(boolean).
+terminal(integer).
+terminal(array).
+terminal(;).
+terminal(chill).
+terminal(exit).
+terminal(elsif).
+terminal(then).
+terminal(else).
+terminal(if).
+terminal(<-).
+terminal(read).
+terminal('.').
+terminal(write).
+terminal(while).
+terminal(do).
+terminal('[').
+terminal(']').
+terminal(=).
+terminal(>=).
+terminal(>).
+terminal(<=).
+terminal(<).
+terminal(#).
+terminal(-).
+terminal(or).
+terminal(+).
+terminal(and).
+terminal(/).
+terminal(*).
+terminal(mod).
+terminal(not).
+terminal(true).
+terminal(false).
+
+:- dynamic rule/3.
+
+rule(0:0, init_symbol, [begin_of_file, programN, end_of_file]).
+rule(1:1, 'funcdef*', [funcdef, 'funcdef*']).
+rule(1:2, 'funcdef*', []).
+rule(1:3, programN, [program, id, 'funcdef*', body]).
+rule(2:4, '((\',\'),type,id)*', [',', type, id, '((\',\'),type,id)*']).
+rule(2:5, '((\',\'),type,id)*', []).
+rule(2:6, '(type,id,((\',\'),type,id)*)?', [type, id, '((\',\'),type,id)*']).
+rule(2:7, '(type,id,((\',\'),type,id)*)?', []).
+rule(2:8, '((->),type)?', [->, type]).
+rule(2:9, '((->),type)?', []).
+rule(2:10, funcdef, [define, id, '(', '(type,id,((\',\'),type,id)*)?', ')', '((->),type)?', body]).
+rule(3:11, 'vardef*', [vardef, 'vardef*']).
+rule(3:12, 'vardef*', []).
+rule(3:13, body, [begin, 'vardef*', statements, end]).
+rule(4:14, 'boolean|integer', [boolean]).
+rule(4:15, 'boolean|integer', [integer]).
+rule(4:16, 'array?', [array]).
+rule(4:17, 'array?', []).
+rule(4:18, type, ['boolean|integer', 'array?']).
+rule(5:19, '((\',\'),id)*', [',', id, '((\',\'),id)*']).
+rule(5:20, '((\',\'),id)*', []).
+rule(5:21, vardef, [type, id, '((\',\'),id)*', ;]).
+rule(6:22, statements, [chill]).
+rule(6:23, '((;),statement)*', [;, statement, '((;),statement)*']).
+rule(6:24, '((;),statement)*', []).
+rule(6:25, statements, [statement, '((;),statement)*']).
+rule(7:26, statement, [exitN]).
+rule(7:27, statement, [ifN]).
+rule(7:28, statement, [whileN]).
+rule(7:29, statement, [name]).
+rule(7:30, statement, [readN]).
+rule(7:31, statement, [writeN]).
+rule(8:32, 'expr?', [expr]).
+rule(8:33, 'expr?', []).
+rule(8:34, exitN, [exit, 'expr?']).
+rule(9:35, '(elsif,expr,then,statements)*', [elsif, expr, then, statements, '(elsif,expr,then,statements)*']).
+rule(9:36, '(elsif,expr,then,statements)*', []).
+rule(9:37, '(else,statements)?', [else, statements]).
+rule(9:38, '(else,statements)?', []).
+rule(9:39, ifN, [if, expr, then, statements, '(elsif,expr,then,statements)*', '(else,statements)?', end]).
+rule(10:40, 'arglist|index?,<-,(expr|array,simple)', [arglist]).
+rule(10:41, 'index?', [index]).
+rule(10:42, 'index?', []).
+rule(10:43, 'expr|array,simple', [expr]).
+rule(10:44, 'expr|array,simple', [array, simple]).
+rule(10:45, 'arglist|index?,<-,(expr|array,simple)', ['index?', <-, 'expr|array,simple']).
+rule(10:46, name, [id, 'arglist|index?,<-,(expr|array,simple)']).
+rule(11:47, readN, [read, id, 'index?']).
+rule(12:48, 'string|expr', [string]).
+rule(12:49, 'string|expr', [expr]).
+rule(12:50, '((\'.\'),(string|expr))*', ['.', 'string|expr', '((\'.\'),(string|expr))*']).
+rule(12:51, '((\'.\'),(string|expr))*', []).
+rule(12:52, writeN, [write, 'string|expr', '((\'.\'),(string|expr))*']).
+rule(13:53, whileN, [while, expr, do, statements, end]).
+rule(14:54, '((\',\'),expr)*', [',', expr, '((\',\'),expr)*']).
+rule(14:55, '((\',\'),expr)*', []).
+rule(14:56, '(expr,((\',\'),expr)*)?', [expr, '((\',\'),expr)*']).
+rule(14:57, '(expr,((\',\'),expr)*)?', []).
+rule(14:58, arglist, ['(', '(expr,((\',\'),expr)*)?', ')']).
+rule(15:59, index, ['[', simple, ']']).
+rule(16:60, '(relop,simple)?', [relop, simple]).
+rule(16:61, '(relop,simple)?', []).
+rule(16:62, expr, [simple, '(relop,simple)?']).
+rule(17:63, relop, [=]).
+rule(17:64, relop, [>=]).
+rule(17:65, relop, [>]).
+rule(17:66, relop, [<=]).
+rule(17:67, relop, [<]).
+rule(17:68, relop, [#]).
+rule(18:69, '(-)?', [-]).
+rule(18:70, '(-)?', []).
+rule(18:71, '(addop,term)*', [addop, term, '(addop,term)*']).
+rule(18:72, '(addop,term)*', []).
+rule(18:73, simple, ['(-)?', term, '(addop,term)*']).
+rule(19:74, addop, [-]).
+rule(19:75, addop, [or]).
+rule(19:76, addop, [+]).
+rule(20:77, '(mulop,factor)*', [mulop, factor, '(mulop,factor)*']).
+rule(20:78, '(mulop,factor)*', []).
+rule(20:79, term, [factor, '(mulop,factor)*']).
+rule(21:80, mulop, [and]).
+rule(21:81, mulop, [/]).
+rule(21:82, mulop, [*]).
+rule(21:83, mulop, [mod]).
+rule(22:84, '(index|arglist)?', [index]).
+rule(22:85, '(index|arglist)?', [arglist]).
+rule(22:86, '(index|arglist)?', []).
+rule(22:87, factor, [id, '(index|arglist)?']).
+rule(22:88, factor, [num]).
+rule(22:89, factor, ['(', expr, ')']).
+rule(22:90, factor, [not, factor]).
+rule(22:91, factor, [true]).
+rule(22:92, factor, [false]).
