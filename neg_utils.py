@@ -49,7 +49,7 @@ def is_almost_accepting(state: int, graph):
         a dead end or the accept state
     """
     cur_node = graph.nodes[state]
-    reachable_nodes = list()
+    reachable_nodes = set()
     stack = list()
     stack.append(cur_node)
     while len(stack) > 0:
@@ -65,11 +65,13 @@ def is_almost_accepting(state: int, graph):
                 label = edge.label
                 for edge2 in next_node.edges:
                     if not edge2.is_pop and edge2.label == label and next_node not in reachable_nodes:
+                        reachable_nodes.add(next_node)
                         next_node = edge2.next_node
                         if next_node != cur_node:
                             stack.append(next_node)
+                        reachable_nodes.add(next_node)
                         break
-        reachable_nodes.append(cur_node)
+        reachable_nodes.add(cur_node)
     accepting_map[state] = False
     return False
 
@@ -196,17 +198,12 @@ def extract_stack_sub(T, sub_map, short_map, graph):
                     subbed = sub_with_shortest(segment['trace'], short_map, graph)
                     if can_insert(subbed, T, index - 1, sub_map, graph):
                         # insert
-                        print(index)
-                        print(trace_to_str(segment, graph))
-                        print(trace_to_str(T, graph))
                         tmp = deleteFromEnd(T[:index + 1], graph)
-                        print(trace_to_str(tmp, graph))
                         out_str = tmp
                         for e in subbed:
                             if not e.is_pop and e.label not in graph.nonterminal:
                                 out_str += e.label + ' '
                         out.append(out_str)
-                        exit(0)
     return out
 
 
@@ -233,10 +230,7 @@ def extract_stack_del(T, graph):
                 out[i] += edge.label + ' '
         if not edge.is_pop and edge.label in graph.nonterminal and can_delete(edge, graph):
             # delete last rule application
-            print('Deleting from: ' + trace_to_str(T, graph))
-            print(trace_to_str(T[:index + 1], graph))
             out.append(deleteFromEnd(T[:index + 1], graph))
-    print(out)
     return out
 
 

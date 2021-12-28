@@ -6,8 +6,11 @@ def gen_graphic(nodes):
     f = open("visual.gviz", 'w')
     # add boilerplate
     f.write("digraph abstract {\n\n")
-    f.write("  node [shape = doublecircle]; 0 acc;\n")
-    f.write("  node [shape = circle];\n")
+    f.write("""
+    node [shape = circle, fixedsize = true, fillcolor = lightgrey, style = filled]; 0;
+    node [shape = doublecircle, fixedsize = true, fillcolor = white, style = filled]; acc;
+    node [shape = circle, fixedsize = true, fillcolor = white];
+    """)
     for node in nodes:
         edges = set()
         for edge in node.edges:

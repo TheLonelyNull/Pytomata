@@ -23,6 +23,6 @@ if __name__ == '__main__':
     os.system(command)
 
     graph = construct_graph()
-    #ufile_utils.remove_intermediary_files()
+    #file_utils.remove_intermediary_files()
 
     test_generator.gen_test(graph)

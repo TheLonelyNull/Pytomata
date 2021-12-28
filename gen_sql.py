@@ -3,6 +3,7 @@ import re
 from pathlib import Path
 from sub_sql import sub
 
+
 def call_pytomata(coverage, seed, grammar, out):
     command = "python main.py -f %s -c %s -o %s --seed %d" % (grammar, coverage, out, seed)
     os.system(command)

@@ -6,6 +6,7 @@ from debug_utils import trace_to_str
 import sys
 import zlib
 import random
+import tqdm
 
 shortest_deriv_map = dict()
 
@@ -47,7 +48,7 @@ def dynamic_traversal(graph: Graph):
     complete = cover_all_pop(sub_table, graph)
     print("Finished Splicing Solutions.")
     tests = set()
-    for path in complete:
+    for path in tqdm.tqdm(complete):
         tests.update(extract_test_case(path['trace'], graph, sub_table=sub_table, shortest_table=shortest_deriv_map))
     return tests
 
@@ -112,7 +113,8 @@ def cover_all_pop(sub_table, graph):
     for i, key in enumerate(sub_table):
         for p in sub_table[key]:
             path = complete_segment(p, shortest_deriv_map, reduction_graph, graph)
-            complete.append(path)
+            if path is not None:
+                complete.append(path)
     return complete
 
 
@@ -147,7 +149,6 @@ def construct_reduction_graph(sub_table, graph):
             node_map[edge] = []
         node_map[edge].append(node)
         tree_content.add(edge)
-
     # loop until we have a tree of shallowest embeddings
     next_layer = current_layer
     layer_count = 1
@@ -184,6 +185,10 @@ def construct_reduction_graph(sub_table, graph):
 
 def complete_segment(path, shortest_derivation_map, reduction_tree_map, graph):
     trace = path['trace']
+    if trace[-1] not in reduction_tree_map:
+        # TODO figure out why this happened with simpl18
+        print("Ignoring " + str(trace[-1]))
+        return
     cur_node_list = reduction_tree_map[trace[-1]]
     # pick a node from the same depth at random
     seed = Config.get_instance().get_seed()

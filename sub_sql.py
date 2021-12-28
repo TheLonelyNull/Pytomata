@@ -130,6 +130,7 @@ sub_map = {
     't_BLOB_LITERAL': 'X\'a\''
 }
 
+
 def sub(lines):
     for i, l in enumerate(lines):
         subbed = l
@@ -137,7 +138,8 @@ def sub(lines):
             subbed = subbed.replace(key, sub_map[key])
         lines[i] = subbed
     return lines
-    
+
+
 if __name__ == '__main__':
     f = open('out/sql.test', 'r')
     lines = f.readlines()

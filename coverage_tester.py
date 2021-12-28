@@ -3,6 +3,7 @@ import file_utils
 from graph_constructor import construct_graph
 from graph_components import Edge, Node, Graph
 from tqdm import tqdm
+from debug_utils import trace_to_str
 import argparse
 
 def parse_args():
@@ -155,6 +156,7 @@ if __name__ == '__main__':
         token_stream = tokenized[i]
         result = parse(graph, token_stream)
         if result[0]:
+            print(trace_to_str(result[1]['trace'], graph))
             for edge in result[1]['trace']:
                 seen_edges.add(edge)
         else:
