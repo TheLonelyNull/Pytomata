@@ -16,6 +16,8 @@ def output_test_cases(test_cases, filename):
     test_cases.sort()
     for case in test_cases:
         case = case.replace('FULLSTOP', '.')
+        case = case.replace('RIGHTARROW', '->')
+        case  = case.replace('STRING', '""')
         # space it out
         for char in case:
             out_str += char + ""

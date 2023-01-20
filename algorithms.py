@@ -1,3 +1,4 @@
+import debug_utils
 from graph_components import Graph, Edge
 from pos_utils import get_reduce_edge, push, pop
 from general_utils import extract_test_case
@@ -49,7 +50,8 @@ def dynamic_traversal(graph: Graph):
     print("Finished Splicing Solutions.")
     tests = set()
     for path in tqdm.tqdm(complete):
-        tests.update(extract_test_case(path['trace'], graph, sub_table=sub_table, shortest_table=shortest_deriv_map))
+        tests.update(extract_test_case(path['trace'], graph, sub_table=sub_table,
+                                       shortest_table=shortest_deriv_map))
     return tests
 
 
@@ -76,8 +78,9 @@ def solve_for_pop(candidate: Edge, graph):
         smallest_nt = None
         min_pop = 1000000
         for e in node.edges:
-            if e.next_node == next_node and not e.is_pop and e.label in graph.nonterminal and pop_tmp[
-                e.label] < min_pop:
+            if e.next_node == next_node and not e.is_pop and e.label in graph.nonterminal and \
+                    pop_tmp[
+                        e.label] < min_pop:
                 smallest_nt = e
                 min_pop = pop_tmp[e.label]
                 if min_pop == 0:
@@ -218,7 +221,8 @@ def complete_segment(path, shortest_derivation_map, reduction_tree_map, graph):
 
 def is_unsubbed_nt(i, cur_trace, graph):
     edge = cur_trace[i]
-    if not edge.is_pop and edge.label in graph.nonterminal and not cur_trace[i - 1].is_pop:
+    if not edge.is_pop and edge.label in graph.nonterminal and not cur_trace[
+        i - 1].is_pop:
         return True
     return False
 
@@ -271,14 +275,19 @@ def shortest_derivations(sub_map, shortest_map, graph):
                     min_paths.append(deriv)
             if len(min_paths) != 0:
                 if len(min_paths) == 1:
-                    string = extract_test_case(min_paths[0], graph, test_suite_type='positive', stack=False)[0]
+                    string = \
+                        extract_test_case(min_paths[0], graph,
+                                          test_suite_type='positive',
+                                          stack=False)[0]
                     tmp_map[nt_edge] = [string]
                     shortest_map[nt_edge] = {'trace': min_paths[0]}
                 else:
                     strs = []
                     str_map = dict()
                     for trace in min_paths:
-                        string = extract_test_case(trace, graph, test_suite_type='positive', stack=False)[0]
+                        string = \
+                            extract_test_case(trace, graph, test_suite_type='positive',
+                                              stack=False)[0]
                         strs.append(string)
                         str_map[string] = trace
                     strs.sort()
@@ -313,7 +322,8 @@ def splice_segments(sub_map, graph: Graph):
         for i in range(len(cur_trace)):
             edge = cur_trace[i]
             # check for possible non term push edge to sub
-            if not edge.is_pop and edge.label in graph.nonterminal and not cur_trace[i - 1].is_pop:
+            if not edge.is_pop and edge.label in graph.nonterminal and not cur_trace[
+                i - 1].is_pop:
                 # splice
                 if edge not in subbed:
                     subbed.add(edge)
@@ -321,7 +331,8 @@ def splice_segments(sub_map, graph: Graph):
                         new_trace = cur_trace[:i] + p['trace'] + cur_trace[i + 1:]
                         queue.append({'trace': new_trace})
                 else:
-                    new_trace = cur_trace[:i] + shortest_map[edge]['trace'] + cur_trace[i + 1:]
+                    new_trace = cur_trace[:i] + shortest_map[edge]['trace'] + cur_trace[
+                                                                              i + 1:]
                     queue.append({'trace': new_trace})
                 complete = False
         if complete:
@@ -374,7 +385,8 @@ def full_traversal(graph: Graph):
     for path in queue:
         complete = None
         if not config.get_clasic_flag():
-            complete = path_completion_improved(path['stack'], path['trace'], 'acc', graph)
+            complete = path_completion_improved(path['stack'], path['trace'], 'acc',
+                                                graph)
         else:
             complete = path_completion(path['stack'], path['trace'], 'acc', graph)
         test_cases.update(extract_test_case(complete['trace'], graph))
@@ -412,7 +424,8 @@ def flooding(S, E, T, graph):
         reduce_edges = []
         if cur_node.reduce_rule is not None:
             for rule in cur_node.reduce_rule:
-                reduce_edges.append(get_reduce_edge(rule[0], rule[1], cur_node, cur_stack))
+                reduce_edges.append(
+                    get_reduce_edge(rule[0], rule[1], cur_node, cur_stack))
 
         # check if the previous move was reduce so we should shift a non-terminal
         if len(cur_trace) > 0 and cur_trace[-1].is_pop:
@@ -428,7 +441,8 @@ def flooding(S, E, T, graph):
             # for valid reductions on all edges
             for edge in cur_node.edges:
                 # avoid shifting on an self-loop
-                if edge.label in graph.terminal and (edge.next_node != cur_node or edge not in seen_edges):
+                if edge.label in graph.terminal and (
+                        edge.next_node != cur_node or edge not in seen_edges):
                     seen_edges.add(edge)
                     push(cur_stack, cur_trace, queue, edge)
                 # check that reduction edge is correct edge
@@ -436,7 +450,8 @@ def flooding(S, E, T, graph):
                     for rule_index in range(len(reduce_edges)):
                         if edge == reduce_edges[rule_index]:
                             # pop nodes of stack
-                            pop(cur_stack, cur_trace, queue, edge, cur_node.reduce_rule[rule_index][1])
+                            pop(cur_stack, cur_trace, queue, edge,
+                                cur_node.reduce_rule[rule_index][1])
                             seen_edges.add(edge)
 
 
@@ -478,7 +493,8 @@ def flooding_improved(S, E, T, graph):
         reduce_edges = []
         if cur_node.reduce_rule is not None:
             for rule in cur_node.reduce_rule:
-                reduce_edges.append(get_reduce_edge(rule[0], rule[1], cur_node, cur_stack))
+                reduce_edges.append(
+                    get_reduce_edge(rule[0], rule[1], cur_node, cur_stack))
 
         # check if the previous move was reduce so we should shift a non-terminal
         if len(cur_trace) > 0 and cur_trace[-1].is_pop:
@@ -513,9 +529,11 @@ def flooding_improved(S, E, T, graph):
                             # pop nodes of stack
                             if edge not in seen_edges:
                                 new_edge_seen = True
-                                pop(cur_stack, cur_trace, fresh_queue, edge, cur_node.reduce_rule[rule_index][1])
+                                pop(cur_stack, cur_trace, fresh_queue, edge,
+                                    cur_node.reduce_rule[rule_index][1])
                             else:
-                                pop(cur_stack, cur_trace, brute_force_queue, edge, cur_node.reduce_rule[rule_index][1])
+                                pop(cur_stack, cur_trace, brute_force_queue, edge,
+                                    cur_node.reduce_rule[rule_index][1])
                             seen_edges.add(edge)
         if not new_edge_seen and not path_from_brute:
             stale_queue.append(path)
@@ -545,7 +563,8 @@ def path_completion(S, T, goal_label, graph):
         reduce_edges = []
         if cur_node.reduce_rule is not None:
             for rule in cur_node.reduce_rule:
-                reduce_edges.append(get_reduce_edge(rule[0], rule[1], cur_node, cur_stack))
+                reduce_edges.append(
+                    get_reduce_edge(rule[0], rule[1], cur_node, cur_stack))
 
         # check if the previous move was pop so we should shift a non-terminal
         if len(cur_trace) > 0 and cur_trace[-1].is_pop:
@@ -567,7 +586,8 @@ def path_completion(S, T, goal_label, graph):
                     for rule_index in range(len(reduce_edges)):
                         if edge == reduce_edges[rule_index]:
                             # pop nodes of stack
-                            pop(cur_stack, cur_trace, queue, edge, cur_node.reduce_rule[rule_index][1])
+                            pop(cur_stack, cur_trace, queue, edge,
+                                cur_node.reduce_rule[rule_index][1])
 
 
 def path_completion_improved(S, T, goal_label, graph):
@@ -605,7 +625,8 @@ def path_completion_improved(S, T, goal_label, graph):
         reduce_edges = []
         if cur_node.reduce_rule is not None:
             for rule in cur_node.reduce_rule:
-                reduce_edges.append(get_reduce_edge(rule[0], rule[1], cur_node, cur_stack))
+                reduce_edges.append(
+                    get_reduce_edge(rule[0], rule[1], cur_node, cur_stack))
 
         # check if the previous move was pop so we should shift a non-terminal
         if len(cur_trace) > 0 and cur_trace[-1].is_pop:
@@ -615,7 +636,8 @@ def path_completion_improved(S, T, goal_label, graph):
                     shift_edge = edge
                     break
             # always push even if this is a loop
-            push(cur_stack, cur_trace, high_priority_queue, shift_edge, cur_stack_history=cur_stack_history)
+            push(cur_stack, cur_trace, high_priority_queue, shift_edge,
+                 cur_stack_history=cur_stack_history)
         else:
             # if the previous step wasn't a pop then we should shift on terminals and check
             # for valid reductions on all edges
@@ -624,12 +646,15 @@ def path_completion_improved(S, T, goal_label, graph):
                 if edge.label in graph.terminal:
                     # if this is a loop we only take it if the stack does not increase in size
                     if edge.next_node.label not in cur_stack_history or (
-                            edge.next_node.label in cur_stack_history and cur_stack_history[
-                        edge.next_node.label] >= len(
+                            edge.next_node.label in cur_stack_history and
+                            cur_stack_history[
+                                edge.next_node.label] >= len(
                         cur_stack) + 1):
-                        push(cur_stack, cur_trace, high_priority_queue, edge, cur_stack_history=cur_stack_history)
+                        push(cur_stack, cur_trace, high_priority_queue, edge,
+                             cur_stack_history=cur_stack_history)
                     else:
-                        push(cur_stack, cur_trace, low_priority_queue, edge, cur_stack_history=cur_stack_history)
+                        push(cur_stack, cur_trace, low_priority_queue, edge,
+                             cur_stack_history=cur_stack_history)
                 # check that reduction edge is correct edge
                 elif edge.label in graph.nonterminal and edge in reduce_edges:
                     # pop nodes of stack
@@ -637,8 +662,10 @@ def path_completion_improved(S, T, goal_label, graph):
                         if edge == reduce_edges[rule_index]:
                             # if this is a loop we only take it if the stack does not increase in size
                             if edge.next_node.label not in cur_stack_history or (
-                                    edge.next_node.label in cur_stack_history and cur_stack_history[
-                                edge.next_node.label] >= len(cur_stack) - edge.pop_count):
+                                    edge.next_node.label in cur_stack_history and
+                                    cur_stack_history[
+                                        edge.next_node.label] >= len(
+                                cur_stack) - edge.pop_count):
                                 # pop nodes of stack
                                 pop(cur_stack, cur_trace, high_priority_queue, edge,
                                     cur_node.reduce_rule[rule_index][1],
@@ -712,7 +739,8 @@ def lookback_for_pop(candidate, graph, unseen_edges):
                 pop_amount = rule[1]
                 # don't take excessively large pops
                 if len(cur_stack) >= pop_amount + 1:
-                    reduce_edges.append(get_reduce_edge(rule[0], rule[1], cur_node, cur_stack))
+                    reduce_edges.append(
+                        get_reduce_edge(rule[0], rule[1], cur_node, cur_stack))
 
         # check if the previous move was reduce so we should shift a non-terminal
         if len(cur_trace) > 0 and cur_trace[-1].is_pop:

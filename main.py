@@ -25,5 +25,4 @@ if __name__ == '__main__':
 
     graph = construct_graph()
     #file_utils.remove_intermediary_files()
-
     test_generator.gen_test(graph)

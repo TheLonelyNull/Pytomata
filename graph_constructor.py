@@ -144,6 +144,9 @@ def add_return_edges(nodes):
                 cur_level = prev_level.copy()
                 prev_level.clear()
             # add edges to graph
+            if (len(cur_level) == 0):
+                print(node.label)
+                print(reduce_rule)
             assert(len(cur_level) != 0)
             for l in cur_level:
                 n = l[0]
