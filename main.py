@@ -20,6 +20,7 @@ if __name__ == '__main__':
               config.get_automaton_type()])
     command = "./hyacc/hyacc -v -g -O0 " + command_automaton_map[
         config.get_automaton_type()] + " " + config.get_grammar_filename()
+    print(command)
     os.system(command)
 
     graph = construct_graph()

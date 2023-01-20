@@ -1,7 +1,8 @@
-import debug_utils
+from graph_components import Node, Graph
 
 len_map = None
 follow_map = {}
+precede_map = {}
 accepting_map = {}
 
 
@@ -38,6 +39,65 @@ def get_follow_set(state: int, graph):
                 follow_set.add(edge.label)
     follow_map[state] = follow_set
     return follow_set
+
+
+def get_precede_set(state: int, graph: Graph):
+    if state in precede_map:
+        return precede_map[state]
+    """
+        Explore all reverse reachable states without shifting a terminal. Then collect all terminals
+        preceding these states.
+    """
+    cur_node = graph.nodes[state]
+    reachable_nodes = list()
+    stack = list()
+    stack.append(cur_node)
+    while len(stack) > 0:
+        cur_node = stack.pop(0)
+        reachable_nodes.append(cur_node)
+        cur_node: Node
+        for edge in cur_node.pre_edges:
+            if not edge.is_pop and edge.label in graph.nonterminal:
+                # go to node before pop that precedes shift on non-terminal.
+                prev_node: Node = edge.source
+                label = edge.label
+                for edge2 in prev_node.pre_edges:
+                    if edge2.is_pop and edge2.label == label:
+                        prev_node = edge2.source
+                        if prev_node != cur_node and prev_node not in reachable_nodes:
+                            stack.append(prev_node)
+                        break
+    # iterate all reachable states and get the terminal shift edges
+    precede_set = set()
+    for node in reachable_nodes:
+        for edge in node.pre_edges:
+            if edge.label in graph.terminal and not edge.is_pop and edge.label != "$end":
+                precede_set.add(edge.label)
+    precede_map[state] = precede_set
+    return precede_set
+
+
+def get_nodes_with_similar_precede_set(node: Node, graph: Graph) -> list[Node]:
+    """Nodes that have at least one symbol in common with current nodes precede set."""
+    source_precede_set = get_precede_set(node.label, graph)
+    nodes_with_similar_precede_set = []
+    for n in graph.nodes:
+        if not isinstance(n.label, int) or n == node:
+            continue
+        if source_precede_set - get_precede_set(n.label, graph) != source_precede_set:
+            nodes_with_similar_precede_set.append(n)
+    return nodes_with_similar_precede_set
+
+
+def get_nodes_with_similar_follow_set(node: Node, graph: Graph) -> list[Node]:
+    source_follow_set = get_follow_set(node.label, graph)
+    nodes_with_similar_follow_set = []
+    for n in graph.nodes:
+        if not isinstance(n.label, int) or n == node:
+            continue
+        if source_follow_set - get_follow_set(n.label, graph) != source_follow_set:
+            nodes_with_similar_follow_set.append(n)
+    return nodes_with_similar_follow_set
 
 
 def is_almost_accepting(state: int, graph):
@@ -86,9 +146,13 @@ def extract_sub(T, graph):
                 out[i] += edge.label + ' '
 
             source_follow_set = get_follow_set(edge.source.label, graph)
+            nodes_with_similar_precede_set = get_nodes_with_similar_precede_set(edge.source, graph)
+
             # sub
             for t in graph.terminal:
-                if t not in source_follow_set and t != '$end':
+                in_similar_node_follow_set = any(
+                    t in get_follow_set(n.label, graph) for n in nodes_with_similar_precede_set)
+                if t not in source_follow_set and not in_similar_node_follow_set and t != '$end':
                     out.append(pure_str + t + ' ')
             # don't sub
             pure_str += edge.label + ' '
@@ -117,10 +181,11 @@ def extract_del(T, graph):
             # append to back of already deleted
             for i in range(len(out)):
                 out[i] += edge.label + ' '
-            source_follow_set = get_follow_set(edge.source.label, graph)
-            dest_follow_set = get_follow_set(edge.next_node.label, graph)
-            # del if no overlap in follow set
-            if len(source_follow_set - dest_follow_set) == len(source_follow_set):
+            nodes_with_similar_precede_set = get_nodes_with_similar_precede_set(edge.source, graph)
+            nodes_with_similar_follow_set = get_nodes_with_similar_follow_set(edge.next_node, graph)
+
+            # del if no similar state in terms of a -> (state) -> b exists
+            if not set(nodes_with_similar_precede_set).intersection(set(nodes_with_similar_follow_set)):
                 out.append(pure_str + ' ')
             # don't del
             pure_str += edge.label + ' '
@@ -134,9 +199,13 @@ def extract_add(T, graph):
     for edge in T:
         if edge.label in graph.terminal and edge.label != "$end":
             source_follow_set = get_follow_set(edge.source.label, graph)
+            nodes_with_similar_precede_set = get_nodes_with_similar_precede_set(edge.source, graph)
             # insert
             for t in graph.terminal:
-                if t not in source_follow_set and t != '$end':
+                in_similar_node_follow_set = any(
+                    t in get_follow_set(n.label, graph) for n in nodes_with_similar_precede_set)
+
+                if t not in source_follow_set and not in_similar_node_follow_set and t != '$end':
                     out.append(pure_str + t + ' ')
             # calculate without insertion
             pure_str += edge.label + ' '
