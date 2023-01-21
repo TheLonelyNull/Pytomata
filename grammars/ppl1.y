@@ -4,7 +4,9 @@ prog: 'program' 'id' 'has' declsemicolonstarstar block 'id' 'FULLSTOP';
 semicolostar: ';' semicolostar
 	    |
 	    ;
-declsemicolonstarstar: decl semicolostar declsemicolonstarstar
+semicolonplus: ';' semicolostar
+             ;
+declsemicolonstarstar: decl semicolonplusdeclsemicolonstarstar
                      |
                      ;
 publicprivateoptional: 'public'
