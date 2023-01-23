@@ -50,6 +50,14 @@ def dynamic_traversal(graph: Graph):
     print("Finished Splicing Solutions.")
     tests = set()
     for path in tqdm.tqdm(complete):
+        extracted_cases = extract_test_case(path['trace'], graph, sub_table=sub_table,
+                                shortest_table=shortest_deriv_map)
+        for case in extracted_cases:
+            if case.replace(" ", "") == "programid:main:backfalse;inputidend":
+                print(extract_test_case(path['trace'], graph, sub_table=sub_table,
+                                           shortest_table=shortest_deriv_map))
+                print(debug_utils.trace_to_str(path['trace'], graph))
+                print(case)
         tests.update(extract_test_case(path['trace'], graph, sub_table=sub_table,
                                        shortest_table=shortest_deriv_map))
     return tests

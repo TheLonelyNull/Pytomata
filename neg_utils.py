@@ -30,7 +30,6 @@ def get_follow_set(state: int, graph):
                         next_node = edge2.next_node
                         if next_node != cur_node and next_node not in reachable_nodes:
                             stack.append(next_node)
-                        break
     # iterate all reachable states and get the terminal shift edges
     follow_set = set()
     for node in reachable_nodes:
@@ -52,6 +51,8 @@ def get_precede_set(state: int, graph: Graph):
     reachable_nodes = list()
     stack = list()
     stack.append(cur_node)
+    if state == 20:
+        print()
     while len(stack) > 0:
         cur_node = stack.pop(0)
         reachable_nodes.append(cur_node)
@@ -66,7 +67,7 @@ def get_precede_set(state: int, graph: Graph):
                         prev_node = edge2.source
                         if prev_node != cur_node and prev_node not in reachable_nodes:
                             stack.append(prev_node)
-                        break
+
     # iterate all reachable states and get the terminal shift edges
     precede_set = set()
     for node in reachable_nodes:
@@ -177,7 +178,7 @@ def extract_del(T, graph):
     out = []
     pure_str = ''
     for edge in T:
-        if edge.label in graph.terminal and edge.label != "$end":
+        if edge.label in graph.terminal and edge.label != "$end" and edge.source != edge.next_node:
             # append to back of already deleted
             for i in range(len(out)):
                 out[i] += edge.label + ' '
@@ -185,7 +186,9 @@ def extract_del(T, graph):
             nodes_with_similar_follow_set = get_nodes_with_similar_follow_set(edge.next_node, graph)
 
             # del if no similar state in terms of a -> (state) -> b exists
-            if not set(nodes_with_similar_precede_set).intersection(set(nodes_with_similar_follow_set)):
+            if not set(nodes_with_similar_precede_set).intersection(set(nodes_with_similar_follow_set)) \
+                    and edge.source not in nodes_with_similar_follow_set \
+                    and edge.next_node not in nodes_with_similar_precede_set:
                 out.append(pure_str + ' ')
             # don't del
             pure_str += edge.label + ' '
@@ -223,33 +226,23 @@ def extract_stack_add(T, sub_map, short_map, graph):
             for i in range(len(out)):
                 out[i] += edge.label + ' '
         if not edge.is_pop and edge.label in graph.nonterminal:
-            # check beginning if rule is was applied in nullable context
-            follow_check_offset = 0
-            pop_edge = T[index - 1]
-            if pop_edge.pop_count == 0:
-                follow_check_offset = 1
-            # insert after last rule application
-            for key in sub_map:
-                for segment in sub_map[key]:
-                    subbed = sub_with_shortest(segment['trace'], short_map, graph)
-                    # check that this segment is not epsilon
-                    epsilon = True
-                    for e in subbed:
-                        if not e.is_pop and e.label in graph.terminal:
-                            epsilon = False
-                            break
-                    if epsilon:
+            # Insert after another rule application a - (next edge a ) -> a where a is
+            # last node of last rule application
+            # check no combo of first(path) in follow set of similar precede nodes to a
+            # or no combo on last and similar follow set of a
+            # # Iterate the possible insertion options and create only terminal sequences:
+            for key, segments in sub_map.items():
+                for segment in segments:
+                    subbed_segment = sub_with_shortest(segment['trace'], short_map, graph)
+                    # Can't sub with epsilon
+                    if not any(True if edge.label in graph.terminal else False for edge in subbed_segment):
                         continue
-                    if can_insert(subbed, T, index - follow_check_offset, sub_map, graph):
-                        # insert
-                        out_str = ''
-                        for e in T[:index + 1]:
-                            if not e.is_pop and e.label not in graph.nonterminal:
-                                out_str += e.label + ' '
-                        for e in subbed:
-                            if not e.is_pop and e.label not in graph.nonterminal:
-                                out_str += e.label + ' '
-                        out.append(out_str)
+                    # Create the current prefix if we can insert. It will be completed in following iterations
+                    if can_insert(subbed_segment, edge.next_node, edge.next_node, sub_map, graph):
+                        test_case_prefix = " ".join([e.label for e in T[:index + 1] if e.label in graph.terminal])
+                        test_case_prefix += " " + " ".join(
+                            e.label for e in subbed_segment if e.label in graph.terminal) + " "
+                        out.append(test_case_prefix)
     return out
 
 
@@ -261,18 +254,37 @@ def extract_stack_sub(T, sub_map, short_map, graph):
             for i in range(len(out)):
                 out[i] += edge.label + ' '
         if not edge.is_pop and edge.label in graph.nonterminal:
-            # delete last rule application
-            for key in sub_map:
-                for segment in sub_map[key]:
-                    subbed = sub_with_shortest(segment['trace'], short_map, graph)
-                    if can_insert(subbed, T, index - 1, sub_map, graph):
-                        # insert
-                        tmp = deleteFromEnd(T[:index + 1], graph)
-                        out_str = tmp
-                        for e in subbed:
-                            if not e.is_pop and e.label not in graph.nonterminal:
-                                out_str += e.label + ' '
-                        out.append(out_str)
+            # Insert over another rule application a - (next edge a ) -> b where a is
+            # last node of last rule application
+            # check no combo of first(path) in follow set of similar precede nodes to a
+            # or no combo on last and similar follow set of b
+            # # Iterate the possible insertion options and create only terminal sequences:
+            for key, segments in sub_map.items():
+                for segment in segments:
+                    subbed_segment = sub_with_shortest(segment['trace'], short_map, graph)
+                    # Can't sub with epsilon
+                    if not any(True if edge.label in graph.terminal else False for edge in subbed_segment):
+                        continue
+                    # Create the current prefix if we can sub. It will be completed in following iterations
+                    if can_insert(subbed_segment, edge.source, edge.next_node, sub_map, graph):
+                        # First delete previous rule and then insert
+                        test_case_prefix = deleteFromEnd(T[:index + 1], graph)
+                        test_case_prefix += " " + " ".join(
+                            e.label for e in subbed_segment if e.label in graph.terminal) + " "
+                        out.append(test_case_prefix)
+        # if not edge.is_pop and edge.label in graph.nonterminal:
+        #     # delete last rule application
+        #     for key in sub_map:
+        #         for segment in sub_map[key]:
+        #             subbed = sub_with_shortest(segment['trace'], short_map, graph)
+        #             if can_insert(subbed, T, index - 1, sub_map, graph):
+        #                 # insert
+        #                 tmp = deleteFromEnd(T[:index + 1], graph)
+        #                 out_str = tmp
+        #                 for e in subbed:
+        #                     if not e.is_pop and e.label not in graph.nonterminal:
+        #                         out_str += e.label + ' '
+        #                 out.append(out_str)
     return out
 
 
@@ -297,9 +309,11 @@ def extract_stack_del(T, graph):
             # append to back of already deleted
             for i in range(len(out)):
                 out[i] += edge.label + ' '
+
+        # del if no similar state in terms of a -> (state) -> b exists
         if not edge.is_pop and edge.label in graph.nonterminal and can_delete(edge, graph):
-            # delete last rule application
             out.append(deleteFromEnd(T[:index + 1], graph))
+    # delete last rule application
     return out
 
 
@@ -313,14 +327,28 @@ def sub_with_shortest(segment, shortest_map, graph):
     return new_segment
 
 
-def can_insert(segment, trace, cur_index, sub_map, graph):
-    cur_state = trace[cur_index].next_node
-    first = get_first(segment, sub_map, graph)
-    follow = get_follow_set(cur_state.label, graph)
+def can_insert(subbed_segment_to_insert, previous_node, next_node, sub_map, graph):
+    first_terminals_of_segment = get_first(subbed_segment_to_insert, sub_map, graph)
+    last_terminals_of_segment = get_last(subbed_segment_to_insert, sub_map, graph)
 
-    if len(follow - first) < len(follow) or len(first) == 0:
-        return False
-    return True
+    similar_precede_nodes = get_nodes_with_similar_precede_set(previous_node, graph)
+    union_follow_set = set()
+    for node in similar_precede_nodes + [previous_node]:
+        union_follow_set.update(get_follow_set(node.label, graph))
+
+    if len(union_follow_set.intersection(first_terminals_of_segment)) == 0:
+        return True
+
+    similar_follow_nodes = get_nodes_with_similar_follow_set(next_node, graph)
+    union_precede_set = set()
+
+    for node in similar_follow_nodes + [next_node]:
+        union_precede_set.update(get_precede_set(node.label, graph))
+
+    if len(union_precede_set.intersection(last_terminals_of_segment)) == 0:
+        return True
+
+    return False
 
 
 def get_first(trace, sub_map, graph, prev_subbed=None):
@@ -331,7 +359,8 @@ def get_first(trace, sub_map, graph, prev_subbed=None):
         if edge.label in graph.terminal:
             first.add(edge.label)
             break
-        elif (not edge.is_pop and edge.label in graph.nonterminal) and (i == 0 or trace[i - 1].is_pop):
+        elif (not edge.is_pop and edge.label in graph.nonterminal) and (
+                i == 0 or not (trace[i - 1].is_pop and trace[i - 1].label == edge.label)):
             for p in sub_map[edge]:
                 if edge not in prev_subbed:
                     prev_subbed.add(edge)
@@ -341,29 +370,32 @@ def get_first(trace, sub_map, graph, prev_subbed=None):
     return first
 
 
+def get_last(trace, sub_map, graph, prev_subbed=None):
+    if prev_subbed is None:
+        prev_subbed = set()
+    last = set()
+    # iterate backwards
+    for i, edge in reversed(list(enumerate(trace))):
+        if edge.label in graph.terminal:
+            last.add(edge.label)
+            break
+        elif (not edge.is_pop and edge.label in graph.nonterminal) and (
+                i == 0 or not (trace[i - 1].is_pop and trace[i - 1].label == edge.label)):
+            for p in sub_map[edge]:
+                if edge not in prev_subbed:
+                    prev_subbed.add(edge)
+                    last.update(get_last(p['trace'], sub_map, graph, prev_subbed))
+                    prev_subbed.remove(edge)
+            break
+    return last
+
+
 def can_delete(nt_edge, graph):
-    nt_edges = {}
-    pop_edges = []
-    # collect edges and check if rule application is nullable in this context
-    for edge in nt_edge.source.edges:
-        if not edge.is_pop and edge.label in graph.nonterminal and edge.label != nt_edge.label:
-            nt_edges[edge.label] = edge
-    for edge in nt_edge.source.pre_edges:
-        if edge.is_pop and edge.pop_count == 0:
-            # check if the current rule was nullable
-            if edge.label == nt_edge.label and edge.pop_count == 0:
-                return False
-            pop_edges.append(edge)
-    # get follow set of rule application to delete
-    nt_follow = get_follow_set(nt_edge.next_node.label, graph)
-    for edge in pop_edges:
-        nt = nt_edges[edge.label]
-        follow = get_follow_set(nt.next_node.label, graph)
-        if len(nt_follow) == 0 and len(follow) == 0:
-            return False
-        if len(nt_follow - follow) < len(nt_follow):
-            return False
-    return True
+    nodes_with_similar_precede_set = get_nodes_with_similar_precede_set(nt_edge.source, graph)
+    nodes_with_similar_follow_set = get_nodes_with_similar_follow_set(nt_edge.next_node, graph)
+
+    return not set(nodes_with_similar_precede_set).intersection(set(nodes_with_similar_follow_set)) \
+        and nt_edge.source not in nodes_with_similar_follow_set and nt_edge.next_node not in nodes_with_similar_precede_set
 
 
 def deleteFromEnd(trace, graph):

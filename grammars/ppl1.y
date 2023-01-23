@@ -6,9 +6,10 @@ semicolostar: ';' semicolostar
 	    ;
 semicolonplus: ';' semicolostar
              ;
-declsemicolonstarstar: decl semicolonplusdeclsemicolonstarstar
+declsemicolonstarstar: decl semicolonplus declsemicolonstarstar
                      |
                      ;
+
 publicprivateoptional: 'public'
                      | 'private'
                      |
@@ -116,6 +117,7 @@ expr: expr binop expr
     | 'true'
     | 'false'
     ;
+
 binop: '=='
      | '<>'
      | '>='
