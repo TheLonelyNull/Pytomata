@@ -16,6 +16,8 @@ def extract_test_case(T, graph, test_suite_type=None, stack= None, sub_table=Non
             return extract_stack_del(T, graph)
         elif test_suite_type == 'neg-add':
             return extract_stack_add(T, sub_table, shortest_table, graph)
+        elif test_suite_type == 'positive':
+            return extract_pos(T, graph)
         else:
             print("No negative mutation specified with stack. Quiting...")
             exit(0)

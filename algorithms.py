@@ -1,13 +1,15 @@
-import debug_utils
-from graph_components import Graph, Edge
-from pos_utils import get_reduce_edge, push, pop
-from general_utils import extract_test_case
-from config import Config
-from debug_utils import trace_to_str
+import random
 import sys
 import zlib
-import random
+
 import tqdm
+
+import debug_utils
+from config import Config
+from debug_utils import trace_to_str
+from general_utils import extract_test_case
+from graph_components import Graph, Edge
+from pos_utils import get_reduce_edge, push, pop
 
 shortest_deriv_map = dict()
 
@@ -51,12 +53,15 @@ def dynamic_traversal(graph: Graph):
     tests = set()
     for path in tqdm.tqdm(complete):
         extracted_cases = extract_test_case(path['trace'], graph, sub_table=sub_table,
-                                shortest_table=shortest_deriv_map)
+                                            shortest_table=shortest_deriv_map)
         for case in extracted_cases:
-            if case.replace(" ", "") == "programid:main:backfalse;inputidend":
-                print(extract_test_case(path['trace'], graph, sub_table=sub_table,
-                                           shortest_table=shortest_deriv_map))
+            if case.replace(" ", "") == "programid:id:takesidasintegerarrayreturnsintegerchillaxmain:chillax":
+                print("Old path: __________________________________")
                 print(debug_utils.trace_to_str(path['trace'], graph))
+                print("Unmutated case:_________________________________")
+                print(extract_test_case(path['trace'], graph, sub_table=sub_table, shortest_table=shortest_deriv_map,
+                                        test_suite_type="positive")[0])
+                print("Mutated case:_____________________________________")
                 print(case)
         tests.update(extract_test_case(path['trace'], graph, sub_table=sub_table,
                                        shortest_table=shortest_deriv_map))
