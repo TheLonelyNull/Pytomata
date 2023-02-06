@@ -144,16 +144,19 @@ def is_almost_accepting(state: int, graph):
 def extract_sub(T, graph):
     out = []
     pure_str = ''
-    for edge in T:
+    for i, edge in enumerate(T):
         if edge.label in graph.terminal and edge.label != "$end":
             # append to back of already subbed
-            for i in range(len(out)):
-                out[i] += edge.label + ' '
+            for j in range(len(out)):
+                out[j] += edge.label + ' '
+
+            prev_term = None
+            before_terms = [e.label for e in T[:i] if
+                            e.label in graph.terminal and edge.label != "$end"]
+            if before_terms:
+                prev_term = before_terms[-1]
 
             source_follow_set = get_follow_set(edge.source.label, graph)
-            prev_term = None
-            if len(pure_str) > 2:
-                prev_term = pure_str[-2]
             nodes_with_similar_precede_set = get_nodes_with_similar_precede_set(edge.source, graph, prev_term)
 
             # sub
@@ -187,19 +190,22 @@ def extract_del(T, graph):
     for i, edge in enumerate(T):
         if edge.label in graph.terminal and edge.label != "$end" and edge.source != edge.next_node:
             # append to back of already deleted
-            for i in range(len(out)):
-                out[i] += edge.label + ' '
+            for j in range(len(out)):
+                out[j] += edge.label + ' '
 
             prev_term = None
-            if len(pure_str) > 2:
-                prev_term = pure_str[-2]
-
-            nodes_with_similar_precede_set = get_nodes_with_similar_precede_set(edge.source, graph, prev_term)
+            before_terms = [e.label for e in T[:i] if
+                            e.label in graph.terminal and edge.label != "$end"]
+            if before_terms:
+                prev_term = before_terms[-1]
 
             next_term = None
-            remaining_terms = [e.label for e in T[i + 1:] if e.label in graph.terminal and edge.label != "$end"]
+            remaining_terms = [e.label for e in T[i + 1:] if
+                               e.label in graph.terminal and edge.label != "$end"]
             if remaining_terms:
                 next_term = remaining_terms[0]
+
+            nodes_with_similar_precede_set = get_nodes_with_similar_precede_set(edge.source, graph, prev_term)
             nodes_with_similar_follow_set = get_nodes_with_similar_follow_set(edge.next_node, graph, next_term)
 
             # del if no similar state in terms of a -> (state) -> b exists
@@ -216,13 +222,15 @@ def extract_del(T, graph):
 def extract_add(T, graph):
     out = []
     pure_str = ''
-    for edge in T:
+    for i, edge in enumerate(T):
         if edge.label in graph.terminal and edge.label != "$end":
             source_follow_set = get_follow_set(edge.source.label, graph)
 
             prev_term = None
-            if len(pure_str) > 2:
-                prev_term = pure_str[-2]
+            before_terms = [e.label for e in T[:i] if
+                            e.label in graph.terminal and edge.label != "$end"]
+            if before_terms:
+                prev_term = before_terms[-1]
 
             nodes_with_similar_precede_set = get_nodes_with_similar_precede_set(edge.source, graph, prev_term)
             # insert
@@ -235,8 +243,8 @@ def extract_add(T, graph):
             # calculate without insertion
             pure_str += edge.label + ' '
             # append to back of already mutated
-            for i in range(len(out)):
-                out[i] += edge.label + ' '
+            for j in range(len(out)):
+                out[j] += edge.label + ' '
     return out
 
 
@@ -346,21 +354,22 @@ def extract_stack_del(T, graph):
             for i in range(len(out)):
                 out[i] += edge.label + ' '
 
-        prev_term = None
-        before_terms = [e.label for e in T[:index] if
-                        e.label in graph.terminal and edge.label != "$end"]
-        if before_terms:
-            prev_term = before_terms[-1]
+        if not edge.is_pop and edge.label in graph.nonterminal:
+            prev_term = None
+            string_before_this_rule = deleteFromEnd(T[:index + 1], graph)
 
-        next_term = None
-        remaining_terms = [e.label for e in T[index + 1:] if e.label in graph.terminal and edge.label != "$end"]
-        if remaining_terms:
-            next_term = remaining_terms[0]
+            if len(string_before_this_rule) > 2:
+                prev_term = string_before_this_rule.strip().split(" ")[-1]
 
-        # del if no similar state in terms of a -> (state) -> b exists
-        if not edge.is_pop and edge.label in graph.nonterminal and can_delete(edge, graph, prev_term, next_term):
-            out.append(deleteFromEnd(T[:index + 1], graph))
-    # delete last rule application
+            next_term = None
+            remaining_terms = [e.label for e in T[index + 1:] if e.label in graph.terminal and edge.label != "$end"]
+            if remaining_terms:
+                next_term = remaining_terms[0]
+
+            # del if no similar state in terms of a -> (state) -> b exists
+            if can_delete(edge, graph, prev_term, next_term):
+                out.append(deleteFromEnd(T[:index + 1], graph))
+                # delete last rule application
     return out
 
 

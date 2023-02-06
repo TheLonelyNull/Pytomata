@@ -52,17 +52,21 @@ def dynamic_traversal(graph: Graph):
     print("Finished Splicing Solutions.")
     tests = set()
     for path in tqdm.tqdm(complete):
-        extracted_cases = extract_test_case(path['trace'], graph, sub_table=sub_table,
-                                            shortest_table=shortest_deriv_map)
-        for case in extracted_cases:
-            if case.replace(" ", "") == "programid:id:takesidasintegerarrayreturnsintegerchillaxmain:chillax":
-                print("Old path: __________________________________")
-                print(debug_utils.trace_to_str(path['trace'], graph))
-                print("Unmutated case:_________________________________")
-                print(extract_test_case(path['trace'], graph, sub_table=sub_table, shortest_table=shortest_deriv_map,
-                                        test_suite_type="positive")[0])
-                print("Mutated case:_____________________________________")
-                print(case)
+        # if extract_test_case(path['trace'], graph, sub_table=sub_table,
+        #                      shortest_table=shortest_deriv_map,
+        #                      test_suite_type="positive")[0] != "program id : main : do id ( false , false ) end ":
+        #     continue
+        # extracted_cases = extract_test_case(path['trace'], graph, sub_table=sub_table,
+        #                                         shortest_table=shortest_deriv_map)
+        # for case in extracted_cases:
+        #     if case.replace(" ", "") == "programid:main:doid(false-false)end":
+        #         print("Old path: __________________________________")
+        #         print(debug_utils.trace_to_str(path['trace'], graph))
+        #         print("Unmutated case:_________________________________")
+        #         print(extract_test_case(path['trace'], graph, sub_table=sub_table, shortest_table=shortest_deriv_map,
+        #                                 test_suite_type="positive")[0])
+        #         print("Mutated case:_____________________________________")
+        #         print(case)
         tests.update(extract_test_case(path['trace'], graph, sub_table=sub_table,
                                        shortest_table=shortest_deriv_map))
     return tests
@@ -397,11 +401,16 @@ def full_traversal(graph: Graph):
     count = 0
     for path in queue:
         complete = None
+        print("------------------------------")
+        print(debug_utils.trace_to_str(path['trace'], graph))
         if not config.get_clasic_flag():
             complete = path_completion_improved(path['stack'], path['trace'], 'acc',
                                                 graph)
+
         else:
             complete = path_completion(path['stack'], path['trace'], 'acc', graph)
+        print(debug_utils.trace_to_str(complete['trace'], graph))
+        print(extract_test_case(complete['trace'], graph)[0])
         test_cases.update(extract_test_case(complete['trace'], graph))
         count += 1
     print("Path completion complete")
@@ -558,12 +567,14 @@ def path_completion(S, T, goal_label, graph):
         'stack': S.copy(),
         'trace': T.copy()
     })
+    total_paths = 1
     while len(queue) > 0:
         path = queue.pop(0)
         cur_stack = path['stack']
         cur_trace = path['trace']
         cur_node = cur_stack[-1]
 
+        print("Total Paths: " + str(total_paths))
         # check if the destination has been reached
         if str(cur_node.label) == goal_label:
             return path
@@ -571,6 +582,8 @@ def path_completion(S, T, goal_label, graph):
         # check for bad test case
         if len(cur_trace) > 2 * len(graph.edges):
             continue
+        else:
+            total_paths -= 1
 
         # check if there is a reduce rule that may exist for this state
         reduce_edges = []
@@ -587,12 +600,14 @@ def path_completion(S, T, goal_label, graph):
                     shift_edge = edge
                     break
             push(cur_stack, cur_trace, queue, shift_edge)
+            total_paths += 1
         else:
             # if the previous step wasn't a pop then we should shift on terminals and check
             # for valid reductions on all edges
             for edge in cur_node.edges:
                 if edge.label in graph.terminal and edge.next_node != cur_node:
                     push(cur_stack, cur_trace, queue, edge)
+                    total_paths += 1
                 # check that reduction edge is correct edge
                 elif edge.label in graph.nonterminal and edge in reduce_edges:
                     # pop nodes of stack
@@ -601,6 +616,7 @@ def path_completion(S, T, goal_label, graph):
                             # pop nodes of stack
                             pop(cur_stack, cur_trace, queue, edge,
                                 cur_node.reduce_rule[rule_index][1])
+                            total_paths += 1
 
 
 def path_completion_improved(S, T, goal_label, graph):

@@ -7,7 +7,10 @@ funcdefstar: funcdef funcdefstar
 semicolonvarseqstar: ';' varseq semicolonvarseqstar
                    |
                    ;
-funcdef: 'id' ':' 'takes' varseq semicolonvarseqstar 'returns' type body;
+funcdef: 'id' ':' 'takes' varseq semicolonvarseqstar returnoptional body;
+returnoptional: 'returns' type
+              |
+              ;
 varsvarseqsemicolonvarseqstaroptional: 'vars' varseq semicolonvarseqstar
                                      |
                                      ;
