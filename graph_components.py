@@ -1,11 +1,11 @@
 class Node:
-    def __init__(self, label, edges, is_accept, reduce_rule):
+    def __init__(self, label: int, edges: list, is_accept: bool, reduce_rule: list):
         self.label = label
         self.edges = edges
         self.pre_edges = list()
         self.is_accept = is_accept
         self.reduce_rule = reduce_rule
-        self.predecessors = list()
+        self.predecessors = list() # Only used in old hyacc construction
 
     def __str__(self):
         return '(' + str(self.label) + ',' + str(self.edges) + ',' + str(self.is_accept) + ',' + str(

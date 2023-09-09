@@ -80,6 +80,7 @@ def solve_for_pop(candidate: Edge, graph):
     assert candidate.local_stack[0] == src
     assert candidate.local_stack[-1] == target
     trace = []
+    debug_str = "Computing pop tmp"
     for i in range(len(candidate.local_stack) - 1):
         node = candidate.local_stack[i]
         next_node = candidate.local_stack[i + 1]
@@ -87,10 +88,15 @@ def solve_for_pop(candidate: Edge, graph):
         pop_tmp = dict()
         for e in node.pre_edges:
             if e.is_pop:
+                debug_str += f"\n found pop edge {e} "
                 if e.label not in pop_tmp:
+                    debug_str += f"and added it to map with count : {e.pop_count}"
                     pop_tmp[e.label] = e.pop_count
                 elif e.pop_count < pop_tmp[e.label]:
+                    debug_str += f"and replaced existing count with {e.pop_count}"
                     pop_tmp[e.label] = e.pop_count
+                else:
+                    debug_str += "but did nothing"
 
         smallest_nt = None
         min_pop = 1000000
@@ -120,7 +126,6 @@ def solve_for_pop(candidate: Edge, graph):
 
 def cover_all_pop(sub_table, graph):
     # find starting branches
-    start_edges = find_start_edges(sub_table, graph)
     print('Constructing reduction graph')
     reduction_graph = construct_reduction_graph(sub_table, graph)
     print('Finished constructing reduction graph')
@@ -376,7 +381,7 @@ def find_start_edges(sub_map, graph):
         next_node = key.next_node
         can_accept = False
         for edge in next_node.edges:
-            if edge.next_node.label == 'acc':
+            if edge.next_node.label == 'acc' or edge.next_node.is_accept:
                 can_accept = True
                 break
         if can_accept:

@@ -95,6 +95,8 @@ def construct_base_graph(states, nodes, graph_lines, type):
         label = ""
         if line_list[5] == "style=\"dashed\"":
             label = None
+            if cur.label == 231:
+                print()
             cur.reduce_rule = get_reduce_rule(states, cur.label, type)
         elif line_list[4] == "label":
             label = "$end"
