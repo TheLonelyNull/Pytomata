@@ -1,5 +1,7 @@
 import os
 
+import tqdm
+
 
 def clean_directory():
     os.system('rm -f y.* visual.*')
@@ -10,25 +12,27 @@ def remove_intermediary_files():
 
 
 def output_test_cases(test_cases, filename):
-    out_str = ""
+    print(f"Writing to {filename}")
+    out_lines = []
     case_nr = 1
     test_cases = list(test_cases)
     test_cases.sort()
-    for case in test_cases:
-        case = case.replace('FULLSTOP', '.')
-        case = case.replace('RIGHTARROW', '->')
-        case  = case.replace('STRING', '""')
+    for case in tqdm.tqdm(test_cases):
+        # case = case.replace('FULLSTOP', '.')
+        # case = case.replace('RIGHTARROW', '->')
+        case = case.replace('STRING', '""')
+        case.rstrip()
+        case += "\n"
+        out_lines.append(case)
         # space it out
-        for char in case:
-            out_str += char + ""
-        out_str.rstrip()
-        out_str += "\n"
+        # for char in case:
+        #     out_str += char + ""
         case_nr += 1
 
     if filename is None:
-        print(out_str)
+        print("".join(out_lines))
     else:
-        file = open("./out/"+filename, 'w')
-        print("Wrote results to ./out/"+filename)
-        file.write(out_str)
+        file = open("./out/" + filename, 'w')
+        file.writelines(out_lines)
+        print("Wrote results to ./out/" + filename)
         file.close()

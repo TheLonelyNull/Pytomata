@@ -27,7 +27,10 @@ def dynamic_traversal(graph: Graph):
             rem_pop.add(e)
     # start solving for pop edges
     print("Started Solving for Pop Edges. Total " + str(len(rem_pop)))
-    while len(rem_pop) + len(waiting) > 0:
+    previous_remainder = -1
+    while 0 < len(rem_pop) + len(waiting) != previous_remainder:
+        print(f"Remaining pop edges: {len(rem_pop) + len(waiting)}             \r")
+        previous_remainder = len(rem_pop) + len(waiting)
         rem_pop.update(waiting)
         waiting = set()
         for edge in rem_pop.copy():
@@ -47,6 +50,8 @@ def dynamic_traversal(graph: Graph):
                 waiting.add(edge)
             rem_pop.remove(edge)
     print("Finished Solving for Pop Edges.")
+    if len(rem_pop) + len(waiting) > 0:
+        print(f"Skipped {len(rem_pop) + len(waiting)} pop edges")
     # splice solutions together
     complete = cover_all_pop(sub_table, graph)
     print("Finished Splicing Solutions.")
@@ -54,12 +59,12 @@ def dynamic_traversal(graph: Graph):
     for path in tqdm.tqdm(complete):
         # if extract_test_case(path['trace'], graph, sub_table=sub_table,
         #                      shortest_table=shortest_deriv_map,
-        #                      test_suite_type="positive")[0] != "program id : main : do id ( false , false ) end ":
+        #                      test_suite_type="positive")[0] != "PROGRAM ID : MAIN : IF ID : CHILLAX END ":
         #     continue
         # extracted_cases = extract_test_case(path['trace'], graph, sub_table=sub_table,
         #                                         shortest_table=shortest_deriv_map)
         # for case in extracted_cases:
-        #     if case.replace(" ", "") == "programid:main:doid(false-false)end":
+        #     if case.replace(" ", "") == "PROGRAMID:MAIN:IFNOTID:CHILLAXEND":
         #         print("Old path: __________________________________")
         #         print(debug_utils.trace_to_str(path['trace'], graph))
         #         print("Unmutated case:_________________________________")
@@ -102,6 +107,9 @@ def solve_for_pop(candidate: Edge, graph):
         min_pop = 1000000
         for e in node.edges:
             if e.next_node == next_node and not e.is_pop and e.label in graph.nonterminal and \
+                    e.label not in pop_tmp:
+                continue
+            if e.next_node == next_node and not e.is_pop and e.label in graph.nonterminal and \
                     pop_tmp[
                         e.label] < min_pop:
                 smallest_nt = e
@@ -113,7 +121,9 @@ def solve_for_pop(candidate: Edge, graph):
 
         if smallest_e is None or min_pop == 0:
             smallest_e = smallest_nt
-
+        if smallest_e is None:
+            print(f"Ignoring {candidate}")
+            return False, None
         assert smallest_e is not None
         trace.append(smallest_e)
     trace.append(candidate)
@@ -235,6 +245,9 @@ def complete_segment(path, shortest_derivation_map, reduction_tree_map, graph):
     for i, e in enumerate(trace):
         if not e.is_pop and e.label in graph.nonterminal and not (
                 trace[i - 1].is_pop):
+            if e not in shortest_deriv_map:
+                print("Ignoring " + str(trace[-1]))
+                return
             subbed_trace.extend(shortest_deriv_map[e]['trace'])
         else:
             subbed_trace.append(e)
@@ -264,20 +277,22 @@ def reverse_sub_table(sub_table, graph):
 
 def shortest_derivations(sub_map, shortest_map, graph):
     tmp_map = {}
-
-    while len(sub_map.keys() - shortest_map.keys()) > 0:
+    previous = -1
+    while 0 < len(sub_map.keys() - shortest_map.keys()) != previous:
+        previous = len(sub_map.keys() - shortest_map.keys())
         next_solve = list(sub_map.keys() - shortest_map.keys())
         next_solve.sort(key=str)
         # loop over all non-terminal edges we don't have a shortest derivation for yet
-        for nt_edge in next_solve:
+        for nt_edge in tqdm.tqdm(next_solve):
             min_len = 1000000
             min_paths = []
+
             for path in sub_map[nt_edge]:
                 deriv = []
                 i = 0
                 can_solve = True
                 for e in path['trace']:
-                    if e in graph.terminal or e.is_pop:
+                    if e.label in graph.terminal or e.is_pop:
                         deriv.append(e)
                     else:
                         if is_unsubbed_nt(i, path['trace'], graph):
@@ -319,6 +334,9 @@ def shortest_derivations(sub_map, shortest_map, graph):
                     random.seed(seed)
                     i = random.randint(0, len(strs) - 1)
                     shortest_map[nt_edge] = {'trace': str_map[strs[i]]}
+
+    if previous > 0:
+        print(f"Could not find shortest derivations for {previous}")
 
 
 def splice_segments(sub_map, graph: Graph):

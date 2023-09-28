@@ -28,7 +28,7 @@ class Config:
     def get_automaton_type(self):
         return self._args['lr']
 
-    def get_grammar_filename(self):
+    def get_input_file_name(self):
         return self._args['input_file']
 
     def get_test_suite_type(self):

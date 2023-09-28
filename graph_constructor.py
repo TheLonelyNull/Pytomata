@@ -1,7 +1,8 @@
 import re
-from graph_components import Edge, Node, Graph
+
 import graphics_generator
 from config import Config
+from graph_components import Edge, Node, Graph
 
 
 def get_graph_lines():
@@ -24,6 +25,8 @@ def get_states():
     for i in range(len(state_start_indexes) - 1):
         states.append([])
         cur_state = states[-1]
+        if i == 287:
+            print()
         for j in range(state_start_indexes[i] + 3, state_start_indexes[i + 1]):
             if bool(re.match("\s*\(\d+\).*", states_lines[j])):
                 cur_state.append(states_lines[j])
@@ -33,22 +36,35 @@ def get_states():
 
 def get_reduce_rule(states, node, type):
     rules = []
+    if node == 446:
+        print()
     # get all reduction rules that could apply for a state
     for rule in states[node]:
         r = rule.split('->')
         nonterminal = r[0].split()[-1]
-        symbols = r[-1].split('(core)')[0].split()
-        if type == 'LR0':
-            states_to_pop = len(r[-1].split('(core)')[0].split()) - 1
-        elif type == 'LR1' or type == 'LALR1':
-            matches = re.split(r"{(.*)*(.*)}", r[-1])
-            symbols = matches[0].split()
+        symbols = r[-1]
+        to_remove = re.search(r"\(core\)", symbols)
+        if to_remove:
+            symbols = symbols.replace(to_remove.group(), "")
+        to_remove = re.search(r"\{.*\}", symbols)
+        if to_remove:
+            symbols = symbols.replace(to_remove.group(), "")
+        symbols.strip()
+
+        symbols = symbols.split()
+        if type == "LR0":
+            states_to_pop = len(symbols) - 1
+        elif type == 'LR1':
+            states_to_pop = len(symbols) - 1
+        elif type == "LALR1":
             states_to_pop = len(symbols) - 1
         else:
             states_to_pop = len(r[-1].split('{')[0].split()) - 1
         if len(symbols) > 0 and symbols[-1] == '.':
             # check that this rule is actually reduce rule
             rules.append((nonterminal, states_to_pop))
+    if len(rules) == 0:
+        return None
     return rules
 
 
@@ -90,13 +106,13 @@ def construct_base_graph(states, nodes, graph_lines, type):
         cur = nodes[int(line_list[0])]
         cur__return_label_set = set()
         next_node = nodes[-1]
+        if cur.label == 446:
+            print()
         if line_list[2] != "acc" and 'r' not in line_list[2]:
             next_node = nodes[int(line_list[2])]
         label = ""
         if line_list[5] == "style=\"dashed\"":
             label = None
-            if cur.label == 231:
-                print()
             cur.reduce_rule = get_reduce_rule(states, cur.label, type)
         elif line_list[4] == "label":
             label = "$end"
@@ -149,7 +165,7 @@ def add_return_edges(nodes):
             if (len(cur_level) == 0):
                 print(node.label)
                 print(reduce_rule)
-            assert(len(cur_level) != 0)
+            assert (len(cur_level) != 0)
             for l in cur_level:
                 n = l[0]
                 edge = Edge(reduce_rule[0], n, True)

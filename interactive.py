@@ -18,7 +18,7 @@ if __name__ == '__main__':
     print(command_automaton_map[
               config.get_automaton_type()])
     command = "./hyacc/hyacc -v -g -O0 " + command_automaton_map[
-        config.get_automaton_type()] + " " + config.get_grammar_filename()
+        config.get_automaton_type()] + " " + config.get_input_file_name()
     os.system(command)
 
     graph = construct_graph()

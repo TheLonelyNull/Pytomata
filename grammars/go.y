@@ -61,7 +61,7 @@ equalExpressionListOptional: '=' expressionList
 typeNEqualExpressionListOptionalEqualExpresionList: typeN equalExpressionListOptional
                                                   | '=' expressionList;
 varSpec: identifierList typeNEqualExpressionListOptionalEqualExpresionList;
-block: '{' statementList '}';
+block: 'CURLY_OPEN' statementList 'CURLY_CLOSED';
 statementeosstar: statement eos statementeosstar
                 | ;
 statementList: statementeosstar;
@@ -130,10 +130,10 @@ expressionOptional: expression
 exprCaseClauseStar: exprCaseClause exprCaseClauseStar
                   | ;
 
-exprSwitchStmt: 'switch' simpleStmtOptional expressionOptional '{' exprCaseClauseStar '}';
+exprSwitchStmt: 'switch' simpleStmtOptional expressionOptional 'CURLY_OPEN' exprCaseClauseStar 'CURLY_CLOSED';
 typeCaseClauseStar: typeCaseClause typeCaseClauseStar
                   | ;
-typeSwitchStmt: 'switch' simpleStmtOptional typeSwitchGuard '{' typeCaseClauseStar '}';
+typeSwitchStmt: 'switch' simpleStmtOptional typeSwitchGuard 'CURLY_OPEN' typeCaseClauseStar 'CURLY_CLOSED';
 
 exprCaseClause: exprSwitchCase ':' statementList;
 
@@ -151,7 +151,7 @@ commatypeNStar: ',' typeN commatypeNStar
 typeList: typeN commatypeNStar;
 commClauseStar: commClause commClauseStar
               | ;
-selectStmt: 'select' '{' commClauseStar '}';
+selectStmt: 'select' 'CURLY_OPEN' commClauseStar 'CURLY_CLOSED';
 commClause: commCase ':' statementList;
 sendStmtOrRecvStmt: sendStmt
                   | recvStmt;
@@ -190,7 +190,7 @@ elementType: typeN;
 pointerType: '*' typeN;
 methodSpecEosStar: methodSpec eos methodSpecEosStar
                  | ;
-interfaceType: 'interface' '{' methodSpecEosStar '}';
+interfaceType: 'interface' 'CURLY_OPEN' methodSpecEosStar 'CURLY_CLOSED';
 sliceType: '[' ']' elementType;
 mapType: 'map' '[' typeN ']' elementType;
 chanorchanarrowarrowchan: 'chan'
@@ -242,7 +242,7 @@ literalType: structType
            | typeName;
 elementListCommaOptionalOptional: elementList commaOptional
                                 | ;
-literalValue: '{' elementListCommaOptionalOptional '}';
+literalValue: 'CURLY_OPEN' elementListCommaOptionalOptional 'CURLY_CLOSED';
 commaKeyedElementOptional: ',' keyedElement commaKeyedElementOptional
                          | ;
 elementList: keyedElement commaKeyedElementOptional;
@@ -256,7 +256,7 @@ element: expression
        | literalValue;
 fieldDeclEosStar: fieldDecl eos fieldDeclEosStar
                 | ;
-structType: 'struct' '{' fieldDeclEosStar '}';
+structType: 'struct' 'CURLY_OPEN' fieldDeclEosStar 'CURLY_CLOSED';
 identifierListTypeNorAnonymousField: identifierList typeN
                                    | anonymousField;
 stringLitOptional: 'STRING'

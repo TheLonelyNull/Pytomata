@@ -1,3 +1,4 @@
+import debug_utils
 from graph_components import Node, Graph
 
 len_map = None
@@ -19,6 +20,8 @@ def get_follow_set(state: int, graph):
     stack.append(cur_node)
     while len(stack) > 0:
         cur_node = stack.pop(0)
+        if cur_node in reachable_nodes:
+            continue
         reachable_nodes.append(cur_node)
         for edge in cur_node.edges:
             if edge.is_pop:
@@ -51,10 +54,11 @@ def get_precede_set(state: int, graph: Graph):
     reachable_nodes = list()
     stack = list()
     stack.append(cur_node)
-    if state == 20:
-        print()
+
     while len(stack) > 0:
         cur_node = stack.pop(0)
+        if cur_node in reachable_nodes:
+            continue
         reachable_nodes.append(cur_node)
         cur_node: Node
         for edge in cur_node.pre_edges:
@@ -460,18 +464,22 @@ def deleteFromEnd(trace, graph):
     count = -new_trace[-1].pop_count
     i = len(new_trace) - 2
     cur_state = new_trace[i].next_node
+    # print(debug_utils.trace_to_str(trace, graph))
+    # print(f"Target: {target_state}")
+    # print(f"Count: {count}")
+    # print(f"Current: {cur_state}")
     while cur_state != target_state or count != 0:
         edge = new_trace[i]
-        if not edge.is_pop and edge.label in graph.terminal:
+        # print(f"Edge {edge}")
+        if not edge.is_pop:
             count += 1
-        elif not edge.is_pop and edge.label in graph.nonterminal:
-            count += 1
-            i -= 1
-            # now handle the pop edge
-            edge = new_trace[i]
+        elif edge.is_pop:
             count -= edge.pop_count
         i -= 1
         cur_state = new_trace[i].next_node
+
+        # print(f"Count: {count}")
+        # print(f"Current: {cur_state}")
 
     new_trace = new_trace[:i + 1]
     test_str = ""

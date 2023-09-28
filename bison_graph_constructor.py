@@ -16,6 +16,8 @@ def get_graph_nodes(io: TextIO) -> list[Node]:
     node_map: dict[int, Node] = {}
     # Skip over grammar headers to the states
     current_non_terminal = None
+    while "Grammar" not in (line := io.readline()):
+        continue
     while "State" not in (line := io.readline()):
         if (line := line.strip()) and line[0].isnumeric():
             rule_num, rule = line.split(maxsplit=1)
@@ -29,8 +31,12 @@ def get_graph_nodes(io: TextIO) -> list[Node]:
             terminals = terminals.strip()
             terminals = terminals.replace("ε", "")
             terminals = terminals.split()
-
-            rules[rule_num] = (current_non_terminal, terminals)
+            stripped_terminals = []
+            for terminal in terminals:
+                terminal = terminal.strip("'")
+                terminal = terminal.strip('"')
+                stripped_terminals.append(terminal)
+            rules[rule_num] = (current_non_terminal, stripped_terminals)
 
     current_state = int(line.strip("State "))
     while line := io.readline():
@@ -43,6 +49,11 @@ def get_graph_nodes(io: TextIO) -> list[Node]:
             line = line.replace(" go to state ", "")
             split_line = line.split()
             symbol, target_state = split_line[0], int(split_line[-1])
+            symbol = symbol.strip("'")
+            symbol = symbol.strip('"')
+            # This seems impossible but found in Bison, remove?
+            if current_state == target_state:
+                continue
             current_node = node_map.get(current_state, Node(current_state, [], False, []))
             target_node = node_map.get(target_state, Node(target_state, [], False, []))
             edge = Edge(symbol, target_node, False)
@@ -64,7 +75,6 @@ def get_graph_nodes(io: TextIO) -> list[Node]:
     for state_num, lines in node_reduce_lines_map.items():
         for line in lines:
             split = line.split("reduce using rule")
-            followed_by = split[0].strip()  # TODO somehow work this limitation in
             rule_num = int(split[1].split()[0])
             non_terminal, stack = rules[rule_num]
             current_node = node_map[state_num]
@@ -84,6 +94,7 @@ def get_graph_nodes(io: TextIO) -> list[Node]:
                     edge = Edge(non_terminal, target_node, True)
                     edge.source = current_node
                     edge.local_stack = trace[target_node]
+                    edge.pop_count = len(stack)
                     current_node.edges.append(edge)
                     target_node.pre_edges.append(edge)
                     current_node.reduce_rule.append((non_terminal, len(stack)))
@@ -97,7 +108,7 @@ def get_graph_nodes(io: TextIO) -> list[Node]:
                 current_node.pre_edges.append(edge)
                 current_node.reduce_rule.append((non_terminal, len(stack)))
     node_map[accept_state].is_accept = True
-    return list(node_map.values())
+    return sorted(list(node_map.values()), key=lambda x: x.label)
 
 
 def construct_graph(file: TextIO) -> Graph:
